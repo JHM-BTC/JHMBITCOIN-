@@ -717,8 +717,11 @@
 
 .doors {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 25px;
+  max-width: 800px;
+  margin: 0 auto;
   max-width: 1200px;
   width: 100%;
   padding: 0 20px;
