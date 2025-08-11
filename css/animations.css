@@ -259,3 +259,51 @@
   color: #fff;
   font-weight: 700;
 }
+
+/* Door Knocking Game Animations */
+@keyframes doorHighlight {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); filter: brightness(1.3); }
+}
+
+.door.highlight {
+  animation: doorHighlight 0.5s ease-in-out;
+}
+
+.door.open .leaf {
+  transform: perspective(400px) rotateY(-120deg);
+}
+
+.door.leaf-hidden .leaf {
+  visibility: hidden;
+}
+
+@keyframes portalSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.inside.portal {
+  background: radial-gradient(circle at center, var(--electric) 0%, var(--magenta) 30%, var(--gold) 60%, transparent 100%);
+  animation: portalSpin 2s linear infinite;
+}
+
+/* Crypto Trading Dashboard Animations */
+@keyframes coinSpin {
+  from { transform: rotateY(0deg); }
+  to { transform: rotateY(360deg); }
+}
+
+.spinning .vItem .logo {
+  animation: coinSpin 240ms linear infinite;
+}
+
+@keyframes cornerFlow {
+  0% { background-position: 0% 0%; }
+  50% { background-position: 100% 100%; }
+  100% { background-position: 0% 0%; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
