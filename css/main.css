@@ -1,0 +1,126 @@
+/* Main Base Styles */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+
+:root {
+  --primary-bg: #14335f;
+  --card-bg: #13243a;
+  --neon-cyan: #1ff1ff;
+  --neon-gold: #ffd700;
+  --neon-green: #90EE90;
+  --text-white: #ffffff;
+  --text-gray: #9ca3af;
+  --border-radius: 1rem;
+  --transition: all 0.3s ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow-y: auto !important;
+  overscroll-behavior-y: contain;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--primary-bg);
+  min-height: 100vh;
+  overflow-y: auto !important;
+}
+
+.section-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+.header-full {
+  left: 0;
+  right: 0;
+  top: 0;
+  width: 100% !important;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-primary {
+  padding: 14px 64px;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 1.08rem;
+  letter-spacing: 2px;
+  transition: var(--transition);
+  cursor: pointer;
+  border: none;
+}
+
+.btn-secondary {
+  padding: 12px 32px;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 1px;
+  transition: var(--transition);
+  cursor: pointer;
+  border: none;
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: var(--border-radius);
+  border: 2px solid;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  background: #1e293b;
+  color: var(--text-white);
+  transition: var(--transition);
+}
+
+.input-field:focus {
+  outline: none;
+  ring: 2px;
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: var(--transition);
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.fade-in {
+  animation: fadeIn 0.35s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

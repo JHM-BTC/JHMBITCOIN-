@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pulau B - Crypto Trading Dashboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/main.css">
+<link rel="stylesheet" href="../css/neon-theme.css">
+<link rel="stylesheet" href="../css/animations.css">
+<link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body class="crypto-trading-body">
+
+<!-- HEADER -->
+<header class="header-full fixed z-50 p-0 m-0">
+<nav class="w-full bg-gradient-to-r from-slate-900 via-indigo-900 to-purple-900 shadow-md">
+<div class="w-full flex items-center justify-between gap-3 px-3 sm:px-6 py-3">
+<a href="../index.html" class="text-xl sm:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">BELEGENDBET</a>
+<button id="btnBackToMap" class="hover:text-white px-5 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl font-semibold shadow-lg transition">🏠 Beranda</button>
+</div>
+</nav>
+</header>
+<div class="h-16"></div>
+
+<!-- USER INFO -->
+<div class="fixed top-20 right-4 z-40 bg-black/50 backdrop-blur-sm rounded-lg p-3 text-sm">
+<div id="userInfo" class="text-cyan-300">
+<span>User: <span id="tbUser">-</span></span>
+<span class="mx-2">•</span>
+<span>Kupon: <span id="tbKupon">-</span></span>
+</div>
+</div>
+
+<div class="space"><canvas id="stars"></canvas></div>
+<main class="shell px-4 py-10 relative">
+<section class="neon">
+<header class="text-center mb-6">
+<h1 class="title text-[clamp(2.2rem,7vw,4.6rem)]">CRYPTO TRADING DASHBOARD</h1>
+<p class="flex items-center justify-center gap-2 mt-3"><span class="dot"></span> LIVE DATA STREAM</p>
+</header>
+
+<div class="chartWrap mb-8"><canvas id="chart" class="chart"></canvas></div>
+
+<div class="grid-2 mb-8">
+<div class="slotStage">
+<div class="cabinet">
+<div class="marquee"><span>CRYPTO WIN</span></div>
+<div class="window">
+<div class="slotBox"><div class="glare"></div><div class="backlight"></div><div class="frame"></div><div id="display" class="display"></div><div id="reel" class="reel"></div><div class="picker" id="picker"></div></div>
+</div>
+<div class="deck"><div class="btncap c1"></div><div class="btncap c2"></div><div class="btncap c3"></div><div class="btncap"></div><div class="btncap"></div></div>
+<div class="lever" id="lever"></div>
+</div>
+<div class="mt-4 flex gap-3">
+<button id="btn" class="cta" type="button">EXECUTE TRADE</button>
+</div>
+</div>
+<div>
+<h3 class="font-bold mb-2">Daftar Hadiah</h3>
+<div id="prizeBoard" class="board"></div>
+<div id="toast" class="toast inline">
+<div class="card">
+<h4 id="tTitle">TRADE SUCCESS!</h4>
+<p id="tMsg" class="text-sm opacity-90"></p>
+<button id="tClose" class="btn">Close</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+
+<footer class="bg-blue-900 text-white text-center py-4 mt-auto">
+  <div class="container mx-auto px-4">
+    © 2024 BELEGENDBET. Hak Cipta Dilindungi Undang-Undang.
+  </div>
+</footer>
+
+<div id="overlay" class="overlay">
+<div class="modal text-center">
+<h2 id="mTitle" class="text-2xl font-bold">TRADE SUCCESS!</h2>
+<p id="mMsg" class="mt-3"></p>
+<div class="mt-6"><button id="ok" class="cta">Close</button></div>
+</div>
+</div>
+
+<script type="module">
+import { $, loadSession, formatRupiah, showModal, hideModal } from '../js/utils.js';
+import { submitPrizeData, logActivity } from '../js/api.js';
+
+class CryptoTradingGame {
+  constructor() {
+    this.spinning = false;
+    this.symbols = [
+      { name:'Bitcoin (BTC)',  icon:'https://i.postimg.cc/V6wtcHDP/e97e725d-7c9e-46bb-ba18-12ac2229a4ed.png',  prize:1500000 },
+      { name:'Ethereum (ETH)', icon:'https://i.postimg.cc/KjwLCcWJ/6904c3e5-64b9-40bc-b720-146bce9c52ef.png', prize:500000  },
+      { name:'Dogecoin (DOGE)', icon:'https://i.postimg.cc/JzG4dVVd/7b78591f-a68b-4879-8e41-9f55d7c2a5fa.png', prize:100000 },
+      { name:'Cardano (ADA)',  icon:'https://i.postimg.cc/bvmZKNDk/cd74f159-0772-473f-acf9-3ba299c81b9e.png',  prize:50000   },
+      { name:'Solana (SOL)',   icon:'https://i.postimg.cc/pLtqsxFP/4127a945-5034-4d26-bcf2-3acf8078a839.png',   prize:10000   },
+      { name:'Litecoin (LTC)', icon:'https://i.postimg.cc/4dn5YxrQ/d520c648-132e-4221-a564-49217775aca4.png', prize:8000    },
+      { name:'Ripple (XRP)',   icon:'https://i.postimg.cc/fbR7PbTQ/0dd15455-9843-4b80-995e-92b85570d004.png',   prize:6000    },
+      { name:'Binance Coin (BNB)', icon:'https://i.postimg.cc/1RqG22PX/f75bf0b6-bf94-4796-9f51-9fb2ea8e4de9.png', prize:4000 },
+      { name:'Polkadot (DOT)', icon:'https://i.postimg.cc/k5LVyM2c/93b53129-af39-4f31-8711-5f7adbb9cdf7.png', prize:2000 }
+    ];
+    this.init();
+  }
+
+  init() {
+    this.loadUserInfo();
+    this.setupEventListeners();
+    this.initializeGame();
+  }
+
+  loadUserInfo() {
+    const session = loadSession();
+    if (session) {
+      $('#tbUser').textContent = session.userId || '-';
+      $('#tbKupon').textContent = session.kupon || '-';
+    }
+  }
+
+  setupEventListeners() {
+    $('#btn').addEventListener('click', () => this.startSpin());
+    $('#btnBackToMap').addEventListener('click', () => {
+      window.location.href = '../index.html';
+    });
+    $('#ok').addEventListener('click', () => this.closeModal());
+    $('#tClose').addEventListener('click', () => this.hideToast());
+    
+    const lever = $('#lever');
+    if (lever) {
+      lever.addEventListener('click', () => {
+        if (!this.spinning) {
+          lever.classList.add('pull');
+          setTimeout(() => lever.classList.remove('pull'), 400);
+          this.startSpin();
+        }
+      });
+    }
+  }
+
+  async initializeGame() {
+    await this.populate();
+    this.renderPrizeBoard();
+  }
+
+  formatIDR(n) {
+    return 'Rp. ' + Number(n || 0).toLocaleString('id-ID');
+  }
+
+  renderPrizeBoard() {
+    const boardEl = $('#prizeBoard');
+    boardEl.innerHTML = '';
+    this.symbols.forEach((s, i) => {
+      const showcase = s.prize > 10000;
+      const r = document.createElement('div');
+      r.className = 'row';
+      r.dataset.idx = i;
+      const nameSafe = String(s.name || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      r.innerHTML = [
+        `<img src="${s.icon}" alt="${nameSafe}">`,
+        `<div class="name">${nameSafe}</div>`,
+        `<div class="amt">${this.formatIDR(s.prize)}</div>`,
+        ''
+      ].join('');
+      boardEl.appendChild(r);
+    });
+  }
+
+  async populate() {
+    const reel = $('#reel');
+    reel.innerHTML = '';
+    const LOOPS = 10;
+    const arr = Array.from({length: LOOPS}, () => this.symbols).flat();
+    
+    for (const s of arr) {
+      const d = document.createElement('div');
+      d.className = 'cell';
+      const img = document.createElement('img');
+      img.src = s.icon;
+      img.alt = s.name;
+      img.addEventListener('error', () => {
+        d.innerHTML = `<div style="width:110px;height:110px;border-radius:999px;display:grid;place-items:center;background:linear-gradient(135deg,#38bdf8,#a855f7);color:#0b0f1a;font-weight:900;">${s.name.split('(')[1]?.replace(')', '') || '??'}</div>`;
+      });
+      d.appendChild(img);
+      const label = document.createElement('span');
+      label.textContent = s.name;
+      d.appendChild(label);
+      reel.appendChild(d);
+    }
+
+    await Promise.all([...reel.querySelectorAll('img')].map(img => 
+      img.complete ? null : new Promise(res => { img.onload = res; img.onerror = res; })
+    ));
+
+    this.renderDisplay(this.symbols[0]);
+  }
+
+  renderDisplay(sym) {
+    const display = $('#display');
+    const safeName = String(sym.name || '');
+    display.innerHTML = `<img class="logo" src="${sym.icon}" alt="${safeName}">`;
+  }
+
+  getAllowedIndices() {
+    return this.symbols.map((s, i) => (s.prize >= 2000 && s.prize <= 10000) ? i : -1).filter(i => i >= 0);
+  }
+
+  pickAllowed() {
+    const a = this.getAllowedIndices();
+    return a[Math.floor(Math.random() * a.length)];
+  }
+
+  setActiveRow(i) {
+    const boardEl = $('#prizeBoard');
+    boardEl.querySelectorAll('.row').forEach(el => el.classList.toggle('active', Number(el.dataset.idx) === i));
+    const row = boardEl.querySelector(`.row[data-idx="${i}"]`);
+    if (row) {
+      row.scrollIntoView({block: 'nearest', behavior: 'smooth'});
+    }
+  }
+
+  markWin(i) {
+    const boardEl = $('#prizeBoard');
+    boardEl.querySelectorAll('.row').forEach(el => el.classList.toggle('win', Number(el.dataset.idx) === i));
+  }
+
+  buildColumn(order) {
+    const display = $('#display');
+    display.innerHTML = '<div class="vcol" id="vcol"></div>';
+    const col = document.getElementById('vcol');
+    order.forEach(i => {
+      const s = this.symbols[i];
+      const el = document.createElement('div');
+      el.className = 'vItem';
+      el.innerHTML = `<img class="logo" src="${s.icon}" alt="${s.name}">`;
+      col.appendChild(el);
+    });
+    return col;
+  }
+
+  async startSpin() {
+    if (this.spinning) return;
+
+    const display = $('#display');
+    const btn = $('#btn');
+    const lever = $('#lever');
+    
+    display.classList.add('spinning');
+    if (lever) {
+      lever.classList.add('pull');
+      setTimeout(() => lever.classList.remove('pull'), 400);
+    }
+
+    this.spinning = true;
+    btn.disabled = true;
+    btn.textContent = 'EXECUTING...';
+
+    const per = this.symbols.length;
+    let finalIdx = this.pickAllowed();
+    this.setActiveRow(finalIdx);
+
+    const SEQ_MIN = 12, SEQ_MAX = 18;
+    const seqLen = SEQ_MIN + Math.floor(Math.random() * (SEQ_MAX - SEQ_MIN + 1));
+    const order = [];
+    for (let k = 0; k < seqLen - 1; k++) {
+      order.push(Math.floor(Math.random() * per));
+    }
+    order.push(finalIdx);
+    const col = this.buildColumn(order);
+
+    const item = col.children[0];
+    const h = item.getBoundingClientRect().height;
+    const centerY = display.clientHeight / 2;
+    const endY = centerY - ((order.length - 1) * h + h / 2);
+    const stepLead = 6;
+    const startY = endY - h * stepLead;
+    const duration = 650;
+
+    col.style.transition = 'none';
+    col.style.transform = `translateY(${startY}px)`;
+    
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        col.style.filter = 'brightness(1.05) blur(1px)';
+        col.style.transition = `transform ${duration}ms cubic-bezier(.2,.95,.25,1)`;
+        col.style.transform = `translateY(${endY}px)`;
+      });
+    });
+
+    const onEnd = (e) => {
+      if (e.propertyName !== 'transform') return;
+      col.removeEventListener('transitionend', onEnd);
+      col.style.filter = 'none';
+      display.classList.remove('spinning');
+      this.finishSpin(this.symbols[finalIdx], finalIdx);
+    };
+    col.addEventListener('transitionend', onEnd);
+  }
+
+  async finishSpin(sym, idx) {
+    this.spinning = false;
+    const btn = $('#btn');
+    btn.disabled = false;
+    btn.textContent = 'EXECUTE TRADE';
+    
+    this.renderDisplay(sym);
+    this.markWin(idx);
+    this.flashPicker();
+    
+    const mTitle = $('#mTitle');
+    const mMsg = $('#mMsg');
+    mTitle.textContent = 'TRADE SUCCESS!';
+    mMsg.textContent = `Profit ${this.formatIDR(sym.prize)} dari ${sym.name}`;
+    
+    this.showToast('TRADE SUCCESS!', `Profit ${this.formatIDR(sym.prize)} dari ${sym.name}`);
+
+    const session = loadSession();
+    if (session) {
+      await submitPrizeData(session.userId, session.kupon, 'B', 'crypto_trading', sym.prize);
+      await logActivity(session.userId, 'prize_won', { island: 'B', prize: sym.prize, crypto: sym.name });
+    }
+
+    setTimeout(() => {
+      $('#overlay').style.display = 'grid';
+    }, 1000);
+  }
+
+  flashPicker() {
+    const picker = $('#picker');
+    picker.animate([{opacity: 1}, {opacity: 0.25}, {opacity: 1}], {duration: 520, iterations: 3});
+    picker.style.opacity = 1;
+  }
+
+  showToast(title, msg) {
+    const toast = $('#toast');
+    const tTitle = $('#tTitle');
+    const tMsg = $('#tMsg');
+    tTitle.textContent = title;
+    tMsg.textContent = msg;
+    toast.classList.add('show');
+  }
+
+  hideToast() {
+    const toast = $('#toast');
+    toast.classList.remove('show');
+  }
+
+  closeModal() {
+    $('#overlay').style.display = 'none';
+  }
+}
+
+// Initialize stars background
+(function stars() {
+  const c = $('#stars');
+  const ctx = c.getContext('2d');
+  function resize() {
+    c.width = innerWidth * devicePixelRatio;
+    c.height = innerHeight * devicePixelRatio;
+  }
+  resize();
+  addEventListener('resize', resize);
+  const N = 160;
+  const stars = new Array(N).fill(0).map(() => ({
+    x: Math.random() * c.width,
+    y: Math.random() * c.height,
+    z: Math.random() * 1 + 0.3,
+    r: Math.random() * 1.4 + 0.3
+  }));
+  let t = 0;
+  function loop() {
+    t += 0.016;
+    ctx.clearRect(0, 0, c.width, c.height);
+    for (const s of stars) {
+      s.y += s.z * 0.6;
+      if (s.y > c.height) s.y = 0;
+      ctx.globalAlpha = 0.6 + Math.sin((s.x + s.y + t * 30) / 99) * 0.2;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r * devicePixelRatio, 0, Math.PI * 2);
+      ctx.fillStyle = '#7dd3fc';
+      ctx.fill();
+    }
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+
+// Initialize chart
+(function chart() {
+  const cv = $('#chart');
+  const ctx = cv.getContext('2d');
+  function resize() {
+    const dpr = devicePixelRatio || 1;
+    cv.width = cv.clientWidth * dpr;
+    cv.height = cv.clientHeight * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  resize();
+  addEventListener('resize', resize);
+  const data = Array.from({length: 120}, () => 100 + Math.random() * 10);
+  function step() {
+    const last = data[data.length - 1];
+    const next = last + (Math.random() - 0.5) * 2.4;
+    data.push(Math.max(95, Math.min(110, next)));
+    if (data.length > 240) data.shift();
+    draw();
+  }
+  function draw() {
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    const w = cv.clientWidth, h = cv.clientHeight;
+    ctx.beginPath();
+    data.forEach((v, i) => {
+      const x = i / (data.length - 1) * w;
+      const y = h - (v - 95) / (110 - 95) * h;
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    });
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = 'rgba(56,189,248,0.9)';
+    ctx.shadowColor = 'rgba(168,85,247,0.45)';
+    ctx.shadowBlur = 12;
+    ctx.stroke();
+  }
+  setInterval(step, 120);
+})();
+
+// Parallax background
+addEventListener('pointermove', (e) => {
+  const x = e.clientX / innerWidth;
+  const y = e.clientY / innerHeight;
+  document.body.style.setProperty('--mx', Math.round(x * 100) + '%');
+  document.body.style.setProperty('--my', Math.round(y * 100) + '%');
+});
+
+// Initialize game when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  new CryptoTradingGame();
+});
+</script>
+
+</body>
+</html>

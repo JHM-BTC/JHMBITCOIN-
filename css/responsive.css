@@ -1,0 +1,258 @@
+/* Responsive Design */
+
+/* Large screens */
+@media (max-width: 1200px) {
+  #island-container {
+    gap: 2.5rem;
+  }
+  
+  .island-card {
+    width: 260px;
+    height: 380px;
+  }
+}
+
+/* Medium screens */
+@media (max-width: 900px) {
+  .neon-title {
+    font-size: 2.7rem;
+  }
+  
+  .glow-hero {
+    font-size: 1.25rem;
+    margin-top: 1.2rem;
+  }
+  
+  .hero-map-img {
+    width: 95vw;
+  }
+  
+  .neon-glow-border {
+    padding: 2vw;
+  }
+  
+  #island-container {
+    gap: 1.7rem;
+  }
+  
+  .island-card {
+    width: 200px;
+    height: 300px;
+  }
+  
+  #game-section {
+    margin-top: 2rem;
+  }
+}
+
+/* Small screens */
+@media (max-width: 800px) {
+  #island-container {
+    gap: 1.1rem;
+  }
+  
+  .island-card {
+    width: 160px;
+    height: 210px;
+  }
+}
+
+/* Mobile screens */
+@media (max-width: 650px) {
+  .neon-title {
+    font-size: 1.6rem;
+  }
+  
+  .glow-hero {
+    font-size: 1.25rem;
+    margin-top: 1.2rem;
+  }
+  
+  .hero-map-img {
+    width: 99vw;
+  }
+  
+  .neon-glow-border {
+    padding: 1.5vw;
+  }
+  
+  .hero-map-frame {
+    margin-top: 7vw;
+  }
+  
+  #island-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+    flex-wrap: wrap;
+  }
+  
+  .island-card-wrapper {
+    width: 97vw;
+    min-width: 0;
+    max-width: 99vw;
+  }
+  
+  .island-card {
+    width: 98vw;
+    height: 170px;
+    min-width: 0;
+    max-width: 99vw;
+    margin: 0 auto;
+  }
+  
+  .island-card .island-img,
+  .card-front-logo {
+    width: 62% !important;
+    height: 62% !important;
+    padding: 0.22rem;
+  }
+  
+  .neon-title {
+    font-size: 1.3rem;
+  }
+  
+  #spinButton {
+    font-size: 1.1rem;
+    padding: 0.9rem 0;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 430px) {
+  .hero-btn {
+    font-size: 0.62rem;
+    padding: 7px 6px;
+  }
+  
+  .hero-map-frame {
+    margin-top: 7vw;
+  }
+  
+  .neon-glow-border {
+    padding: 0.2vw;
+  }
+}
+
+/* Island-specific responsive styles */
+.island-page {
+  min-height: 100vh;
+  padding: 2rem 1rem;
+}
+
+@media (max-width: 768px) {
+  .island-page {
+    padding: 1rem 0.5rem;
+  }
+  
+  .slot-machine {
+    transform: scale(0.8);
+  }
+  
+  .wheel-container {
+    transform: scale(0.9);
+  }
+  
+  .treasure-chest {
+    transform: scale(0.85);
+  }
+  
+  .mystery-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+  }
+  
+  .mystery-box {
+    width: 60px !important;
+    height: 60px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .island-page {
+    padding: 0.5rem 0.25rem;
+  }
+  
+  .slot-machine {
+    transform: scale(0.7);
+  }
+  
+  .wheel-container {
+    transform: scale(0.8);
+  }
+  
+  .treasure-chest {
+    transform: scale(0.75);
+  }
+  
+  .mystery-box {
+    width: 50px !important;
+    height: 50px !important;
+  }
+}
+
+/* Navigation responsive */
+.nav-container {
+  padding: 0.75rem 1rem;
+}
+
+@media (max-width: 640px) {
+  .nav-container {
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .nav-title {
+    font-size: 1.25rem;
+  }
+  
+  .nav-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* Form responsive */
+.form-container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+@media (max-width: 480px) {
+  .form-container {
+    max-width: 100%;
+    padding: 0 0.5rem;
+  }
+  
+  .input-field {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+  }
+  
+  .btn-primary {
+    padding: 12px 32px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Modal responsive */
+.modal-content {
+  width: 90%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+@media (max-width: 640px) {
+  .modal-content {
+    width: 95%;
+    padding: 1rem;
+  }
+  
+  .modal-title {
+    font-size: 1.5rem;
+  }
+  
+  .modal-table {
+    font-size: 0.875rem;
+  }
+}
