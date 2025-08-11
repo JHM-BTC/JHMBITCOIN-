@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pulau B - Slot Machine</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="../css/main.css">
+<link rel="stylesheet" href="../css/neon-theme.css">
+<link rel="stylesheet" href="../css/animations.css">
+<link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body class="flex flex-col min-h-screen overflow-x-hidden bg-slot">
+
+<!-- HEADER -->
+<header class="header-full fixed z-50 p-0 m-0">
+<nav class="w-full bg-gradient-to-r from-slate-900 via-indigo-900 to-purple-900 shadow-md">
+<div class="w-full flex items-center justify-between gap-3 px-3 sm:px-6 py-3">
+<a href="../index.html" class="text-xl sm:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">BELEGENDBET</a>
+<button id="btnBackToMap" class="hover:text-white px-5 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl font-semibold shadow-lg transition">⟵ Kembali Map</button>
+</div>
+</nav>
+</header>
+<div class="h-16"></div>
+
+<!-- MAIN CONTENT -->
+<main class="flex-grow flex flex-col items-center justify-center w-full relative z-10 island-page">
+<div class="bg-slot">
+<div class="shine-effect-gold"></div>
+</div>
+
+<div class="text-center mb-8">
+<h1 class="neon-title text-blue-300">SLOT MACHINE</h1>
+<p class="text-xl text-white mb-4">Putar slot dan dapatkan kombinasi menang!</p>
+<div id="userInfo" class="text-lg text-cyan-300">
+<span>User: <span id="tbUser">-</span></span>
+<span class="mx-4">•</span>
+<span>Kupon: <span id="tbKupon">-</span></span>
+</div>
+</div>
+
+<!-- SLOT MACHINE -->
+<div class="slot-machine bg-gradient-to-b from-gray-800 to-gray-900 rounded-3xl p-8 shadow-2xl border-4 border-yellow-400 mb-8">
+<div class="slot-display bg-black rounded-2xl p-6 mb-6">
+<div class="flex justify-center gap-4">
+<div class="slot-reel bg-gray-800 rounded-xl p-4 border-2 border-cyan-400">
+<div id="reel1" class="slot-symbol text-6xl text-center">🍒</div>
+</div>
+<div class="slot-reel bg-gray-800 rounded-xl p-4 border-2 border-cyan-400">
+<div id="reel2" class="slot-symbol text-6xl text-center">🍋</div>
+</div>
+<div class="slot-reel bg-gray-800 rounded-xl p-4 border-2 border-cyan-400">
+<div id="reel3" class="slot-symbol text-6xl text-center">🍊</div>
+</div>
+</div>
+</div>
+
+<div class="text-center">
+<button id="btnSlotSpin" class="neon-btn-cyan btn-primary text-xl px-12 py-4 mb-4">
+🎰 SPIN SLOT
+</button>
+<div id="slotResult" class="text-2xl font-bold text-yellow-300 min-h-[2rem]"></div>
+</div>
+</div>
+
+<!-- PRIZE TABLE -->
+<div class="bg-gray-800 rounded-2xl p-6 max-w-md w-full border-2 border-cyan-400">
+<h3 class="text-xl font-bold text-cyan-300 mb-4 text-center">Tabel Hadiah</h3>
+<div class="space-y-2 text-white">
+<div class="flex justify-between items-center p-2 bg-gray-700 rounded">
+<span>7️⃣ 7️⃣ 7️⃣</span>
+<span class="text-yellow-300 font-bold">Rp 50.000</span>
+</div>
+<div class="flex justify-between items-center p-2 bg-gray-700 rounded">
+<span>💎 💎 💎</span>
+<span class="text-yellow-300 font-bold">Rp 25.000</span>
+</div>
+<div class="flex justify-between items-center p-2 bg-gray-700 rounded">
+<span>⭐ ⭐ ⭐</span>
+<span class="text-yellow-300 font-bold">Rp 10.000</span>
+</div>
+<div class="flex justify-between items-center p-2 bg-gray-700 rounded">
+<span>🍊 🍊 🍊</span>
+<span class="text-yellow-300 font-bold">Rp 5.000</span>
+</div>
+<div class="flex justify-between items-center p-2 bg-gray-700 rounded">
+<span>🍋 🍋 🍋</span>
+<span class="text-yellow-300 font-bold">Rp 2.500</span>
+</div>
+<div class="flex justify-between items-center p-2 bg-gray-700 rounded">
+<span>🍒 🍒 🍒</span>
+<span class="text-yellow-300 font-bold">Rp 1.000</span>
+</div>
+</div>
+</div>
+</main>
+
+<!-- PRIZE MODAL -->
+<div id="modalSlotPrize" class="fixed inset-0 hidden items-center justify-center z-50 modal-bg">
+<div class="relative bg-[#1b1e2a] rounded-2xl shadow-2xl border border-white/10 w-[90%] max-w-xl p-6">
+<h3 class="text-center text-2xl font-extrabold text-yellow-300 mb-4">Hasil Slot Machine</h3>
+<div class="text-center mb-4">
+<div id="winningCombination" class="text-6xl mb-4">🍒 🍒 🍒</div>
+<div id="slotResultText" class="text-lg font-bold text-yellow-300"></div>
+</div>
+<div class="flex justify-center mt-5">
+<button id="btnCloseSlotModal" class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-full shadow">Tutup</button>
+</div>
+<button id="btnCloseSlotModal2" class="absolute -top-3 -right-3 bg-red-500 text-white w-9 h-9 rounded-full font-bold shadow">✕</button>
+</div>
+</div>
+
+<!-- FOOTER -->
+<footer class="mt-8 py-5 text-center text-gray-400 text-sm border-t border-slate-700 bg-slate-900 z-50 relative">
+<p>&copy; 2024 BELEGENDBET. Hak Cipta Dilindungi Undang-Undang.</p>
+</footer>
+
+<script type="module">
+import { $, loadSession, formatRupiah, showModal, hideModal } from '../js/utils.js';
+import rewardManager from '../js/rewards.js';
+import { submitPrizeData, logActivity } from '../js/api.js';
+
+class SlotMachineGame {
+  constructor() {
+    this.isSpinning = false;
+    this.rewardSystem = rewardManager.getRewardSystem('B');
+    this.symbols = ['🍒', '🍋', '🍊', '⭐', '💎', '7️⃣'];
+    this.init();
+  }
+
+  init() {
+    this.loadUserInfo();
+    this.setupEventListeners();
+  }
+
+  loadUserInfo() {
+    const session = loadSession();
+    if (session) {
+      $('#tbUser').textContent = session.userId || '-';
+      $('#tbKupon').textContent = session.kupon || '-';
+    }
+  }
+
+  setupEventListeners() {
+    $('#btnSlotSpin').addEventListener('click', () => this.spin());
+    $('#btnBackToMap').addEventListener('click', () => {
+      window.location.href = '../index.html';
+    });
+    $('#btnCloseSlotModal').addEventListener('click', () => this.closeModal());
+    $('#btnCloseSlotModal2').addEventListener('click', () => this.closeModal());
+  }
+
+  async spin() {
+    if (this.isSpinning) return;
+
+    this.isSpinning = true;
+    const btnSpin = $('#btnSlotSpin');
+    const resultDiv = $('#slotResult');
+
+    btnSpin.disabled = true;
+    btnSpin.textContent = '⚡ SPINNING...';
+    resultDiv.textContent = '';
+
+    // Animate reels
+    const reels = ['#reel1', '#reel2', '#reel3'];
+    reels.forEach(reel => {
+      $(reel).classList.add('slot-reel');
+    });
+
+    // Spin animation
+    for (let i = 0; i < 20; i++) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+      reels.forEach(reel => {
+        $(reel).textContent = this.getRandomSymbol();
+      });
+    }
+
+    // Get final result
+    const result = this.rewardSystem.generatePrize();
+    
+    // Show final combination
+    $('#reel1').textContent = result.combination[0];
+    $('#reel2').textContent = result.combination[1];
+    $('#reel3').textContent = result.combination[2];
+
+    // Add winning animation if applicable
+    if (result.isWinning) {
+      reels.forEach(reel => {
+        $(reel).classList.add('winning');
+      });
+    }
+
+    // Show result
+    const session = loadSession();
+    const formattedResult = this.rewardSystem.formatPrizeResult(result, session?.userId);
+    
+    resultDiv.textContent = formattedResult.message;
+    resultDiv.className = result.isWinning ? 'text-2xl font-bold text-yellow-300' : 'text-2xl font-bold text-blue-300';
+
+    // Submit data
+    if (session) {
+      await submitPrizeData(session.userId, session.kupon, 'B', 'slot_machine', result.prize);
+      await logActivity(session.userId, 'prize_won', { island: 'B', prize: result.prize, combination: result.combination });
+    }
+
+    // Show modal
+    setTimeout(() => {
+      this.showPrizeModal(formattedResult);
+    }, 1000);
+
+    // Reset button
+    btnSpin.disabled = false;
+    btnSpin.textContent = '🎰 SPIN SLOT';
+    this.isSpinning = false;
+
+    // Remove animations
+    setTimeout(() => {
+      reels.forEach(reel => {
+        $(reel).classList.remove('winning', 'slot-reel');
+      });
+    }, 2000);
+  }
+
+  getRandomSymbol() {
+    return this.symbols[Math.floor(Math.random() * this.symbols.length)];
+  }
+
+  showPrizeModal(result) {
+    $('#winningCombination').textContent = result.combination.join(' ');
+    $('#slotResultText').textContent = result.message;
+    showModal('#modalSlotPrize');
+  }
+
+  closeModal() {
+    hideModal('#modalSlotPrize');
+  }
+}
+
+// Initialize game when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  new SlotMachineGame();
+});
+</script>
+
+</body>
+</html>

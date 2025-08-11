@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pulau D - Treasure Chest</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="../css/main.css">
+<link rel="stylesheet" href="../css/neon-theme.css">
+<link rel="stylesheet" href="../css/animations.css">
+<link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body class="flex flex-col min-h-screen overflow-x-hidden bg-treasure">
+
+<!-- HEADER -->
+<header class="header-full fixed z-50 p-0 m-0">
+<nav class="w-full bg-gradient-to-r from-slate-900 via-indigo-900 to-purple-900 shadow-md">
+<div class="w-full flex items-center justify-between gap-3 px-3 sm:px-6 py-3">
+<a href="../index.html" class="text-xl sm:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">BELEGENDBET</a>
+<button id="btnBackToMap" class="hover:text-white px-5 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl font-semibold shadow-lg transition">⟵ Kembali Map</button>
+</div>
+</nav>
+</header>
+<div class="h-16"></div>
+
+<!-- MAIN CONTENT -->
+<main class="flex-grow flex flex-col items-center justify-center w-full relative z-10 island-page">
+<div class="bg-treasure">
+<div class="shine-effect-gold"></div>
+</div>
+
+<div class="text-center mb-8">
+<h1 class="neon-title text-purple-300">TREASURE CHEST</h1>
+<p class="text-xl text-white mb-4">Kumpulkan kunci untuk membuka peti harta karun!</p>
+<div id="userInfo" class="text-lg text-cyan-300">
+<span>User: <span id="tbUser">-</span></span>
+<span class="mx-4">•</span>
+<span>Kupon: <span id="tbKupon">-</span></span>
+</div>
+</div>
+
+<!-- KEY COLLECTION AREA -->
+<div class="mb-8">
+<h3 class="text-2xl font-bold text-yellow-300 text-center mb-4">Kumpulkan Kunci</h3>
+<div class="flex justify-center gap-4 mb-4">
+<div id="key1" class="treasure-key w-16 h-16 bg-yellow-400 rounded-full flex items-center justify-center text-2xl cursor-pointer border-4 border-yellow-600 shadow-lg">
+🗝️
+</div>
+<div id="key2" class="treasure-key w-16 h-16 bg-yellow-400 rounded-full flex items-center justify-center text-2xl cursor-pointer border-4 border-yellow-600 shadow-lg">
+🔑
+</div>
+<div id="key3" class="treasure-key w-16 h-16 bg-yellow-400 rounded-full flex items-center justify-center text-2xl cursor-pointer border-4 border-yellow-600 shadow-lg">
+🗝️
+</div>
+</div>
+<div class="text-center">
+<div id="keyProgress" class="text-lg text-white mb-2">Kunci Terkumpul: <span id="keyCount">0</span>/3</div>
+<div class="w-64 bg-gray-700 rounded-full h-4 mx-auto">
+<div id="progressBar" class="bg-gradient-to-r from-yellow-400 to-yellow-600 h-4 rounded-full transition-all duration-500" style="width: 0%"></div>
+</div>
+</div>
+</div>
+
+<!-- TREASURE CHEST -->
+<div class="treasure-chest-container mb-8">
+<div id="treasureChest" class="treasure-chest w-48 h-32 bg-gradient-to-b from-yellow-600 to-yellow-800 rounded-2xl relative cursor-pointer border-4 border-yellow-400 shadow-2xl">
+<div class="absolute inset-2 bg-gradient-to-b from-yellow-500 to-yellow-700 rounded-xl"></div>
+<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-4xl">📦</div>
+<div class="absolute -top-2 left-1/2 transform -translate-x-1/2 w-8 h-4 bg-yellow-800 rounded-t-lg"></div>
+</div>
+<div class="text-center">
+<button id="btnOpenChest" class="neon-btn-cyan btn-primary text-xl px-12 py-4 mb-4 disabled:opacity-50" disabled>
+🔓 BUKA PETI
+</button>
+<div id="chestResult" class="text-2xl font-bold text-yellow-300 min-h-[2rem]"></div>
+</div>
+</div>
+
+<!-- CHEST LEVELS INFO -->
+<div class="bg-gray-800 rounded-2xl p-6 max-w-md w-full border-2 border-purple-400">
+<h3 class="text-xl font-bold text-purple-300 mb-4 text-center">Level Peti</h3>
+<div class="space-y-2 text-white">
+<div class="flex justify-between items-center p-2 bg-gray-700 rounded">
+<span>1 Kunci</span>
+<span class="text-yellow-300 font-bold">Rp 3.000 - 5.000</span>
+</div>
+<div class="flex justify-between items-center p-2 bg-gray-700 rounded">
+<span>2 Kunci</span>
+<span class="text-yellow-300 font-bold">Rp 10.000 - 20.000</span>
+</div>
+<div class="flex justify-between items-center p-2 bg-gray-700 rounded">
+<span>3 Kunci</span>
+<span class="text-yellow-300 font-bold">Rp 50.000 - 100.000</span>
+</div>
+</div>
+</div>
+</main>
+
+<!-- PRIZE MODAL -->
+<div id="modalTreasurePrize" class="fixed inset-0 hidden items-center justify-center z-50 modal-bg">
+<div class="relative bg-[#1b1e2a] rounded-2xl shadow-2xl border border-white/10 w-[90%] max-w-xl p-6">
+<h3 class="text-center text-2xl font-extrabold text-yellow-300 mb-4">Harta Karun Ditemukan!</h3>
+<div class="text-center mb-4">
+<div id="treasureLevel" class="text-4xl mb-4">💰</div>
+<div id="treasureResultText" class="text-lg font-bold text-yellow-300"></div>
+</div>
+<div class="flex justify-center mt-5">
+<button id="btnCloseTreasureModal" class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-full shadow">Tutup</button>
+</div>
+<button id="btnCloseTreasureModal2" class="absolute -top-3 -right-3 bg-red-500 text-white w-9 h-9 rounded-full font-bold shadow">✕</button>
+</div>
+</div>
+
+<!-- FOOTER -->
+<footer class="mt-8 py-5 text-center text-gray-400 text-sm border-t border-slate-700 bg-slate-900 z-50 relative">
+<p>&copy; 2024 BELEGENDBET. Hak Cipta Dilindungi Undang-Undang.</p>
+</footer>
+
+<script type="module">
+import { $, loadSession, formatRupiah, showModal, hideModal } from '../js/utils.js';
+import rewardManager from '../js/rewards.js';
+import { submitPrizeData, logActivity } from '../js/api.js';
+
+class TreasureChestGame {
+  constructor() {
+    this.rewardSystem = rewardManager.getRewardSystem('D');
+    this.collectedKeys = 0;
+    this.maxKeys = 3;
+    this.init();
+  }
+
+  init() {
+    this.loadUserInfo();
+    this.setupEventListeners();
+    this.updateUI();
+  }
+
+  loadUserInfo() {
+    const session = loadSession();
+    if (session) {
+      $('#tbUser').textContent = session.userId || '-';
+      $('#tbKupon').textContent = session.kupon || '-';
+    }
+  }
+
+  setupEventListeners() {
+    // Key collection
+    $('#key1').addEventListener('click', () => this.collectKey(1));
+    $('#key2').addEventListener('click', () => this.collectKey(2));
+    $('#key3').addEventListener('click', () => this.collectKey(3));
+
+    // Chest opening
+    $('#btnOpenChest').addEventListener('click', () => this.openChest());
+
+    // Navigation
+    $('#btnBackToMap').addEventListener('click', () => {
+      window.location.href = '../index.html';
+    });
+
+    // Modal
+    $('#btnCloseTreasureModal').addEventListener('click', () => this.closeModal());
+    $('#btnCloseTreasureModal2').addEventListener('click', () => this.closeModal());
+  }
+
+  collectKey(keyNumber) {
+    const keyElement = $(`#key${keyNumber}`);
+    
+    if (keyElement.classList.contains('collected') || this.collectedKeys >= this.maxKeys) {
+      return;
+    }
+
+    // Mark key as collected
+    keyElement.classList.add('collected');
+    keyElement.style.opacity = '0.5';
+    keyElement.style.pointerEvents = 'none';
+    
+    // Add collection animation
+    keyElement.classList.add('treasure-key');
+    
+    this.collectedKeys++;
+    this.rewardSystem.collectKey();
+    this.updateUI();
+
+    // Log activity
+    const session = loadSession();
+    if (session) {
+      logActivity(session.userId, 'key_collected', { 
+        island: 'D', 
+        keyNumber, 
+        totalKeys: this.collectedKeys 
+      });
+    }
+  }
+
+  updateUI() {
+    // Update key count
+    $('#keyCount').textContent = this.collectedKeys;
+    
+    // Update progress bar
+    const progress = (this.collectedKeys / this.maxKeys) * 100;
+    $('#progressBar').style.width = `${progress}%`;
+    
+    // Update chest button
+    const btnOpenChest = $('#btnOpenChest');
+    if (this.collectedKeys > 0) {
+      btnOpenChest.disabled = false;
+      btnOpenChest.classList.remove('opacity-50');
+      btnOpenChest.textContent = `🔓 BUKA PETI (${this.collectedKeys} Kunci)`;
+    } else {
+      btnOpenChest.disabled = true;
+      btnOpenChest.classList.add('opacity-50');
+      btnOpenChest.textContent = '🔒 KUMPULKAN KUNCI DULU';
+    }
+
+    // Update chest appearance based on keys
+    const chest = $('#treasureChest');
+    if (this.collectedKeys === this.maxKeys) {
+      chest.classList.add('treasure-light');
+      chest.style.boxShadow = '0 0 30px #ffd700, 0 0 60px #ffff00';
+    } else if (this.collectedKeys > 0) {
+      chest.style.boxShadow = '0 0 20px #ffd700';
+    }
+  }
+
+  async openChest() {
+    if (this.collectedKeys === 0) return;
+
+    const btnOpenChest = $('#btnOpenChest');
+    const resultDiv = $('#chestResult');
+    const chest = $('#treasureChest');
+
+    btnOpenChest.disabled = true;
+    btnOpenChest.textContent = '⚡ MEMBUKA...';
+
+    // Add opening animation
+    chest.classList.add('opening');
+
+    // Generate prize
+    const result = this.rewardSystem.generatePrize();
+    const session = loadSession();
+    const formattedResult = this.rewardSystem.formatPrizeResult(result, session?.userId);
+
+    // Show result
+    setTimeout(() => {
+      resultDiv.textContent = formattedResult.message;
+      resultDiv.className = 'text-2xl font-bold text-yellow-300';
+
+      // Submit data
+      if (session) {
+        submitPrizeData(session.userId, session.kupon, 'D', 'treasure_chest', result.prize);
+        logActivity(session.userId, 'prize_won', { 
+          island: 'D', 
+          prize: result.prize, 
+          level: result.level,
+          keysUsed: result.keysUsed
+        });
+      }
+
+      // Show modal
+      setTimeout(() => {
+        this.showPrizeModal(formattedResult);
+      }, 1000);
+
+      // Reset for next game
+      this.resetGame();
+    }, 2000);
+  }
+
+  resetGame() {
+    // Reset keys
+    this.collectedKeys = 0;
+    this.rewardSystem.reset();
+
+    // Reset key elements
+    for (let i = 1; i <= 3; i++) {
+      const keyElement = $(`#key${i}`);
+      keyElement.classList.remove('collected');
+      keyElement.style.opacity = '1';
+      keyElement.style.pointerEvents = 'auto';
+    }
+
+    // Reset chest
+    const chest = $('#treasureChest');
+    chest.classList.remove('opening', 'treasure-light');
+    chest.style.boxShadow = '';
+
+    // Reset button
+    const btnOpenChest = $('#btnOpenChest');
+    btnOpenChest.disabled = true;
+    btnOpenChest.textContent = '🔒 KUMPULKAN KUNCI DULU';
+
+    this.updateUI();
+  }
+
+  showPrizeModal(result) {
+    const levelEmojis = ['💰', '💎', '👑'];
+    $('#treasureLevel').textContent = levelEmojis[result.level - 1] || '💰';
+    $('#treasureResultText').textContent = result.message;
+    showModal('#modalTreasurePrize');
+  }
+
+  closeModal() {
+    hideModal('#modalTreasurePrize');
+  }
+}
+
+// Initialize game when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  new TreasureChestGame();
+});
+</script>
+
+</body>
+</html>

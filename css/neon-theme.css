@@ -1,0 +1,201 @@
+/* Neon Theme Styles */
+
+/* Background Effects */
+.bg-hero {
+  background: url('https://blogger.googleusercontent.com/img/a/AVvXsEhs_ZO5OnA0Q4Ex0Epuu_-sdtSNXQCB6BGJt3oN6L9JHuwJTX_qvQSrKy0eepPl_v7KnFbxmnmXqjQu79ElLlo47XLiJ91w0hrUmaHLABnc0hM0VpYftUkwitSdzy94xovlQa3OzRVKcNzGsB5FzaleKCzkiqxeZz8heWizjq2VcHeygZAkGhJtAkdJRHA') center/cover no-repeat;
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.bg-game {
+  background: url('https://blogger.googleusercontent.com/img/a/AVvXsEgrcnQcPPcfE9A-hKDw7ESeN_N3Elivbjm1Qd21Iny4lUjt3e2enRw5Re482KPvPZQq4w9tLw9-BthklRaLGySVkZZwUO5qedf81xDawq4mR70BN-Q6WYNUvmF13sjJnkA5ze82lwXtlVt2L3q94VF2DBpW_5O3J_b3aBFQJB2wYvGQ9CHKtGOx6m9lZ5o') center/cover no-repeat;
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+}
+
+.bg-mystery {
+  position: relative;
+  min-height: calc(100vh - 66px - 64px);
+  padding-bottom: 24px;
+  background: #121212;
+  background-image: conic-gradient(from 0deg at 50% 50%, #ff00ff 0%, #ff00ff 10%, #ff9900 20%, #ffff00 30%, #00ff00 40%, #00ffff 50%, #0000ff 60%, #9900ff 70%, #ff00ff 80%, #ff00ff 100%);
+  background-size: 200% 200%;
+  animation: rainbow-bg-shift 20s linear infinite;
+  overflow-x: hidden;
+}
+
+.bg-slot {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.bg-wheel {
+  background: linear-gradient(45deg, #2d1b69 0%, #11998e 50%, #38ef7d 100%);
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.bg-treasure {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Neon Text Effects */
+.neon-title {
+  font-size: 4rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #fffbe7 0%, #ffe259 25%, #ffd700 50%, #fff700 75%, #fffbe7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 36px #fffbe7, 0 0 60px #ffd700, 0 0 80px #fff700, 0 2px 0 #fffbe7, 0 0 24px #ffd700;
+  margin-bottom: 2.5rem;
+}
+
+.glow-hero {
+  background: linear-gradient(90deg, #fffbe7 0%, #ffe259 25%, #ffd700 50%, #fff700 75%, #fffbe7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 36px #fffbe7, 0 0 60px #ffd700, 0 0 80px #fff700, 0 2px 0 #fffbe7, 0 0 24px #ffd700;
+  font-size: 2.3rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  margin-top: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.rainbow-neon {
+  text-shadow: 0 0 8px #fff, 0 0 12px #ff00ff, 0 0 20px #0000ff, 0 0 30px #00ffff, 0 0 40px #00ff00;
+}
+
+/* Neon Buttons */
+.hero-btn {
+  margin-top: 28px;
+  font-size: 1.08rem;
+  padding: 14px 64px;
+  border-radius: 9999px;
+  font-weight: 700;
+  background: linear-gradient(90deg, #fffbe7 0%, #ffe259 25%, #ffd700 50%, #fff700 75%, #fffbe7 100%);
+  color: #222;
+  box-shadow: 0 0 0 8px #ffd700cc, 0 0 32px 8px #fffbe7cc, 0 0 120px 40px #ffd70088;
+  border: 3px solid #ffd700;
+  text-shadow: 0 0 18px #fffbe7, 0 2px 0 #ffd700;
+  letter-spacing: 2px;
+  transition: transform 0.15s, box-shadow 0.15s;
+  cursor: pointer;
+}
+
+.hero-btn:hover {
+  transform: scale(1.06);
+  box-shadow: 0 0 0 16px #ffd700cc, 0 0 64px 16px #fffbe7cc, 0 0 240px 80px #ffd70088;
+  color: #111;
+}
+
+.neon-btn-cyan {
+  background: linear-gradient(90deg, #00ffff 0%, #0080ff 100%);
+  color: #000;
+  box-shadow: 0 0 0 4px #00ffff88, 0 0 20px 4px #00ffffcc, 0 0 60px 20px #00ffff66;
+  border: 2px solid #00ffff;
+  text-shadow: 0 0 10px #00ffff;
+}
+
+.neon-btn-cyan:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 0 8px #00ffff88, 0 0 40px 8px #00ffffcc, 0 0 120px 40px #00ffff66;
+}
+
+.neon-btn-green {
+  background: linear-gradient(90deg, #00ff00 0%, #00cc00 100%);
+  color: #000;
+  box-shadow: 0 0 0 4px #00ff0088, 0 0 20px 4px #00ff00cc, 0 0 60px 20px #00ff0066;
+  border: 2px solid #00ff00;
+  text-shadow: 0 0 10px #00ff00;
+}
+
+.neon-btn-green:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 0 8px #00ff0088, 0 0 40px 8px #00ff00cc, 0 0 120px 40px #00ff0066;
+}
+
+/* Neon Borders and Glows */
+.neon-glow-border {
+  border-radius: 2.2rem;
+  box-shadow: 0 0 0 22px #1ff1ff88, 0 0 66px 14px #1afcffcc, 0 0 260px 70px #0de7ff66, 0 0 360px 110px #29fffccc;
+  border: 6px solid #5efcf1;
+  background: rgba(20, 40, 60, 0.45);
+  padding: 1vw;
+  transition: box-shadow 0.3s;
+}
+
+.neon-glow-border:hover {
+  box-shadow: 0 0 0 30px #29fffebb, 0 0 250px 100px #07d8ffcc, 0 0 800px 160px #43fffccc;
+}
+
+.box-glow {
+  --angle: 0deg;
+  background: conic-gradient(from var(--angle) at 50% 50%, #ff00ff, #ff9900, #ffff00, #00ff00, #00ffff, #0000ff, #9900ff, #ff00ff);
+  animation: rotate-gradient 3s linear infinite;
+  position: relative;
+  border-radius: 1rem;
+  box-shadow: 0 0 24px rgba(255, 0, 255, 0.4), 0 6px 22px rgba(255, 255, 255, 0.2);
+  transition: box-shadow 0.2s, transform 0.12s;
+  will-change: transform;
+}
+
+.box-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 1rem;
+  background: rgba(18, 18, 18, 0.7);
+  border: 2px solid #1a1a1a;
+  z-index: 1;
+}
+
+.box-glow > span {
+  position: relative;
+  z-index: 2;
+}
+
+.box-glow:hover {
+  transform: scale(1.06) rotate(-2deg);
+  box-shadow: 0 0 44px 12px rgba(255, 0, 255, 0.8), 0 0 20px rgba(255, 153, 0, 0.8), 0 0 0 2px #fff inset;
+}
+
+/* Hero Map Frame */
+.hero-map-frame {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 5vw auto 0;
+  width: 100%;
+  position: relative;
+  z-index: 10;
+}
+
+.hero-map-img {
+  width: 820px;
+  max-width: 98vw;
+  height: auto;
+  display: block;
+  border-radius: 1.8rem;
+  box-shadow: 0 8px 48px 12px #02162daa;
+  background: #18345d;
+}
