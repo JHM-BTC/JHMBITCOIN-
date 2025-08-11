@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Treasure Map – Single File (3 Halaman)</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+html, body { height:100%; width:100%; overflow-y:auto !important; overscroll-behavior-y:contain; }
+body{ font-family:'Inter',sans-serif; background:#14335f; min-height:100vh; overflow-y:auto !important; }
+
+/* ================= HERO & GAME BACKGROUNDS ================= */
+.bg-hero{ background:url('https://blogger.googleusercontent.com/img/a/AVvXsEhs_ZO5OnA0Q4Ex0Epuu_-sdtSNXQCB6BGJt3oN6L9JHuwJTX_qvQSrKy0eepPl_v7KnFbxmnmXqjQu79ElLlo47XLiJ91w0hrUmaHLABnc0hM0VpYftUkwitSdzy94xovlQa3OzRVKcNzGsB5FzaleKCzkiqxeZz8heWizjq2VcHeygZAkGhJtAkdJRHA') center/cover no-repeat; position:fixed; inset:0; width:100vw; height:100vh; z-index:0; overflow:hidden; }
+.shine-effect{ position:absolute; inset:0; pointer-events:none; z-index:1; background:linear-gradient(120deg,rgba(255,255,255,0) 0%,rgba(255,255,255,0.18) 40%,rgba(255,255,255,0.38) 50%,rgba(255,255,255,0.18) 60%,rgba(255,255,255,0) 100%); opacity:.7; animation:shineMove 3.5s linear infinite; filter:blur(2px); }
+@keyframes shineMove{ 0%{transform:translateX(-60vw) skewX(-18deg);} 100%{transform:translateX(120vw) skewX(-18deg);} }
+.bg-game{ background:url('https://blogger.googleusercontent.com/img/a/AVvXsEgrcnQcPPcfE9A-hKDw7ESeN_N3Elivbjm1Qd21Iny4lUjt3e2enRw5Re482KPvPZQq4w9tLw9-BthklRaLGySVkZZwUO5qedf81xDawq4mR70BN-Q6WYNUvmF13sjJnkA5ze82lwXtlVt2L3q94VF2DBpW_5O3J_b3aBFQJB2wYvGQ9CHKtGOx6m9lZ5o') center/cover no-repeat; position:fixed; inset:0; width:100vw; height:100vh; z-index:0; }
+.shine-effect-gold{ position:absolute; inset:0; pointer-events:none; z-index:1; background:linear-gradient(100deg,rgba(255,255,255,0) 0%,rgba(255,215,0,0.12) 30%,rgba(255,255,255,0.22) 38%,rgba(255,215,0,0.38) 50%,rgba(255,255,255,0.22) 62%,rgba(255,215,0,0.12) 70%,rgba(255,255,255,0) 100%); opacity:.85; animation:shineGoldMove 4.5s cubic-bezier(.4,1.6,.6,1) infinite; filter:blur(7px) brightness(1.3) saturate(1.4); mix-blend-mode:lighten; }
+@keyframes shineGoldMove{ 0%{transform:translateX(-80vw) skewX(-22deg) scaleY(1.1);} 40%{transform:translateX(10vw) skewX(-18deg) scaleY(1.13);} 60%{transform:translateX(30vw) skewX(-16deg) scaleY(1.18);} 100%{transform:translateX(120vw) skewX(-22deg) scaleY(1.1);} }
+
+/* ================= HERO CONTENT ================= */
+.section-content{ position:relative; z-index:2; width:100%; }
+.hero-map-frame{ display:flex; justify-content:center; align-items:center; margin:5vw auto 0; width:100%; position:relative; z-index:10; }
+.neon-glow-border{ border-radius:2.2rem; box-shadow:0 0 0 22px #1ff1ff88, 0 0 66px 14px #1afcffcc, 0 0 260px 70px #0de7ff66, 0 0 360px 110px #29fffccc; border:6px solid #5efcf1; background:rgba(20,40,60,.45); padding:1vw; transition:box-shadow .3s; }
+.neon-glow-border:hover{ box-shadow:0 0 0 30px #29fffebb, 0 0 250px 100px #07d8ffcc, 0 0 800px 160px #43fffccc; }
+.hero-map-img{ width:820px; max-width:98vw; height:auto; display:block; border-radius:1.8rem; box-shadow:0 8px 48px 12px #02162daa; background:#18345d; }
+@media (max-width:900px){ .hero-map-img{width:95vw;} .neon-glow-border{padding:2vw;} }
+@media (max-width:650px){ .hero-map-img{width:99vw;} .neon-glow-border{padding:1.5vw;} .hero-map-frame{margin-top:7vw;} }
+.glow-hero{ background:linear-gradient(90deg,#fffbe7 0%,#ffe259 25%,#ffd700 50%,#fff700 75%,#fffbe7 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; color:transparent; text-shadow:0 0 36px #fffbe7, 0 0 60px #ffd700, 0 0 80px #fff700, 0 2px 0 #fffbe7, 0 0 24px #ffd700; font-size:2.3rem; font-weight:900; letter-spacing:2px; margin-top:2.5rem; margin-bottom:1.5rem; }
+@media (max-width:700px){ .glow-hero{ font-size:1.25rem; margin-top:1.2rem; } }
+.hero-btn{ margin-top:28px; font-size:1.08rem; padding:14px 64px; border-radius:9999px; font-weight:700; background:linear-gradient(90deg,#fffbe7 0%,#ffe259 25%,#ffd700 50%,#fff700 75%,#fffbe7 100%); color:#222; box-shadow:0 0 0 8px #ffd700cc, 0 0 32px 8px #fffbe7cc, 0 0 120px 40px #ffd70088; border:3px solid #ffd700; text-shadow:0 0 18px #fffbe7, 0 2px 0 #ffd700; letter-spacing:2px; transition:transform .15s, box-shadow .15s; }
+.hero-btn:hover{ transform:scale(1.06); box-shadow:0 0 0 16px #ffd700cc,0 0 64px 16px #fffbe7cc,0 0 240px 80px #ffd70088; color:#111; }
+
+/* ================= GAME: KARTU ================= */
+#island-container{ max-width:1400px; margin:0 auto; display:flex; flex-direction:row; justify-content:center; align-items:flex-start; gap:4rem; perspective:1800px; min-height:420px; flex-wrap:nowrap; }
+.island-card-wrapper{ display:flex; flex-direction:column; align-items:center; gap:1.5rem; flex-shrink:0; margin:0 !important; }
+.island-card{ width:340px; height:520px; background:linear-gradient(135deg,#13243a 80%,#21e3ff 100%); border-radius:2.6rem; box-shadow:0 0 0 8px rgba(255,215,0,.45),0 0 32px 8px rgba(255,215,0,.35),0 0 120px 40px rgba(255,215,0,.18),0 0 220px 60px rgba(255,215,0,.10); border:3px solid #FFD700; transition:transform .6s cubic-bezier(.4,2,.2,1), box-shadow .2s; cursor:pointer; position:relative; overflow:hidden; transform-style:preserve-3d; min-width:120px; min-height:160px; max-width:98vw; }
+.island-card.flipped{ transform:rotateY(180deg) scale(1.08); box-shadow:0 0 0 12px rgba(144,238,144,.5),0 0 80px 30px rgba(144,238,144,.25),0 0 200px 60px rgba(144,238,144,.12); border:4px solid #90EE90; }
+.island-card.shuffling-anim{ animation:cardShuffle .05s linear infinite; }
+@keyframes cardShuffle{ 0%{transform:translateX(0) rotateY(0) scale(1);} 25%{transform:translateX(-150px) rotateY(180deg) scale(1.1);} 50%{transform:translateX(0) rotateY(360deg) scale(1);} 75%{transform:translateX(150px) rotateY(540deg) scale(1.1);} 100%{transform:translateX(0) rotateY(720deg) scale(1);} }
+.island-card .island-front,.island-card .island-back{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; border-radius:2.5rem; backface-visibility:hidden; transition:transform .6s; }
+.island-card .island-front{ transform:rotateY(0); }
+.island-card .island-back{ background:#111b2b; transform:rotateY(180deg); }
+.island-card.flipped .island-front{ transform:rotateY(-180deg); }
+.island-card.flipped .island-back{ transform:rotateY(0); }
+.island-card .island-img{ width:85%; height:85%; object-fit:contain; border-radius:1.5rem; border:none; box-shadow:0 8px 48px 0 #3b82f6cc; background:#18345d; }
+.card-front-logo{ width:85%; height:85%; object-fit:contain; padding:1.1rem; }
+#spinButton{ width:99vw; max-width:390px; font-size:1.24rem; padding:1.1rem 0; border-radius:9999px; font-weight:900; margin-top:2.2rem; margin-bottom:1.2rem; box-shadow:0 18px 88px 0 #fbbf24cc, 0 0 90px #fff700; letter-spacing:2px; background:linear-gradient(90deg,#ffe259 0%,#ffa751 100%); text-shadow:0 0 18px #fff, 0 2px 0 #000, 0 0 32px #ffd700; border:5px solid #fff700; transition:transform .15s, box-shadow .15s; }
+#spinButton:hover:not(:disabled){ transform:scale(1.04); box-shadow:0 16px 80px 0 #ffd700cc, 0 0 80px #fff700; }
+#spinButton:disabled{ cursor:not-allowed; opacity:.6; }
+.neon-title{ font-size:4rem; font-weight:900; letter-spacing:2px; text-transform:uppercase; background:linear-gradient(90deg,#fffbe7 0%,#ffe259 25%,#ffd700 50%,#fff700 75%,#fffbe7 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; color:transparent; text-shadow:0 0 36px #fffbe7, 0 0 60px #ffd700, 0 0 80px #fff700, 0 2px 0 #fffbe7, 0 0 24px #ffd700; margin-bottom:2.5rem; }
+@media (max-width:900px){ .neon-title{font-size:2.7rem;} }
+@media (max-width:650px){ .neon-title{font-size:1.6rem;} }
+@media (max-width:1200px){ #island-container{gap:2.5rem;} .island-card{width:260px; height:380px;} }
+@media (max-width:900px){ #island-container{gap:1.7rem;} .island-card{width:200px; height:300px;} }
+@media (max-width:800px){ #island-container{gap:1.1rem;} .island-card{width:160px; height:210px;} }
+@media (max-width:650px){ #island-container{ flex-direction:column; align-items:center; gap:1.2rem; flex-wrap:wrap; } .island-card-wrapper{ width:97vw; min-width:0; max-width:99vw; } .island-card{ width:98vw; height:170px; min-width:0; max-width:99vw; margin:0 auto; } .island-card .island-img,.card-front-logo{ width:62% !important; height:62% !important; padding:.22rem; } .neon-title{font-size:1.3rem;} #spinButton{font-size:1.1rem; padding:.9rem 0;} }
+@media (max-width:430px){ .hero-btn{font-size:.62rem; padding:7px 6px;} .hero-map-frame{margin-top:7vw;} .neon-glow-border{padding:.2vw;} }
+#game-section{ margin-top:3.5rem; }
+@media (max-width:700px){ #game-section{ margin-top:2rem; } }
+
+/* ================= MYSTERY (Scoped) ================= */
+.mystery-root{ position:relative; min-height:calc(100vh - 66px - 64px); padding-bottom:24px; background:#121212; background-image:conic-gradient(from 0deg at 50% 50%, #ff00ff 0%, #ff00ff 10%, #ff9900 20%, #ffff00 30%, #00ff00 40%, #00ffff 50%, #0000ff 60%, #9900ff 70%, #ff00ff 80%, #ff00ff 100%); background-size:200% 200%; animation:rainbow-bg-shift 20s linear infinite; overflow-x:hidden; }
+@keyframes rainbow-bg-shift{ 0%{background-position:0% 0%} 50%{background-position:100% 100%} 100%{background-position:0% 0%} }
+.mystery .box-glow{ --angle:0deg; background:conic-gradient(from var(--angle) at 50% 50%, #ff00ff,#ff9900,#ffff00,#00ff00,#00ffff,#0000ff,#9900ff,#ff00ff); animation:rotate-gradient 3s linear infinite; position:relative; border-radius:1rem; box-shadow:0 0 24px rgba(255,0,255,.4),0 6px 22px rgba(255,255,255,.2); transition:box-shadow .2s, transform .12s; will-change:transform; }
+.mystery .box-glow::before{ content:""; position:absolute; inset:0; border-radius:1rem; background:rgba(18,18,18,.7); border:2px solid #1a1a1a; z-index:1; }
+.mystery .box-glow > span{ position:relative; z-index:2 }
+.mystery .box-glow:hover{ transform:scale(1.06) rotate(-2deg); box-shadow:0 0 44px 12px rgba(255,0,255,.8),0 0 20px rgba(255,153,0,.8),0 0 0 2px #fff inset; }
+@keyframes rotate-gradient{ to{ --angle:360deg } }
+.mystery .rainbow-neon{ text-shadow:0 0 8px #fff,0 0 12px #ff00ff,0 0 20px #0000ff,0 0 30px #00ffff,0 0 40px #00ff00; }
+.mystery .fade-in{ animation:fadein .35s ease }
+@keyframes fadein{ from{opacity:0; transform:translateY(14px)} to{opacity:1; transform:translateY(0)} }
+.mystery .modal-bg{ background:rgba(0,0,0,.7); backdrop-filter:blur(3px) }
+.mystery .table th{ background:#4b0082; color:#fff }
+.mystery .table td,.mystery .table th{ border-bottom:1px solid rgba(255,255,255,.1) }
+.mystery .highlight{ background-image:linear-gradient(90deg,#ff00ff,#00ffff); color:#fff; font-weight:700 }
+.mystery .picked{ outline:4px solid #22d3ee; box-shadow:0 0 30px #22d3ee77 inset }
+.mystery .disabled{ pointer-events:none; opacity:.6 }
+.mystery .twirl{ transform:rotateY(180deg) scale(.96) }
+.mystery .topbar{ display:none !important; }
+
+/* --- Header fix global --- */
+.header-full{left:0;right:0;top:0;width:100% !important;}
+</style>
+</head>
+<body class="flex flex-col min-h-screen overflow-x-hidden" style="overflow-y:auto;">
+<!-- FIXED BACKGROUNDS for Welcome/Game -->
+<div id="bgHero" class="bg-hero"><div class="shine-effect"></div></div>
+<div id="bgGame" class="bg-game hidden"><div class="shine-effect-gold"></div></div>
+
+<!-- HEADER (konsisten semua halaman) -->
+<header class="header-full fixed z-50 p-0 m-0">
+<nav class="w-full bg-gradient-to-r from-slate-900 via-indigo-900 to-purple-900 shadow-md">
+<div class="w-full flex items-center justify-between gap-3 px-3 sm:px-6 py-3">
+<a href="#" class="text-xl sm:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">BELEGENDBET</a>
+<button id="btnHome" class="hover:text-white px-5 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl font-semibold shadow-lg transition">Beranda</button>
+</div>
+</nav>
+</header>
+<div class="h-16"></div>
+
+<!-- MAIN: 3 SCREEN DALAM 1 FILE -->
+<main class="flex-grow flex flex-col items-center justify-start w-full relative z-10">
+<!-- SCREEN 1: WELCOME -->
+<section id="screen-welcome" class="w-full flex flex-col items-center justify-start pt-2 pb-0 px-0 section-content">
+<div class="hero-map-frame">
+<div class="neon-glow-border">
+<img src="https://blogger.googleusercontent.com/img/a/AVvXsEi0AVbrC-wW523J76as712cp6lKlhP5hmSeH7CKJYyQZzKZweuzqF7mE4ieM8Wx5nSXlRKVymmcSdjQ2JdVR6tkqknE1E0GqhZDSCbpEjmqOzSPX34EKQ1P0yTXPZllqefxsSso2IzUNvxAOK2xRNUkBZcRIwZ9In9egAaOJ_SxYzQu-nEoHz9ptyq3Vgw" alt="Peta Harta Karun" class="hero-map-img select-none pointer-events-none" />
+</div>
+</div>
+<div class="w-full flex flex-col items-center justify-center mt-6 mb-1">
+<h1 class="glow-hero bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent text-center drop-shadow-2xl">WELCOME TO THE TREASURE MAP ONE PIECE!</h1>
+<div class="flex flex-col items-center gap-4 mt-8 mb-2 w-full max-w-xs">
+<input id="inpUser" type="text" placeholder="User ID" class="w-full px-4 py-3 rounded-xl border-2 border-blue-400 text-lg font-semibold text-center focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-900 text-white placeholder:text-blue-300" autocomplete="off" />
+<input id="inpKupon" type="text" placeholder="Kode Kupon" class="w-full px-4 py-3 rounded-xl border-2 border-green-400 text-lg font-semibold text-center focus:outline-none focus:ring-2 focus:ring-green-500 bg-slate-900 text-white placeholder:text-green-300" autocomplete="off" />
+<button id="btnStart" class="hero-btn bg-gradient-to-r from-blue-500 to-green-500 text-white shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 w-full">Mulai Sekarang</button>
+</div>
+</div>
+</section>
+
+<!-- SCREEN 2: GAME / KARTU -->
+<section id="screen-game" class="hidden py-8 mx-auto max-w-7xl px-4 text-center w-full section-content">
+<h2 class="neon-title">TEMUKAN PULAU HARTA KARUN</h2>
+<div id="island-container">
+<div class="island-card-wrapper" data-index="0" data-kode="A">
+<div class="island-card">
+<div class="island-front"><img src="https://i.ibb.co/mC1vxmwP/ASAL-JADI-MASUK-AJA-4.png" alt="Logo" class="card-front-logo" /></div>
+<div class="island-back"><img src="https://i.postimg.cc/wvLQbgZ6/ASAL-JADI-MASUK-AJA-6.png" alt="Pulau A" class="island-img" /></div>
+</div>
+</div>
+<div class="island-card-wrapper" data-index="1" data-kode="B">
+<div class="island-card">
+<div class="island-front"><img src="https://i.ibb.co/mC1vxmwP/ASAL-JADI-MASUK-AJA-4.png" alt="Logo" class="card-front-logo" /></div>
+<div class="island-back"><img src="https://i.postimg.cc/pT6q3sXZ/ASAL-JADI-MASUK-AJA-5.png" alt="Pulau B" class="island-img" /></div>
+</div>
+</div>
+<div class="island-card-wrapper" data-index="2" data-kode="C">
+<div class="island-card">
+<div class="island-front"><img src="https://i.ibb.co/mC1vxmwP/ASAL-JADI-MASUK-AJA-4.png" alt="Logo" class="card-front-logo" /></div>
+<div class="island-back"><img src="https://i.postimg.cc/hPZgGBZ4/ASAL-JADI-MASUK-AJA-7.png" alt="Pulau C" class="island-img" /></div>
+</div>
+</div>
+<div class="island-card-wrapper" data-index="3" data-kode="D">
+<div class="island-card">
+<div class="island-front"><img src="https://i.ibb.co/mC1vxmwP/ASAL-JADI-MASUK-AJA-4.png" alt="Logo" class="card-front-logo" /></div>
+<div class="island-back"><img src="https://i.postimg.cc/NMx86bZD/ASAL-JADI-MASUK-AJA-8.png" alt="Pulau D" class="island-img" /></div>
+</div>
+</div>
+</div>
+<button id="spinButton">PUTAR PENGACAK PULAU!</button>
+</section>
+
+<!-- SCREEN 3: MYSTERY BOX (Pulau A) -->
+<section id="screen-mystery" class="hidden w-full section-content mystery text-white">
+<!-- (topbar disembunyikan via CSS, pakai header global) -->
+<div class="topbar w-full">
+<div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+<div class="text-sm md:text-base">
+<span class="opacity-80">User:</span> <b id="tbUser">-</b>
+<span class="mx-2">•</span>
+<span class="opacity-80">Kupon:</span> <b id="tbKupon">-</b>
+<span class="mx-2">•</span>
+<span class="opacity-80">Pulau:</span> <b id="tbPulau">A</b>
+</div>
+<button id="btnBackToMap" class="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 font-semibold shadow">⟵ Kembali Map</button>
+</div>
+</div>
+
+<div class="mystery-root">
+<main class="w-full flex flex-col items-center pt-8 pb-28">
+<h1 class="text-4xl md:text-6xl font-extrabold rainbow-neon tracking-widest uppercase drop-shadow-lg mb-6 text-center">MYSTERY BOX</h1>
+
+<div id="gridBoxes" class="grid grid-cols-3 gap-6 mb-8">
+<button class="box-glow w-20 h-20 md:w-28 md:h-28 flex items-center justify-center"><span class="text-4xl md:text-5xl">🎁</span></button>
+<button class="box-glow w-20 h-20 md:w-28 md:h-28 flex items-center justify-center"><span class="text-4xl md:text-5xl">🎁</span></button>
+<button class="box-glow w-20 h-20 md:w-28 md:h-28 flex items-center justify-center"><span class="text-4xl md:text-5xl">🎁</span></button>
+<button class="box-glow w-20 h-20 md:w-28 md:h-28 flex items-center justify-center"><span class="text-4xl md:text-5xl">🎁</span></button>
+<button class="box-glow w-20 h-20 md:w-28 md:h-28 flex items-center justify-center"><span class="text-4xl md:text-5xl">🎁</span></button>
+<button class="box-glow w-20 h-20 md:w-28 md:h-28 flex items-center justify-center"><span class="text-4xl md:text-5xl">🎁</span></button>
+<button class="box-glow w-20 h-20 md:w-28 md:h-28 flex items-center justify-center"><span class="text-4xl md:text-5xl">🎁</span></button>
+<button class="box-glow w-20 h-20 md:w-28 md:h-28 flex items-center justify-center"><span class="text-4xl md:text-5xl">🎁</span></button>
+<button class="box-glow w-20 h-20 md:w-28 md:h-28 flex items-center justify-center"><span class="text-4xl md:text-5xl">🎁</span></button>
+</div>
+
+<div class="flex flex-col items-center gap-3">
+<button id="btnSpin" class="px-10 py-3 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 rounded-full text-white text-lg md:text-xl font-bold shadow-xl hover:scale-105 transition-all uppercase tracking-widest border-2 border-amber-300/50">🎲 SPIN BOX</button>
+<button id="btnShow" class="flex items-center gap-2 px-8 py-3 bg-green-500 hover:bg-green-600 transition-all rounded-full text-white text-base md:text-lg font-semibold shadow-lg"><span>🎁</span> Tampilkan Hadiah</button>
+</div>
+
+<div class="mt-6 text-center">
+<span class="text-lg md:text-2xl font-bold px-4 py-2 rounded-xl bg-red-600 text-white border-2 border-red-400 shadow-md shadow-red-500/50">Buka kotak hadiah dan dapatkan bonus spektakuler!</span>
+</div>
+
+<section id="listHadiah" class="w-full max-w-[820px] mx-auto mt-6 hidden fade-in">
+<div id="hadiahWrap" class="grid grid-cols-3 gap-4 place-items-center"></div>
+</section>
+</main>
+
+<div id="modalPrize" class="fixed inset-0 hidden items-center justify-center z-50 modal-bg">
+<div class="relative bg-[#1b1e2a] rounded-2xl shadow-2xl border border-white/10 w-[90%] max-w-xl p-6">
+<h3 class="text-center text-2xl font-extrabold text-yellow-300 mb-4">Hadiah Mystery Box</h3>
+<div class="overflow-hidden rounded-xl border border-white/10">
+<table class="w-full table text-left text-white">
+<thead><tr><th class="py-3 px-4 w-16">No</th><th class="py-3 px-4">Hadiah</th></tr></thead>
+<tbody id="tableBody"></tbody>
+</table>
+</div>
+<div id="resultText" class="text-center text-lg font-bold text-yellow-300 mt-4"></div>
+<div class="flex justify-center mt-5"><button id="btnCloseModal" class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-full shadow">Tutup</button></div>
+<button id="btnCloseModal2" class="absolute -top-3 -right-3 bg-red-500 text-white w-9 h-9 rounded-full font-bold shadow">✕</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+
+<!-- FOOTER -->
+<footer class="mt-8 py-5 text-center text-gray-400 text-sm border-t border-slate-700 bg-slate-900 z-50 relative">
+<p>&copy; 2024 BELEGENDBET. Hak Cipta Dilindungi Undang-Undang.</p>
+</footer>
+
+<script>
+(function(){
+// ====== ELEMENTS ======
+const bgHero = document.getElementById('bgHero');
+const bgGame = document.getElementById('bgGame');
+const scrWelcome = document.getElementById('screen-welcome');
+const scrGame = document.getElementById('screen-game');
+const scrMystery = document.getElementById('screen-mystery');
+const btnHome = document.getElementById('btnHome');
+const btnStart = document.getElementById('btnStart');
+const inpUser = document.getElementById('inpUser');
+const inpKupon = document.getElementById('inpKupon');
+const btnBackToMap = document.getElementById('btnBackToMap');
+
+// ====== STATE ======
+let session = null;
+let isSpinning=false, canPick=false, spinInterval=null, spinOrder=[0,1,2,3];
+
+// ====== UTIL ======
+const show = el => el.classList.remove('hidden');
+const hide = el => el.classList.add('hidden');
+function saveSession(u,k){ session = { userId:u, kupon:k, ts:Date.now() }; localStorage.setItem('tm_session', JSON.stringify(session)); }
+function loadSession(){ try{ session = JSON.parse(localStorage.getItem('tm_session')||'null'); }catch{ session=null } }
+
+function showScreen(name){
+hide(scrWelcome); hide(scrGame); hide(scrMystery);
+if(name==='welcome'){ show(bgHero); hide(bgGame); show(scrWelcome); }
+if(name==='game'){ hide(bgHero); show(bgGame); show(scrGame); }
+if(name==='mystery'){ hide(bgHero); hide(bgGame); show(scrMystery); }
+}
+
+// ====== WELCOME ======
+btnStart.addEventListener('click', () =>{
+const u = (inpUser.value||'').trim();
+const k = (inpKupon.value||'').trim();
+if(!u || !k){ alert('Silakan masukkan User ID dan Kode Kupon!'); return; }
+saveSession(u,k);
+showScreen('game');
+});
+btnHome.addEventListener('click', ()=>{ resetGame(); showScreen('welcome'); });
+
+// ====== GAME (KARTU) ======
+const islandContainer = document.getElementById('island-container');
+const islandWrappers = document.querySelectorAll('.island-card-wrapper');
+const islandCards = document.querySelectorAll('.island-card');
+const spinButton = document.getElementById('spinButton');
+
+function renderIslands(){ const current = Array.from(islandContainer.querySelectorAll('.island-card-wrapper')); islandContainer.innerHTML=''; spinOrder.forEach(i=> islandContainer.appendChild(current[i])); }
+function shuffleArray(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } }
+
+function startSpin(){ if(isSpinning) return; resetGame(); isSpinning=true; canPick=false; spinButton.disabled=true; spinButton.textContent='Mengacak...'; islandCards.forEach(c=>c.classList.add('shuffling-anim'));
+let count=0, totalDuration=2000, shuffleSpeed=80, totalShuffles=Math.floor(totalDuration/shuffleSpeed);
+spinInterval=setInterval(()=>{ shuffleArray(spinOrder); renderIslands(); count++; if(count>=totalShuffles){ clearInterval(spinInterval); isSpinning=false; canPick=true; spinButton.textContent='PILIH SALAH SATU PULAU!'; islandCards.forEach(c=>c.classList.remove('shuffling-anim')); } }, shuffleSpeed);
+}
+
+function flipCard(cardWrapper){ if(!canPick || cardWrapper.classList.contains('flipped')) return; const card=cardWrapper.querySelector('.island-card'); card.classList.add('flipped'); canPick=false; spinButton.textContent='MULAI BARU'; spinButton.disabled=false;
+const kode = cardWrapper.getAttribute('data-kode'); loadSession();
+setTimeout(()=>{ if(kode==='A'){
+document.getElementById('tbUser').textContent = session?.userId||'-';
+document.getElementById('tbKupon').textContent = session?.kupon||'-';
+document.getElementById('tbPulau').textContent = 'A';
+initMysteryOnce();
+showScreen('mystery');
+} else {
+alert(`Pulau ${kode} masih disiapkan, BOS.`);
+}
+}, 700);
+}
+
+function resetGame(){ clearInterval(spinInterval); isSpinning=false; canPick=false; spinOrder=[0,1,2,3]; renderIslands(); islandWrappers.forEach(w=> w.querySelector('.island-card').classList.remove('flipped','shuffling-anim')); spinButton.textContent='PUTAR PENGACAK PULAU!'; spinButton.disabled=false; }
+
+spinButton.addEventListener('click', ()=>{ if(spinButton.textContent==='MULAI BARU') resetGame(); else startSpin(); });
+islandContainer.addEventListener('click', e=>{ if(!canPick) return; const wrap = e.target.closest('.island-card-wrapper'); if(wrap) flipCard(wrap); });
+
+// ====== MYSTERY (Pulau A) ======
+let mysteryInited=false;
+function initMysteryOnce(){ if(mysteryInited) return; mysteryInited=true;
+const hadiahDisplay = [
+{ nominal:"Rp 5.000.000", logo:"🏅" },
+{ nominal:"Rp 1.000.000", logo:"🥇" },
+{ nominal:"Rp 100.000",  logo:"💷" },
+{ nominal:"Rp 20.000",   logo:"💳" },
+{ nominal:"Rp 10.000",   logo:"🤑" },
+{ nominal:"Rp 8.000",    logo:"🪙" },
+{ nominal:"Rp 5.000",    logo:"💵" },
+{ nominal:"Rp 3.000",    logo:"🪙" },
+{ nominal:"Rp 2.000",    logo:"💰" },
+];
+const prizePool = [2000,3000,5000,8000,10000];
+
+const hadiahWrap = document.getElementById('hadiahWrap');
+function renderListHadiah(){ hadiahWrap.innerHTML=''; hadiahDisplay.forEach(h=>{ const card=document.createElement('div'); card.className='w-[110px] md:w-[150px] h-[88px] md:h-[104px] flex flex-col items-center justify-center bg-yellow-100 rounded-xl shadow-md border border-yellow-400/30'; card.innerHTML=`<span class="text-2xl md:text-3xl mb-1">${h.logo}</span><span class="text-[13px] md:text-[16px] font-bold text-yellow-800">${h.nominal}</span>`; hadiahWrap.appendChild(card); }); }
+renderListHadiah();
+
+document.getElementById('btnShow').onclick = ()=>{ const el=document.getElementById('listHadiah'); el.classList.toggle('hidden'); if(!el.classList.contains('hidden')) el.classList.add('fade-in'); };
+
+const grid = document.getElementById('gridBoxes');
+let spinning=false, chosen=false;
+function flipShuffle(){ const items=Array.from(grid.children); const first=new Map(items.map(el=>[el, el.getBoundingClientRect()])); const r=Math.random(); if(r<0.34) rotateRowsRight(); else if(r<0.68) rotateColsDown(); else randomSwapPairs(); const after=Array.from(grid.children); after.forEach(el=>{ const f=first.get(el), l=el.getBoundingClientRect(); const dx=f.left-l.left, dy=f.top-l.top; el.style.transform=`translate(${dx}px,${dy}px)`; el.style.transition='transform 0s'; if(Math.random()<0.25) el.classList.add('twirl'); requestAnimationFrame(()=>{ el.style.transition='transform 240ms cubic-bezier(.22,.9,.24,.99)'; el.style.transform='translate(0,0)'; setTimeout(()=> el.classList.remove('twirl'),240); }); }); }
+function rotateRowsRight(){ const k=Array.from(grid.children); [k[2],k[0],k[1], k[5],k[3],k[4], k[8],k[6],k[7]].forEach(el=>grid.appendChild(el)); }
+function rotateColsDown(){ const k=Array.from(grid.children); [k[6],k[7],k[8], k[0],k[1],k[2], k[3],k[4],k[5]].forEach(el=>grid.appendChild(el)); }
+function randomSwapPairs(){ const k=Array.from(grid.children); const swaps=2+Math.floor(Math.random()*2); for(let s=0;s<swaps;s++){ let a=Math.floor(Math.random()*9), b=Math.floor(Math.random()*9); if(a===b) b=(b+1)%9; if(a>b){const t=a;a=b;b=t;} grid.insertBefore(k[b], k[a]); grid.insertBefore(k[a], k[b+1]||null); } }
+
+function startSpinBoxes(){ if(spinning) return; spinning=true; chosen=false; Array.from(grid.children).forEach(b=>{ b.classList.remove('picked','disabled'); b.style.pointerEvents='none'; b.querySelector('span').textContent='🎁'; }); const btn=document.getElementById('btnSpin'); const endAt=Date.now()+3000; (function step(){ if(Date.now()>endAt){ btn.textContent='🎯 PILIH KOTAK!'; Array.from(grid.children).forEach(b=> b.style.pointerEvents='auto'); spinning=false; return; } btn.textContent='⚡ MENGACAK…'; flipShuffle(); setTimeout(step, 60+Math.random()*50); })(); }
+function formatRupiah(n){ return 'Rp '+n.toLocaleString('id-ID'); }
+
+document.getElementById('btnSpin').onclick = startSpinBoxes;
+grid.addEventListener('click', e=>{ const el=e.target.closest('button'); if(!el || spinning || chosen) return; chosen=true; el.classList.add('picked'); setTimeout(()=>el.classList.remove('picked'),900); Array.from(grid.children).forEach(b=> b.classList.add('disabled')); const prize=prizePool[Math.floor(Math.random()*prizePool.length)]; openModalWithPrize(prize); document.getElementById('btnSpin').textContent='🎲 SPIN BOX'; });
+
+function openModalWithPrize(prize){ const tbody=document.getElementById('tableBody'); tbody.innerHTML=''; hadiahDisplay.forEach((h,i)=>{ const tr=document.createElement('tr'); const nominalNumber=Number(h.nominal.replace(/\D/g,'')); tr.innerHTML=`<td class="py-2 px-4">${i+1}</td><td class="py-2 px-4">${h.nominal}</td>`; if(nominalNumber===prize) tr.classList.add('highlight'); tbody.appendChild(tr); }); document.getElementById('resultText').textContent = `Selamat ${session?.userId||'-'}! Kamu mendapatkan ${formatRupiah(prize)}`; const m=document.getElementById('modalPrize'); m.classList.remove('hidden'); m.classList.add('flex'); document.body.style.overflow='hidden'; }
+function closeModal(){ const m=document.getElementById('modalPrize'); m.classList.add('hidden'); m.classList.remove('flex'); document.body.style.overflow=''; }
+document.getElementById('btnCloseModal').onclick = closeModal; document.getElementById('btnCloseModal2').onclick = closeModal;
+}
+
+btnBackToMap.addEventListener('click', ()=>{ showScreen('game'); });
+
+// INIT
+loadSession();
+showScreen('welcome');
+})();
+</script>
+</body>
+</html>
