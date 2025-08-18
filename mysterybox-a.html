@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Treasure Map — Mystery Box (Pulau A)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+    body{ font-family:'Inter',sans-serif; background:#121212; color:#fff }
+    .mystery-root{
+      position:relative; min-height:calc(100vh - 66px - 64px); padding-bottom:24px;
+      background:#121212;
+      background-image:conic-gradient(from 0deg at 50% 50%, #ff00ff 0%, #ff00ff 10%, #ff9900 20%, #ffff00 30%, #00ff00 40%, #00ffff 50%, #0000ff 60%, #9900ff 70%, #ff00ff 80%, #ff00ff 100%);
+      background-size:200% 200%; animation:rainbow-bg-shift 20s linear infinite; overflow-x:hidden;
+    }
+    @keyframes rainbow-bg-shift{ 0%{background-position:0% 0%} 50%{background-position:100% 100%} 100%{background-position:0% 0%} }
+
+    .box-glow{ --angle:0deg; background:conic-gradient(from var(--angle) at 50% 50%, #ff00ff,#ff9900,#ffff00,#00ff00,#00ffff,#0000ff,#9900ff,#ff00ff);
+      animation:rotate-gradient 3s linear infinite; position:relative; border-radius:1rem;
+      box-shadow:0 0 24px rgba(255,0,255,.4),0 6px 22px rgba(255,255,255,.2); transition:box-shadow .2s, transform .12s; will-change:transform;
+    }
+    .box-glow::before{ content:""; position:absolute; inset:0; border-radius:1rem; background:rgba(18,18,18,.7); border:2px solid #1a1a1a; z-index:1; }
+    .box-glow > span{ position:relative; z-index:2 }
+    .box-glow:hover{ transform:scale(1.06) rotate(-2deg); box-shadow:0 0 44px 12px rgba(255,0,255,.8),0 0 20px rgba(255,153,0,.8),0 0 0 2px #fff inset; }
+    @keyframes rotate-gradient{ to{ --angle:360deg } }
+    .rainbow-neon{ text-shadow:0 0 8px #fff,0 0 12px #ff00ff,0 0 20px #0000ff,0 0 30px #00ffff,0 0 40px #00ff00; }
+    .fade-in{ animation:fadein .35s ease }
+    @keyframes fadein{ from{opacity:0; transform:translateY(14px)} to{opacity:1; transform:translateY(0)} }
+    .modal-bg{ background:rgba(0,0,0,.7); backdrop-filter:blur(3px) }
+    .table th{ background:#4b0082; color:#fff }
+    .table td,.table th{ border-bottom:1px solid rgba(255,255,255,.1) }
+    .highlight{ background-image:linear-gradient(90deg,#ff00ff,#00ffff); color:#fff; font-weight:700 }
+    .picked{ outline:4px solid #22d3ee; box-shadow:0 0 30px #22d3ee77 inset }
+    .disabled{ pointer-events:none; opacity:.6 }
+    .twirl{ transform:rotateY(180deg) scale(.96) }
+    .header-full{left:0;right:0;top:0;width:100% !important;}
+  </style>
+</head>
+<body class="flex flex-col min-h-screen overflow-x-hidden mystery" style="overflow-y:auto;">
+
+  <!-- HEADER -->
+  <header class="header-full fixed z-50 p-0 m-0">
+    <nav class="w-full bg-gradient-to-r from-slate-900 via-indigo-900 to-purple-900 shadow-md">
+      <div class="w-full flex items-center justify-between gap-3 px-3 sm:px-6 py-3">
+        <a href="#" class="text-xl sm:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">BELEGENDBET</a>
+        <!-- (Info User/Kupon/Pulau DIHAPUS) -->
+        <button id="btnHome" class="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 font-semibold shadow">Beranda</button>
+      </div>
+    </nav>
+  </header>
+  <div class="h-16"></div>
+
+  <div class="mystery-root">
+    <main class="w-full flex flex-col items-center pt-8 pb-28">
+      <h1 class="text-4xl md:text-6xl font-extrabold rainbow-neon tracking-widest uppercase drop-shadow-lg mb-6 text-center">MYSTERY BOX</h1>
+
+      <div id="gridBoxes" class="grid grid-cols-3 gap-6 mb-8">
+        <button class="box-glow w-20 h-20 md:w-28 md:h-28 flex items-center justify-center"><span class="text-4xl md:text-5xl">🎁</span></button>
+        <button class="box-glow w-20 h-20 md:w-28 md:h-28 flex items-center justify-center"><span class="text-4xl md:text-5xl">🎁</span></button>
+        <button class="box-glow w-20 h-20 md:w-28 md:h-28 flex items-center justify-center"><span class="text-4xl md:text-5xl">🎁</span></button>
+        <button class="box-glow w-20 h-20 md:w-28 md:h-28 flex items-center justify-center"><span class="text-4xl md:text-5xl">🎁</span></button>
+        <button class="box-glow w-20 h-20 md:w-28 md:h-28 flex items-center justify-center"><span class="text-4xl md:text-5xl">🎁</span></button>
+        <button class="box-glow w-20 h-20 md:w-28 md:h-28 flex items-center justify-center"><span class="text-4xl md:text-5xl">🎁</span></button>
+        <button class="box-glow w-20 h-20 md:w-28 md:h-28 flex items-center justify-center"><span class="text-4xl md:text-5xl">🎁</span></button>
+        <button class="box-glow w-20 h-20 md:w-28 md:h-28 flex items-center justify-center"><span class="text-4xl md:text-5xl">🎁</span></button>
+        <button class="box-glow w-20 h-20 md:w-28 md:h-28 flex items-center justify-center"><span class="text-4xl md:text-5xl">🎁</span></button>
+      </div>
+
+      <div class="flex flex-col items-center gap-3">
+        <button id="btnSpin" class="px-10 py-3 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 rounded-full text-white text-lg md:text-xl font-bold shadow-xl hover:scale-105 transition-all uppercase tracking-widest border-2 border-amber-300/50">🎲 SPIN BOX</button>
+        <button id="btnShow" class="flex items-center gap-2 px-8 py-3 bg-green-500 hover:bg-green-600 transition-all rounded-full text-white text-base md:text-lg font-semibold shadow-lg"><span>🎁</span> Tampilkan Hadiah</button>
+      </div>
+
+      <div class="mt-6 text-center">
+        <span class="text-lg md:text-2xl font-bold px-4 py-2 rounded-xl bg-red-600 text-white border-2 border-red-400 shadow-md shadow-red-500/50">Buka kotak hadiah dan dapatkan bonus spektakuler!</span>
+      </div>
+
+      <section id="listHadiah" class="w-full max-w-[820px] mx-auto mt-6 hidden fade-in">
+        <div id="hadiahWrap" class="grid grid-cols-3 gap-4 place-items-center"></div>
+      </section>
+    </main>
+
+    <div id="modalPrize" class="fixed inset-0 hidden items-center justify-center z-50 modal-bg">
+      <div class="relative bg-[#1b1e2a] rounded-2xl shadow-2xl border border-white/10 w-[90%] max-w-xl p-6">
+        <h3 class="text-center text-2xl font-extrabold text-yellow-300 mb-4">Hadiah Mystery Box</h3>
+        <div class="overflow-hidden rounded-xl border border-white/10">
+          <table class="w-full table text-left text-white">
+            <thead><tr><th class="py-3 px-4 w-16">No</th><th class="py-3 px-4">Hadiah</th></tr></thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+        <div id="resultText" class="text-center text-lg font-bold text-yellow-300 mt-4"></div>
+        <div class="flex justify-center mt-5"><button id="btnCloseModal" class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-full shadow">Tutup</button></div>
+        <button id="btnCloseModal2" class="absolute -top-3 -right-3 bg-red-500 text-white w-9 h-9 rounded-full font-bold shadow">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="w-full bg-gradient-to-r from-slate-900 via-indigo-900 to-purple-900 shadow-md py-5 relative">
+    <div class="w-full flex items-center justify-center gap-3 px-3 sm:px-6">
+      <p class="text-gray-300 text-sm">&copy; 2024 BELEGENDBET. Hak Cipta Dilindungi Undang-Undang.</p>
+    </div>
+  </footer>
+
+  <script>
+  (function(){
+    // Data session dipakai cuma di teks hasil (modal)
+    function loadSession(){ try{ return JSON.parse(localStorage.getItem('tm_session')||'null'); }catch{ return null } }
+    const s = loadSession();
+
+    // Tombol beranda
+    document.getElementById('btnHome')?.addEventListener('click', ()=> window.location.href='index.html');
+
+    // Hadiah list + pool
+    const hadiahDisplay = [
+      { nominal:"Rp 5.000.000", logo:"🏅" },
+      { nominal:"Rp 1.000.000", logo:"🥇" },
+      { nominal:"Rp 100.000",  logo:"💷" },
+      { nominal:"Rp 20.000",   logo:"💳" },
+      { nominal:"Rp 10.000",   logo:"🤑" },
+      { nominal:"Rp 8.000",    logo:"🪙" },
+      { nominal:"Rp 5.000",    logo:"💵" },
+      { nominal:"Rp 3.000",    logo:"🪙" },
+      { nominal:"Rp 2.000",    logo:"💰" },
+    ];
+    const prizePool = [2000,3000,5000,8000,10000];
+
+    // Render list hadiah
+    const hadiahWrap = document.getElementById('hadiahWrap');
+    function renderListHadiah(){
+      hadiahWrap.innerHTML='';
+      hadiahDisplay.forEach(h=>{
+        const card=document.createElement('div');
+        card.className='w-[110px] md:w-[150px] h-[88px] md:h-[104px] flex flex-col items-center justify-center bg-yellow-100 rounded-xl shadow-md border border-yellow-400/30';
+        card.innerHTML = `<span class="text-2xl md:text-3xl mb-1">${h.logo}</span><span class="text-[13px] md:text-[16px] font-bold text-yellow-800">${h.nominal}</span>`;
+        hadiahWrap.appendChild(card);
+      });
+    }
+    renderListHadiah();
+
+    document.getElementById('btnShow')?.addEventListener('click', ()=>{
+      const el=document.getElementById('listHadiah');
+      el.classList.toggle('hidden');
+      if(!el.classList.contains('hidden')) el.classList.add('fade-in');
+    });
+
+    // Shuffle grid
+    const grid = document.getElementById('gridBoxes');
+    let spinning=false, chosen=false;
+
+    function rotateRowsRight(){ const k=Array.from(grid.children); [k[2],k[0],k[1], k[5],k[3],k[4], k[8],k[6],k[7]].forEach(el=>grid.appendChild(el)); }
+    function rotateColsDown(){ const k=Array.from(grid.children); [k[6],k[7],k[8], k[0],k[1],k[2], k[3],k[4],k[5]].forEach(el=>grid.appendChild(el)); }
+    function randomSwapPairs(){ const k=Array.from(grid.children); const swaps=2+Math.floor(Math.random()*2);
+      for(let s=0;s<swaps;s++){ let a=Math.floor(Math.random()*9), b=Math.floor(Math.random()*9);
+        if(a===b) b=(b+1)%9; if(a>b){const t=a;a=b;b=t;}
+        grid.insertBefore(k[b], k[a]); grid.insertBefore(k[a], k[b+1]||null);
+      }
+    }
+    function flipShuffle(){
+      const items=Array.from(grid.children);
+      const first=new Map(items.map(el=>[el, el.getBoundingClientRect()]));
+      const r=Math.random(); if(r<0.34) rotateRowsRight(); else if(r<0.68) rotateColsDown(); else randomSwapPairs();
+      const after=Array.from(grid.children);
+      after.forEach(el=>{
+        const f=first.get(el), l=el.getBoundingClientRect();
+        const dx=f.left-l.left, dy=f.top-l.top;
+        el.style.transform=`translate(${dx}px,${dy}px)`; el.style.transition='transform 0s';
+        if(Math.random()<0.25) el.classList.add('twirl');
+        requestAnimationFrame(()=>{
+          el.style.transition='transform 240ms cubic-bezier(.22,.9,.24,.99)';
+          el.style.transform='translate(0,0)';
+          setTimeout(()=> el.classList.remove('twirl'),240);
+        });
+      });
+    }
+
+    const btnSpin=document.getElementById('btnSpin');
+    function startSpinBoxes(){
+      if(spinning) return;
+      spinning=true; chosen=false;
+      Array.from(grid.children).forEach(b=>{
+        b.classList.remove('picked','disabled'); b.style.pointerEvents='none'; b.querySelector('span').textContent='🎁';
+      });
+      const endAt=Date.now()+3000;
+      (function step(){
+        if(Date.now()>endAt){
+          btnSpin.textContent='🎯 PILIH KOTAK!';
+          Array.from(grid.children).forEach(b=> b.style.pointerEvents='auto');
+          spinning=false; return;
+        }
+        btnSpin.textContent='⚡ MENGACAK…';
+        flipShuffle();
+        setTimeout(step, 60+Math.random()*50);
+      })();
+    }
+    function formatRupiah(n){ return 'Rp '+n.toLocaleString('id-ID'); }
+    btnSpin?.addEventListener('click', startSpinBoxes);
+
+    const tbody=document.getElementById('tableBody');
+    function openModalWithPrize(prize){
+      tbody.innerHTML='';
+      hadiahDisplay.forEach((h,i)=>{
+        const tr=document.createElement('tr');
+        const nominalNumber=Number(h.nominal.replace(/\D/g,''));
+        tr.innerHTML = `<td class="py-2 px-4">${i+1}</td><td class="py-2 px-4">${h.nominal}</td>`;
+        if(nominalNumber===prize) tr.classList.add('highlight');
+        tbody.appendChild(tr);
+      });
+      document.getElementById('resultText').textContent = `Selamat ${s?.userId||'-'}! Kamu mendapatkan ${formatRupiah(prize)}`;
+      const m=document.getElementById('modalPrize');
+      m.classList.remove('hidden'); m.classList.add('flex');
+      document.body.style.overflow='hidden';
+    }
+    function closeModal(){
+      const m=document.getElementById('modalPrize');
+      m.classList.add('hidden'); m.classList.remove('flex');
+      document.body.style.overflow='';
+    }
+    document.getElementById('btnCloseModal')?.addEventListener('click', closeModal);
+    document.getElementById('btnCloseModal2')?.addEventListener('click', closeModal);
+
+    // Klik kotak → pilih hadiah acak
+    grid.addEventListener('click', e=>{
+      const el=e.target.closest('button');
+      if(!el || spinning || chosen) return;
+      chosen=true; el.classList.add('picked'); setTimeout(()=>el.classList.remove('picked'),900);
+      Array.from(grid.children).forEach(b=> b.classList.add('disabled'));
+      const prize=prizePool[Math.floor(Math.random()*prizePool.length)];
+      openModalWithPrize(prize);
+      if(btnSpin) btnSpin.textContent='🎲 SPIN BOX';
+    });
+  })();
+  </script>
+</body>
+</html>
