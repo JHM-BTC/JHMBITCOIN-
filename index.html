@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Treasure Map — Welcome & Map</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- (opsional tapi cakep) font Orbitron buat 3D headline -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@800;900&display=swap" rel="stylesheet">
     <style>
         /* ================= GLOBAL STYLES & FONTS ================= */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
@@ -18,7 +16,7 @@
         .shine-effect { position: absolute; inset: 0; pointer-events: none; z-index: 1; background: linear-gradient(120deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.18) 40%, rgba(255,255,255,0.38) 50%, rgba(255,255,255,0.18) 60%, rgba(255,255,255,0) 100%); opacity: .7; animation: shineMove 3.5s linear infinite; filter: blur(2px); }
         @keyframes shineMove { 0% { transform: translateX(-60vw) skewX(-18deg); } 100% { transform: translateX(120vw) skewX(-18deg); } }
         .bg-game { background: url('https://blogger.googleusercontent.com/img/a/AVvXsEgrcnQcPPcfE9A-hKDw7ESeN_N3Elivbjm1Qd21Iny4lUjt3e2enRw5Re482KPvPZQq4w9tLw9-BthklRaLGySVkZZwUO5qedf81xDawq4mR70BN-Q6WYNUvmF13sjJnkA5ze82lwXtlVt2L3q94VF2DBpW_5O3J_b3aBFQJB2wYvGQ9CHKtGOx6m9lZ5o') center/cover no-repeat; position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; }
-        .shine-effect-gold { position: absolute; inset: 0; pointer-events: none; z-index: 1; background: linear-gradient(100deg, rgba(255,255,255,0) 0%, rgba(255,215,0,0.12) 30%, rgba(255,255,255,0.22) 38%, rgba(255,215,0,0.38) 50%, rgba(255,255,255,0.22) 62%, rgba(255,215,0,0.12) 70%, rgba(255,255,255,0) 100%); opacity: .85; animation: shineGoldMove 4.5s cubic-bezier(.4,1.6,.6,1) infinite; filter: blur(7px) brightness(1.3) saturate(1.4); mix-blend-mode: lighten; }
+        .shine-effect-gold { position: absolute; inset: 0; pointer-events: none; z-index: 1; background: linear-gradient(100deg, rgba(255,255,255,0) 0%, rgba(255,215,0,0.12) 30%, rgba(255,255,255,0.22) 38%, rgba(255,215,0,0.38) 50%, rgba(255,255,0,0.22) 62%, rgba(255,215,0,0.12) 70%, rgba(255,255,255,0) 100%); opacity: .85; animation: shineGoldMove 4.5s cubic-bezier(.4,1.6,.6,1) infinite; filter: blur(7px) brightness(1.3) saturate(1.4); mix-blend-mode: lighten; }
         @keyframes shineGoldMove { 0% { transform: translateX(-80vw) skewX(-22deg) scaleY(1.1); } 40% { transform: translateX(10vw) skewX(-18deg) scaleY(1.13); } 60% { transform: translateX(30vw) skewX(-16deg) scaleY(1.18); } 100% { transform: translateX(120vw) skewX(-22deg) scaleY(1.1); } }
 
         /* ================= HERO CONTENT & STYLES ================= */
@@ -29,13 +27,7 @@
         .hero-map-img { width: 820px; max-width: 98vw; height: auto; display: block; border-radius: 1.8rem; box-shadow: 0 8px 48px 12px #02162daa; background: #18345d; }
         @media (max-width: 900px) { .hero-map-img { width: 95vw; } .neon-glow-border { padding: 2vw; } }
         @media (max-width: 650px) { .hero-map-img { width: 99vw; } .neon-glow-border { padding: 1.5vw; } .hero-map-frame { margin-top: 7vw; } }
-
-        .glow-hero { /* (masih ada kalau mau pakai lagi di tempat lain) */
-          background: linear-gradient(90deg, #fffbe7 0%, #ffe259 25%, #ffd700 50%, #fff700 75%, #fffbe7 100%);
-          -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; color: transparent;
-          text-shadow: 0 0 36px #fffbe7, 0 0 60px #ffd700, 0 0 80px #fff700, 0 2px 0 #fffbe7, 0 0 24px #ffd700;
-          font-size: 2.3rem; font-weight: 900; letter-spacing: 2px; margin-top: 2.5rem; margin-bottom: 1.5rem;
-        }
+        .glow-hero { background: linear-gradient(90deg, #fffbe7 0%, #ffe259 25%, #ffd700 50%, #fff700 75%, #fffbe7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; color: transparent; text-shadow: 0 0 36px #fffbe7, 0 0 60px #ffd700, 0 0 80px #fff700, 0 2px 0 #fffbe7, 0 0 24px #ffd700; font-size: 2.3rem; font-weight: 900; letter-spacing: 2px; margin-top: 2.5rem; margin-bottom: 1.5rem; }
         @media (max-width: 700px) { .glow-hero { font-size: 1.25rem; margin-top: 1.2rem; } }
         .hero-btn { margin-top: 28px; font-size: 1.08rem; padding: 14px 64px; border-radius: 9999px; font-weight: 700; background: linear-gradient(90deg, #fffbe7 0%, #ffe259 25%, #ffd700 50%, #fff700 75%, #fffbe7 100%); color: #222; box-shadow: 0 0 0 8px #ffd700cc, 0 0 32px 8px #fffbe7cc, 0 0 120px 40px #ffd70088; border: 3px solid #ffd700; text-shadow: 0 0 18px #fffbe7, 0 2px 0 #ffd700; letter-spacing: 2px; transition: transform .15s, box-shadow .15s; }
         .hero-btn:hover { transform: scale(1.06); box-shadow: 0 0 0 16px #ffd700cc, 0 0 64px 16px #fffbe7cc, 0 0 240px 80px #ffd70088; color: #111; }
@@ -77,49 +69,6 @@
         .modal-message { font-size: 1.1rem; color: #ccc; line-height: 1.5; margin-bottom: 1.5rem; }
         .modal-button { background: #3b82f6; color: white; padding: 0.75rem 2rem; border-radius: 9999px; font-weight: 600; cursor: pointer; transition: background-color 0.2s; }
         .modal-button:hover { background: #2563eb; }
-
-        /* === 3D SUPER HIDUP HEADLINE (standalone) === */
-        .x3d{
-          --c1:#ffe259; --c2:#22d3ee; --stroke:#0b1220;
-          font-family: Orbitron, Bebas Neue, Inter, sans-serif;
-          font-weight:900; line-height:1;
-          font-size:clamp(32px, 8vw, 96px);
-          letter-spacing:.04em; position:relative; display:inline-block;
-          background:linear-gradient(90deg,var(--c1),#fff,var(--c2));
-          -webkit-background-clip:text; background-clip:text; color:transparent;
-          transform-style:preserve-3d;
-          text-shadow:0 0 24px rgba(255,255,255,.35), 0 0 44px rgba(34,211,238,.28);
-        }
-        .x3d::before{
-          content:attr(data-text); position:absolute; inset:0; color:var(--stroke); z-index:-1;
-          text-shadow:
-            1px 1px 0 var(--stroke),2px 2px 0 var(--stroke),3px 3px 0 var(--stroke),
-            4px 4px 0 var(--stroke),5px 5px 0 var(--stroke),6px 6px 0 var(--stroke),
-            7px 7px 0 var(--stroke),8px 8px 0 var(--stroke),9px 9px 0 var(--stroke),
-            10px 10px 0 var(--stroke),11px 11px 0 var(--stroke),12px 12px 0 var(--stroke),
-            13px 13px 0 var(--stroke),14px 14px 0 var(--stroke);
-          filter: drop-shadow(0 10px 30px rgba(0,0,0,.45));
-        }
-        .x3d::after{
-          content:attr(data-text); position:absolute; inset:0; mix-blend-mode:screen; opacity:.8;
-          text-shadow:1px 0 0 rgba(0,238,255,.7), -1px 0 0 rgba(255,0,128,.6), 0 0 18px rgba(255,255,255,.25);
-        }
-        .x3d__shine{
-          position:absolute; inset:-6%; border-radius:12px; pointer-events:none;
-          background:linear-gradient(105deg, transparent 0%, rgba(255,255,255,.65) 50%, transparent 100%);
-          filter: blur(10px); opacity:.0; transform: translateX(-120%);
-          animation: x3dSweep 3.2s ease-in-out infinite 1s;
-        }
-        @keyframes x3dSweep{
-          10%{ opacity:.0; transform: translateX(-120%); }
-          20%{ opacity:.7; }
-          50%{ opacity:.85; transform: translateX(0%); }
-          80%{ opacity:.0; transform: translateX(120%); }
-          100%{ opacity:.0; transform: translateX(120%); }
-        }
-        @keyframes x3dFlick{ 0%,100%{ filter:brightness(1) } 50%{ filter:brightness(1.1) } }
-        .x3d{ animation: x3dFlick 2.8s ease-in-out infinite; }
-        .x3d.is-small{ font-size:clamp(20px,4.2vw,48px) }
     </style>
 </head>
 <body class="flex flex-col min-h-screen overflow-x-hidden" style="overflow-y:auto;">
@@ -143,17 +92,13 @@
 
         <!-- SCREEN 1: WELCOME -->
         <section id="screen-welcome" class="w-full flex flex-col items-center justify-start pt-2 pb-0 px-0 section-content">
-            <div class="hero-map-frame full-bleed">
+            <div class="hero-map-frame">
                 <div class="neon-glow-border">
                     <img src="https://blogger.googleusercontent.com/img/a/AVvXsEi0AVbrC-wW523J76as712cp6lKlhP5hmSeH7CKJYyQZzKZweuzqF7mE4ieM8Wx5nSXlRKVymmcSdjQ2JdVR6tkqknE1E0GqhZDSCbpEjmqOzSPX34EKQ1P0yTXPZllqefxsSso2IzUNvxAOK2xRNUkBZcRIwZ9In9egAaOJ_SxYzQu-nEoHz9ptyq3Vgw" alt="Peta Harta Karun" class="hero-map-img select-none pointer-events-none" />
                 </div>
             </div>
             <div class="w-full flex flex-col items-center justify-center mt-6 mb-1">
-                <!-- GANTI JUDUL LAMA DENGAN 3D HEADLINE -->
-                <h1 class="x3d mt-2 mb-2 text-center" data-text="WELCOME TO THE TREASURE MAP ONE PIECE!">WELCOME TO THE TREASURE MAP ONE PIECE!
-                  <span class="x3d__shine" aria-hidden="true"></span>
-                </h1>
-
+                <h1 class="glow-hero bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent text-center drop-shadow-2xl">WELCOME TO THE TREASURE MAP ONE PIECE!</h1>
                 <div class="flex flex-col items-center gap-4 mt-8 mb-2 w-full max-w-xs">
                     <input id="inpUser" type="text" placeholder="User ID" class="w-full px-4 py-3 rounded-xl border-2 border-blue-400 text-lg font-semibold text-center focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-900 text-white placeholder:text-blue-300" autocomplete="off" />
                     <input id="inpKupon" type="text" placeholder="Kode Kupon" class="w-full px-4 py-3 rounded-xl border-2 border-green-400 text-lg font-semibold text-center focus:outline-none focus:ring-2 focus:ring-green-500 bg-slate-900 text-white placeholder:text-green-300" autocomplete="off" />
@@ -217,6 +162,14 @@
             let canPick = false;
             let spinInterval = null;
 
+            // ====== DESTINASI PETA (router) ======
+            const DEST = {
+                A: 'mystery-a.html',
+                B: 'crypto-b.html',
+                C: 'gedorpintu-c.html',
+                D: 'gaple-d.html'
+            };
+
             // ====== UTIL FUNCTIONS ======
             const show = el => el.classList.remove('hidden');
             const hide = el => el.classList.add('hidden');
@@ -227,12 +180,10 @@
                 modalTitle.textContent = title;
                 modalMessage.textContent = message;
                 show(modal);
-                // Add a transition class after a short delay
                 setTimeout(() => modal.classList.add('show'), 10);
-                
                 modalButton.onclick = () => {
                     modal.classList.remove('show');
-                    setTimeout(() => hide(modal), 300); // Hide after transition
+                    setTimeout(() => hide(modal), 300);
                     if (callback) callback();
                 };
             }
@@ -272,7 +223,7 @@
 
             // --- GAME LOGIC ---
 
-            // Function to generate card elements dynamically
+            // Generate card elements dynamically
             function generateIslands() {
                 islandContainer.innerHTML = '';
                 islandData.forEach((island, index) => {
@@ -290,7 +241,7 @@
                 });
             }
 
-            // Function to shuffle the cards by re-appending them to a new order
+            // Shuffle the cards
             function shuffleCards() {
                 const cards = Array.from(islandContainer.children);
                 for (let i = cards.length - 1; i > 0; i--) {
@@ -339,11 +290,14 @@
                 const islandId = cardWrapper.getAttribute('data-id');
 
                 setTimeout(() => {
-                    if (islandId === 'A') {
-                        showModal('Selamat!', 'Anda menemukan Pulau Harta Karun! Lanjut ke halaman selanjutnya.', () => {
-                            window.location.href = 'mystery-a.html';
+                    const target = DEST[islandId]; // A/B/C/D
+                    if (target) {
+                        // Sama seperti Pulau A: show modal → redirect
+                        showModal('Selamat!', `Anda menemukan Pulau ${islandId}! Lanjut ke halaman selanjutnya.`, () => {
+                            window.location.href = target;
                         });
                     } else {
+                        // Fallback kalau ada ID di luar A-D
                         showModal('Maaf!', `Pulau ${islandId} masih disiapkan, BOS.`);
                     }
                 }, 700);
@@ -357,7 +311,6 @@
                 islandWrappers.forEach(w => w.querySelector('.island-card').classList.remove('flipped', 'shuffling-anim'));
                 spinButton.textContent = 'PUTAR PENGACAK PULAU!';
                 spinButton.disabled = false;
-                // Re-shuffle the cards for a new game
                 shuffleCards();
             }
 
@@ -376,19 +329,6 @@
             // --- INITIALIZATION ---
             showScreen('welcome');
         })();
-    </script>
-
-    <!-- JS Parallax kecil buat 3D headline (tidak ganggu fungsi lain) -->
-    <script>
-      (function(){
-        const els=document.querySelectorAll('.x3d');
-        function mv(e){
-          const rx=((e.clientY/innerHeight)-.5)*-10;
-          const ry=((e.clientX/innerWidth)-.5)* 10;
-          els.forEach(el=> el.style.transform=`rotateX(${rx}deg) rotateY(${ry}deg)`);
-        }
-        addEventListener('pointermove', mv, {passive:true});
-      })();
     </script>
 </body>
 </html>
