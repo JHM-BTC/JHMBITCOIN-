@@ -600,39 +600,67 @@ return root;
 }
 
 function onPick(cardEl, topHalf, botHalf){
-if(lockPick) return; lockPick=true;
-document.querySelectorAll('.domino').forEach(n=>{ n.classList.remove('ready'); n.style.pointerEvents='none'; });
+	if(lockPick) return; lockPick=true;
+	document.querySelectorAll('.domino').forEach(n=>{ n.classList.remove('ready'); n.style.pointerEvents='none'; });
 
-// Pool RNG (sesuai mode member)
-const pool = DECK.filter(t=> MEMBER_LOW_ONLY ? (!t.balak && t.total>=1 && t.total<=8) : true);
-chosen = pool[Math.floor(Math.random()*pool.length)];
+	// Pool RNG (sesuai mode member)
+	const pool = DECK.filter(t=> MEMBER_LOW_ONLY ? (!t.balak && t.total>=1 && t.total<=8) : true);
+	chosen = pool[Math.floor(Math.random()*pool.length)];
 
-// Tampilkan pip & flip
-drawHalf(topHalf, chosen.a); drawHalf(botHalf, chosen.b);
-cardEl.classList.add('flipped');
+	// Tampilkan pip & flip
+	drawHalf(topHalf, chosen.a); drawHalf(botHalf, chosen.b);
+	cardEl.classList.add('flipped');
 
-// Highlight daftar hadiah
-clearHighlights();
-const key = chosen.balak ? ('BALAK-'+chosen.a) : ('TOTAL-'+chosen.total);
-const target = document.querySelector('.prize-item[data-key="'+key+'"]');
-if(target){ target.classList.add('highlight'); target.scrollIntoView({behavior:'smooth', block:'center'}); }
+	// Highlight daftar hadiah
+	clearHighlights();
+	const key = chosen.balak ? ('BALAK-'+chosen.a) : ('TOTAL-'+chosen.total);
+	const target = document.querySelector('.prize-item[data-key="'+key+'"]');
+	if(target){ target.classList.add('highlight'); target.scrollIntoView({behavior:'smooth', block:'center'}); }
 
-// Hitung hadiah
-const base = chosen.balak ? balakBase(chosen.total) : normalPrize(chosen.total);
-const payout = chosen.balak ? balakBig(chosen.total) : base;
-const label = chosen.balak ? ('BALAK '+chosen.a+' ('+chosen.a+'/'+chosen.b+') — BIG PRIZE') : (chosen.a+'/'+chosen.b+' (Total '+chosen.total+')');
+	// Hitung hadiah
+	const base = chosen.balak ? balakBase(chosen.total) : normalPrize(chosen.total);
+	const payout = chosen.balak ? balakBig(chosen.total) : base;
+	const label = chosen.balak ? ('BALAK '+chosen.a+' ('+chosen.a+'/'+chosen.b+') — BIG PRIZE') : (chosen.a+'/'+chosen.b+' (Total '+chosen.total+')');
 
-// Tampilkan hasil + tautan klaim
-const code = makeCode();
-resultMsg.innerHTML = 'Kamu membuka <strong>'+label+'</strong>.<br>Hadiah: <strong>Rp'+payout.toLocaleString('id-ID')+'</strong>';
-footnote.textContent = 'Kode klaim: '+code;
-const msg = 'Halo Admin, saya memenangkan '+label+' senilai Rp'+payout.toLocaleString('id-ID')+' di '+BRAND+'. Kode: '+code;
-claimWA.href = makeWA(msg); claimTG.href = makeTG(msg);
-resultBox.classList.add('show');
+	// Tampilkan hasil + tautan klaim
+	const code = makeCode();
+	resultMsg.innerHTML = 'Kamu membuka <strong>'+label+'</strong>.<br>Hadiah: <strong>Rp'+payout.toLocaleString('id-ID')+'</strong>';
+	footnote.textContent = 'Kode klaim: '+code;
+	const msg = 'Halo Admin, saya memenangkan '+label+' senilai Rp'+payout.toLocaleString('id-ID')+' di '+BRAND+'. Kode: '+code;
+	claimWA.href = makeWA(msg); claimTG.href = makeTG(msg);
+	resultBox.classList.add('show');
 
-// Efek kemenangan
-confetti(board, chosen.balak?120:60);
-FX.burst(!!chosen.balak);
+	// Efek kemenangan
+	confetti(board, chosen.balak?120:60);
+	FX.burst(!!chosen.balak);
+
+	// --- Integrasi pencatatan hadiah ke Google Sheet ---
+	try {
+		const s = JSON.parse(localStorage.getItem('tm_session')||'null');
+		if (!s?.userId || !s?.kupon) {
+			hint.textContent = 'Session tidak valid. Silakan login ulang.';
+			btnStart.disabled = true;
+			return;
+		}
+		const apiUrl = 'https://script.google.com/macros/s/AKfycbyRl2BqiDPw75fQ-XYyL87eKDwHMr61eY0Cg7ra1vc36OMOFZ3IRY_QeZcLFDzFFM88/exec';
+		fetch(`${apiUrl}?action=catat&userid=${encodeURIComponent(s.userId)}&kupon=${encodeURIComponent(s.kupon)}&hadiah=${encodeURIComponent(payout)}`)
+			.then(res => res.json())
+			.then(data => {
+				if (data.success) {
+					hint.textContent = 'Hadiah sudah dicatat!';
+				} else {
+					hint.textContent = data.msg || 'Gagal mencatat hadiah!';
+				}
+				btnStart.disabled = true;
+			})
+			.catch(() => {
+				hint.textContent = 'Gagal menghubungi server. Coba lagi.';
+				btnStart.disabled = true;
+			});
+	} catch {
+		hint.textContent = 'Session error.';
+		btnStart.disabled = true;
+	}
 }
 
 /* ===== PIP LAYOUT (cache posisi & layout biar gak bikin objek berulang) ===== */
