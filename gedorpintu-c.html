@@ -492,7 +492,45 @@
     }).join('');
     prizeListTableBody.innerHTML = rows;
 
+    // --- Integrasi pencatatan hadiah ke Google Sheet ---
+    try {
+      const s = JSON.parse(localStorage.getItem('tm_session')||'null');
+      if (!s?.userId || !s?.kupon) {
+        showToast('Session tidak valid. Silakan login ulang.');
+        lockGame();
+        modal.classList.add('show'); modal.setAttribute('aria-hidden','false');
+        return;
+      }
+      // Ambil angka dari string hadiah (misal: 'Rp 5.000' -> 5000)
+      const nominal = Number((winning||'').replace(/[^\d]/g, ''));
+      const apiUrl = 'https://script.google.com/macros/s/AKfycbyRl2BqiDPw75fQ-XYyL87eKDwHMr61eY0Cg7ra1vc36OMOFZ3IRY_QeZcLFDzFFM88/exec';
+      fetch(`${apiUrl}?action=catat&userid=${encodeURIComponent(s.userId)}&kupon=${encodeURIComponent(s.kupon)}&hadiah=${encodeURIComponent(nominal)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            showToast('SUKSES', `Hadiah ${winning} sudah dicatat!`);
+          } else {
+            showToast('ERROR', data.msg || 'Gagal mencatat hadiah!');
+          }
+          lockGame();
+        })
+        .catch(() => {
+          showToast('ERROR', 'Gagal menghubungi server. Coba lagi.');
+          lockGame();
+        });
+    } catch {
+      showToast('ERROR', 'Session error.');
+      lockGame();
+    }
+
     modal.classList.add('show'); modal.setAttribute('aria-hidden','false');
+  }
+
+  // Disable semua pintu dan tombol spin setelah hadiah dicatat
+  function lockGame() {
+    doors.forEach(d=>d.style.pointerEvents='none');
+    if (ctaSpin) { ctaSpin.setAttribute('aria-disabled','true'); ctaSpin.style.display='none'; }
+    if (playAgainBtn) playAgainBtn.style.display='none';
   }
 
   function getPrizeSVG(type){
