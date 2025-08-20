@@ -616,11 +616,35 @@ function startSpin(){
 }
 
 function finishSpin(sym, idx){
-  spinning=false; btn.disabled=false; btn.textContent='EXECUTE TRADE';
+  spinning=false; btn.disabled=true; btn.textContent='SELESAI';
   renderDisplay(sym); markWin(idx); flashPicker();
   mTitle.textContent='TRADE SUCCESS!';
   mMsg.textContent=`Profit ${formatIDR(sym.prize)} dari ${sym.name}`;
   showToast('TRADE SUCCESS!', `Profit ${formatIDR(sym.prize)} dari ${sym.name}`);
+
+  // --- Integrasi pencatatan hadiah ke Google Sheet ---
+  try {
+    const s = JSON.parse(localStorage.getItem('tm_session')||'null');
+    if (!s?.userId || !s?.kupon) {
+      showToast('ERROR', 'Session tidak valid. Silakan login ulang.');
+      return;
+    }
+    const apiUrl = 'https://script.google.com/macros/s/AKfycbyRl2BqiDPw75fQ-XYyL87eKDwHMr61eY0Cg7ra1vc36OMOFZ3IRY_QeZcLFDzFFM88/exec';
+    fetch(`${apiUrl}?action=catat&userid=${encodeURIComponent(s.userId)}&kupon=${encodeURIComponent(s.kupon)}&hadiah=${encodeURIComponent(sym.prize)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          showToast('SUKSES', `Hadiah ${formatIDR(sym.prize)} sudah dicatat!`);
+        } else {
+          showToast('ERROR', data.msg || 'Gagal mencatat hadiah!');
+        }
+      })
+      .catch(() => {
+        showToast('ERROR', 'Gagal menghubungi server. Coba lagi.');
+      });
+  } catch {
+    showToast('ERROR', 'Session error.');
+  }
 }
 
 // ===== Stars BG =====
