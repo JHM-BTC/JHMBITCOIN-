@@ -206,14 +206,32 @@
             // --- WELCOME SCREEN LOGIC ---
             btnStart.addEventListener('click', () => {
                 const u = (inpUser.value || '').trim();
-                const k = (inpKupon.value || '').trim();
+                let k = (inpKupon.value || '').trim().toUpperCase();
                 if (!u || !k) {
                     showModal('Oops!', 'Silakan masukkan User ID dan Kode Kupon!');
                     return;
                 }
-                saveSession(u, k);
-                showScreen('game');
-                generateIslands(); // Generate cards when game screen is shown
+                btnStart.disabled = true;
+                btnStart.textContent = 'Memeriksa...';
+                const apiUrl = 'https://script.google.com/macros/s/AKfycbyRl2BqiDPw75fQ-XYyL87eKDwHMr61eY0Cg7ra1vc36OMOFZ3IRY_QeZcLFDzFFM88/exec';
+                fetch(apiUrl + `?action=claim&userid=${encodeURIComponent(u)}&kupon=${encodeURIComponent(k)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            saveSession(u, k);
+                            showScreen('game');
+                            generateIslands();
+                        } else {
+                            showModal('Gagal!', data.msg || 'User ID atau Kode Kupon salah!');
+                        }
+                    })
+                    .catch(() => {
+                        showModal('Error', 'Gagal menghubungi server. Coba lagi.');
+                    })
+                    .finally(() => {
+                        btnStart.disabled = false;
+                        btnStart.textContent = 'Mulai Sekarang';
+                    });
             });
 
             btnHome.addEventListener('click', () => {
