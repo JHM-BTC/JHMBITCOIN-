@@ -72,8 +72,8 @@
         <button id="btnShow" class="flex items-center gap-2 px-8 py-3 bg-green-500 hover:bg-green-600 transition-all rounded-full text-white text-base md:text-lg font-semibold shadow-lg"><span>🎁</span> Tampilkan Hadiah</button>
       </div>
 
-      <div class="mt-6 text-center">
-        <span class="text-lg md:text-2xl font-bold px-4 py-2 rounded-xl bg-red-600 text-white border-2 border-red-400 shadow-md shadow-red-500/50">Buka kotak hadiah dan dapatkan bonus spektakuler!</span>
+      <div class="mt-6 flex justify-center w-full">
+        <span class="text-base md:text-2xl font-bold px-3 py-2 rounded-xl bg-red-600 text-white border-2 border-red-400 shadow-md shadow-red-500/50 w-full max-w-xs sm:max-w-md md:max-w-lg text-center whitespace-normal break-words">Buka kotak hadiah dan dapatkan bonus spektakuler!</span>
       </div>
 
       <section id="listHadiah" class="w-full max-w-[820px] mx-auto mt-6 hidden fade-in">
@@ -91,7 +91,11 @@
           </table>
         </div>
         <div id="resultText" class="text-center text-lg font-bold text-yellow-300 mt-4"></div>
-        <div class="flex justify-center mt-5"><button id="btnCloseModal" class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-full shadow">Tutup</button></div>
+        <div class="flex justify-between gap-3 mt-5">
+          <a id="btnClaimWA" href="https://klikblg.com/wa-blb" target="_blank" rel="noopener" class="flex-1 px-2 py-2 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow text-center mr-2">CLAIM WA</a>
+          <button id="btnCloseModal" class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-full shadow">Tutup</button>
+          <a id="btnClaimTG" href="https://t.me/asupanfreebet" target="_blank" rel="noopener" class="flex-1 px-2 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow text-center ml-2">CLAIM TELEGRAM</a>
+        </div>
         <button id="btnCloseModal2" class="absolute -top-3 -right-3 bg-red-500 text-white w-9 h-9 rounded-full font-bold shadow">✕</button>
       </div>
     </div>
@@ -109,23 +113,57 @@
     // Data session dipakai cuma di teks hasil (modal)
     function loadSession(){ try{ return JSON.parse(localStorage.getItem('tm_session')||'null'); }catch{ return null } }
     const s = loadSession();
+    // Helper: flag claimed di localStorage per kupon
+    function setClaimed(kupon) {
+      if (!kupon) return;
+      localStorage.setItem('tm_claimed_'+kupon, '1');
+    }
+    function isClaimed(kupon) {
+      if (!kupon) return false;
+      return localStorage.getItem('tm_claimed_'+kupon) === '1';
+    }
 
     // Tombol beranda
     document.getElementById('btnHome')?.addEventListener('click', ()=> window.location.href='index.html');
 
+    // Saat halaman dibuka, cek status kupon ke API
+    async function checkKuponStatus() {
+      if (!s?.userId || !s?.kupon) return;
+      const apiUrl = 'https://script.google.com/macros/s/AKfycbyRl2BqiDPw75fQ-XYyL87eKDwHMr61eY0Cg7ra1vc36OMOFZ3IRY_QeZcLFDzFFM88/exec';
+      try {
+        const res = await fetch(`${apiUrl}?action=claim&userid=${encodeURIComponent(s.userId)}&kupon=${encodeURIComponent(s.kupon)}&site=BELEGENDBET`);
+        const data = await res.json();
+        // Jika status sudah TERPAKAI, kunci UI dan tampilkan hadiah
+        if (data.msg && data.msg.toLowerCase().includes('terpakai')) {
+          // Ambil hadiah dari sheet (perlu fetch manual, atau tampilkan pesan sudah pernah klaim)
+          disableGame();
+          document.getElementById('resultText').textContent = 'Kupon sudah pernah dipakai!';
+          setClaimed(s.kupon);
+        }
+      } catch (e) {
+        // abaikan error
+      }
+    }
+    // Jika sudah pernah claim (localStorage), kunci UI
+    if (isClaimed(s?.kupon)) {
+      disableGame();
+      document.getElementById('resultText').textContent = 'Kupon sudah pernah dipakai!';
+    } else {
+      checkKuponStatus();
+    }
+
     // Hadiah list + pool
     const hadiahDisplay = [
       { nominal:"Rp 5.000.000", logo:"🏅" },
-      { nominal:"Rp 1.000.000", logo:"🥇" },
+      { nominal:"Rp 1.000.000", logo:"👑" },
       { nominal:"Rp 100.000",  logo:"💷" },
       { nominal:"Rp 20.000",   logo:"💳" },
       { nominal:"Rp 10.000",   logo:"🤑" },
-      { nominal:"Rp 8.000",    logo:"🪙" },
+      { nominal:"Rp 8.000",    logo:"💎" },
       { nominal:"Rp 5.000",    logo:"💵" },
-      { nominal:"Rp 3.000",    logo:"🪙" },
+      { nominal:"Rp 3.000",    logo:"⭐" },
       { nominal:"Rp 2.000",    logo:"💰" },
     ];
-    const prizePool = [2000,3000,5000,8000,10000];
 
     // Render list hadiah
     const hadiahWrap = document.getElementById('hadiahWrap');
@@ -149,6 +187,21 @@
     // Shuffle grid
     const grid = document.getElementById('gridBoxes');
     let spinning=false, chosen=false;
+
+    // Saat load, semua box harus disabled
+    function setBoxesDisabled(disabled=true) {
+      Array.from(grid.children).forEach(b => {
+        if (disabled) {
+          b.classList.add('disabled');
+          b.style.pointerEvents = 'none';
+        } else {
+          b.classList.remove('disabled');
+          b.style.pointerEvents = 'auto';
+        }
+      });
+    }
+    // Inisialisasi: box tidak bisa dipilih sebelum spin
+    setBoxesDisabled(true);
 
     function rotateRowsRight(){ const k=Array.from(grid.children); [k[2],k[0],k[1], k[5],k[3],k[4], k[8],k[6],k[7]].forEach(el=>grid.appendChild(el)); }
     function rotateColsDown(){ const k=Array.from(grid.children); [k[6],k[7],k[8], k[0],k[1],k[2], k[3],k[4],k[5]].forEach(el=>grid.appendChild(el)); }
@@ -181,13 +234,16 @@
       if(spinning) return;
       spinning=true; chosen=false;
       Array.from(grid.children).forEach(b=>{
-        b.classList.remove('picked','disabled'); b.style.pointerEvents='none'; b.querySelector('span').textContent='🎁';
+        b.classList.remove('picked','disabled');
+        b.style.pointerEvents='none';
+        b.querySelector('span').textContent='🎁';
       });
+      setBoxesDisabled(true);
       const endAt=Date.now()+3000;
       (function step(){
         if(Date.now()>endAt){
           btnSpin.textContent='🎯 PILIH KOTAK!';
-          Array.from(grid.children).forEach(b=> b.style.pointerEvents='auto');
+          setBoxesDisabled(false);
           spinning=false; return;
         }
         btnSpin.textContent='⚡ MENGACAK…';
@@ -199,7 +255,7 @@
     btnSpin?.addEventListener('click', startSpinBoxes);
 
     const tbody=document.getElementById('tableBody');
-    function openModalWithPrize(prize){
+  function openModalWithPrize(prize){
       tbody.innerHTML='';
       hadiahDisplay.forEach((h,i)=>{
         const tr=document.createElement('tr');
@@ -208,10 +264,26 @@
         if(nominalNumber===prize) tr.classList.add('highlight');
         tbody.appendChild(tr);
       });
-      document.getElementById('resultText').textContent = `Selamat ${s?.userId||'-'}! Kamu mendapatkan ${formatRupiah(prize)}`;
+      // Update link WA dan Telegram dengan pesan hadiah
+      const btnClaimWA = document.getElementById('btnClaimWA');
+      const btnClaimTG = document.getElementById('btnClaimTG');
+      if(btnClaimWA && btnClaimTG) {
+        const pesan = encodeURIComponent(`Halo Admin, saya (${s?.userId||'-'}) memenangkan hadiah Mystery Box sebesar ${formatRupiah(prize)} di BELEGENDBET. Mohon proses klaimnya, terima kasih.`);
+        btnClaimWA.href = `https://klikblg.com/wa-blb?text=${pesan}`;
+        btnClaimTG.href = `https://t.me/asupanfreebet?text=${pesan}`;
+      }
       const m=document.getElementById('modalPrize');
       m.classList.remove('hidden'); m.classList.add('flex');
       document.body.style.overflow='hidden';
+      // Setelah claim, set flag agar tidak bisa main lagi walau refresh
+      setClaimed(s?.kupon);
+    }
+
+    // Disable semua tombol dan grid setelah hadiah dicatat
+    function disableGame() {
+      setBoxesDisabled(true);
+      btnSpin.disabled = true;
+      btnSpin.classList.add('disabled');
     }
     function closeModal(){
       const m=document.getElementById('modalPrize');
@@ -221,14 +293,48 @@
     document.getElementById('btnCloseModal')?.addEventListener('click', closeModal);
     document.getElementById('btnCloseModal2')?.addEventListener('click', closeModal);
 
-    // Klik kotak → pilih hadiah acak
+    // Klik kotak → ambil hadiah dari API
     grid.addEventListener('click', e=>{
       const el=e.target.closest('button');
       if(!el || spinning || chosen) return;
       chosen=true; el.classList.add('picked'); setTimeout(()=>el.classList.remove('picked'),900);
       Array.from(grid.children).forEach(b=> b.classList.add('disabled'));
-      const prize=prizePool[Math.floor(Math.random()*prizePool.length)];
-      openModalWithPrize(prize);
+      // Ambil hadiah dari API, bukan random di client
+      const resultText = document.getElementById('resultText');
+      if (!s?.userId || !s?.kupon) {
+        resultText.textContent = 'Session tidak valid. Silakan login ulang.';
+        console.error('Session tidak valid', s);
+        disableGame();
+        return;
+      }
+      if (isClaimed(s.kupon)) {
+        resultText.textContent = 'Kupon sudah pernah dipakai!';
+        disableGame();
+        return;
+      }
+  const apiUrl = 'https://script.google.com/macros/s/AKfycbyRl2BqiDPw75fQ-XYyL87eKDwHMr61eY0Cg7ra1vc36OMOFZ3IRY_QeZcLFDzFFM88/exec';
+  const url = `${apiUrl}?action=catat&userid=${encodeURIComponent(s.userId)}&kupon=${encodeURIComponent(s.kupon)}&site=BELEGENDBET`;
+      console.log('Kirim ke API:', url);
+      fetch(url)
+        .then(async res => {
+          let data;
+          try { data = await res.json(); } catch(e) { data = {success:false, msg:'Response bukan JSON'}; }
+          console.log('Response API:', data);
+          if (data.success) {
+            openModalWithPrize(Number(data.hadiah));
+            resultText.textContent = `Selamat ${s.userId}! Kamu mendapatkan ${formatRupiah(Number(data.hadiah))}. Hadiah sudah dicatat.`;
+            disableGame();
+            setClaimed(s.kupon);
+          } else {
+            resultText.textContent = `Gagal mencatat hadiah: ${data.msg || 'Error'}`;
+            disableGame();
+          }
+        })
+        .catch((err) => {
+          resultText.textContent = 'Gagal menghubungi server. Coba lagi.';
+          console.error('Fetch error:', err);
+          disableGame();
+        });
       if(btnSpin) btnSpin.textContent='🎲 SPIN BOX';
     });
   })();
