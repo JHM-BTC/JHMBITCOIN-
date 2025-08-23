@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Neon Crypto Event — Spin & Prize (v15.3 • 2-claim + autohide + fast icons)</title>
+<title>Neon Crypto Event — Spin & Prize (v15.3 FAST)</title>
 
 <!-- Tailwind -->
 <script src="https://cdn.tailwindcss.com"></script>
@@ -17,16 +17,16 @@
 <link rel="dns-prefetch" href="//i.postimg.cc">
 <link rel="preconnect" href="https://i.postimg.cc" crossorigin>
 
-<!-- Preload ALL coin icons (biar nongol cepat, tanpa ubah layout) -->
-<link rel="preload" as="image" href="https://i.postimg.cc/V6wtcHDP/e97e725d-7c9e-46bb-ba18-12ac2229a4ed.png">
-<link rel="preload" as="image" href="https://i.postimg.cc/KjwLCcWJ/6904c3e5-64b9-40bc-b720-146bce9c52ef.png">
-<link rel="preload" as="image" href="https://i.postimg.cc/JzG4dVVd/7b78591f-a68b-4879-8e41-9f55d7c2a5fa.png">
-<link rel="preload" as="image" href="https://i.postimg.cc/bvmZKNDk/cd74f159-0772-473f-acf9-3ba299c81b9e.png">
-<link rel="preload" as="image" href="https://i.postimg.cc/pLtqsxFP/4127a945-5034-4d26-bcf2-3acf8078a839.png">
-<link rel="preload" as="image" href="https://i.postimg.cc/4dn5YxrQ/d520c648-132e-4221-a564-49217775aca4.png">
-<link rel="preload" as="image" href="https://i.postimg.cc/fbR7PbTQ/0dd15455-9843-4b80-995e-92b85570d004.png">
-<link rel="preload" as="image" href="https://i.postimg.cc/1RqG22PX/f75bf0b6-bf94-4796-9f51-9fb2ea8e4de9.png">
-<link rel="preload" as="image" href="https://i.postimg.cc/k5LVyM2c/93b53129-af39-4f31-8711-5f7adbb9cdf7.png">
+<!-- Preload ALL coin icons (ditambah crossorigin biar koneksi/caching optimal) -->
+<link rel="preload" as="image" href="https://i.postimg.cc/V6wtcHDP/e97e725d-7c9e-46bb-ba18-12ac2229a4ed.png" crossorigin="anonymous">
+<link rel="preload" as="image" href="https://i.postimg.cc/KjwLCcWJ/6904c3e5-64b9-40bc-b720-146bce9c52ef.png" crossorigin="anonymous">
+<link rel="preload" as="image" href="https://i.postimg.cc/JzG4dVVd/7b78591f-a68b-4879-8e41-9f55d7c2a5fa.png" crossorigin="anonymous">
+<link rel="preload" as="image" href="https://i.postimg.cc/bvmZKNDk/cd74f159-0772-473f-acf9-3ba299c81b9e.png" crossorigin="anonymous">
+<link rel="preload" as="image" href="https://i.postimg.cc/pLtqsxFP/4127a945-5034-4d26-bcf2-3acf8078a839.png" crossorigin="anonymous">
+<link rel="preload" as="image" href="https://i.postimg.cc/4dn5YxrQ/d520c648-132e-4221-a564-49217775aca4.png" crossorigin="anonymous">
+<link rel="preload" as="image" href="https://i.postimg.cc/fbR7PbTQ/0dd15455-9843-4b80-995e-92b85570d004.png" crossorigin="anonymous">
+<link rel="preload" as="image" href="https://i.postimg.cc/1RqG22PX/f75bf0b6-bf94-4796-9f51-9fb2ea8e4de9.png" crossorigin="anonymous">
+<link rel="preload" as="image" href="https://i.postimg.cc/k5LVyM2c/93b53129-af39-4f31-8711-5f7adbb9cdf7.png" crossorigin="anonymous">
 
 <style>
 :root{
@@ -85,7 +85,7 @@ body{
 .dot{ width:.7rem; height:.7rem; border-radius:999px; background:var(--g); box-shadow:0 0 10px var(--g); animation:pulse 1.6s infinite }
 @keyframes pulse{ 0%,100%{ transform:scale(1) } 50%{ transform:scale(1.35) } }
 
-/* ===== Mini Crypto Chart (reference-style) ===== */
+/* ===== Mini Crypto Chart ===== */
 .miniChart{ border-radius:12px; background:linear-gradient(180deg,#0b1220,#141b2e); border:1px solid rgba(255,255,255,.06);
   box-shadow:0 12px 30px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.04); overflow:hidden }
 .miniChart .chart{ height:320px }
@@ -381,6 +381,37 @@ body{
 // ===== Helpers =====
 const qs = (id)=>document.getElementById(id);
 const formatIDR = (n)=> 'Rp. ' + Number(n||0).toLocaleString('id-ID');
+// === Session & anti-double-claim ===
+function loadSession(){ try{ return JSON.parse(localStorage.getItem('tm_session')||'null'); }catch{ return null } }
+const s = loadSession();
+function setClaimed(kupon) { if (!kupon) return; localStorage.setItem('tm_claimed_'+kupon, '1'); }
+function isClaimed(kupon) { if (!kupon) return false; return localStorage.getItem('tm_claimed_'+kupon) === '1'; }
+
+// Saat halaman dibuka, cek status kupon ke API
+async function checkKuponStatus() {
+  if (!s?.userId || !s?.kupon) return;
+  const apiUrl = 'https://script.google.com/macros/s/AKfycbyRl2BqiDPw75fQ-XYyL87eKDwHMr61eY0Cg7ra1vc36OMOFZ3IRY_QeZcLFDzFFM88/exec';
+  try {
+    const res = await fetch(`${apiUrl}?action=claim&userid=${encodeURIComponent(s.userId)}&kupon=${encodeURIComponent(s.kupon)}&site=BELEGENDBET`);
+    const data = await res.json();
+    if (data.msg && data.msg.toLowerCase().includes('terpakai')) {
+      disableGame();
+      showToast('INFO', 'Kupon sudah pernah dipakai!');
+      setClaimed(s.kupon);
+    }
+  } catch (e) {}
+}
+function disableGame() {
+  btn.disabled = true;
+  btn.textContent = 'SELESAI';
+  if(lever) lever.style.pointerEvents = 'none';
+}
+if (isClaimed(s?.kupon)) {
+  disableGame();
+  showToast('INFO', 'Kupon sudah pernah dipakai!');
+} else {
+  checkKuponStatus();
+}
 
 // ===== Data =====
 const symbols=[
@@ -390,8 +421,8 @@ const symbols=[
   { name:'Cardano (ADA)',   icon:'https://i.postimg.cc/bvmZKNDk/cd74f159-0772-473f-acf9-3ba299c81b9e.png', prize:50000 },
   { name:'Solana (SOL)',    icon:'https://i.postimg.cc/pLtqsxFP/4127a945-5034-4d26-bcf2-3acf8078a839.png', prize:10000 },
   { name:'Litecoin (LTC)',  icon:'https://i.postimg.cc/4dn5YxrQ/d520c648-132e-4221-a564-49217775aca4.png', prize:8000 },
-  { name:'Ripple (XRP)',    icon:'https://i.postimg.cc/fbR7PbTQ/0dd15455-9843-4b80-995e-92b85570d004.png', prize:6000 },
-  { name:'Binance Coin (BNB)', icon:'https://i.postimg.cc/1RqG22PX/f75bf0b6-bf94-4796-9f51-9fb2ea8e4de9.png', prize:4000 },
+  { name:'Ripple (XRP)',    icon:'https://i.postimg.cc/fbR7PbTQ/0dd15455-9843-4b80-995e-92b85570d004.png', prize:5000 },
+  { name:'Binance Coin (BNB)', icon:'https://i.postimg.cc/1RqG22PX/f75bf0b6-bf94-4796-9f51-9fb2ea8e4de9.png', prize:3000 },
   { name:'Polkadot (DOT)',  icon:'https://i.postimg.cc/k5LVyM2c/93b53129-af39-4f31-8711-5f7adbb9cdf7.png', prize:2000 }
 ];
 
@@ -409,7 +440,7 @@ function showToast(title, msg){
   tMsg.textContent = msg;
   toast.classList.add('show');
   if (toastTimer) clearTimeout(toastTimer);
-  toastTimer = setTimeout(hideToast, 5000);
+  // Tidak auto-hide, user harus tutup manual
 }
 function hideToast(){
   if (toastTimer){ clearTimeout(toastTimer); toastTimer=null; }
@@ -417,17 +448,28 @@ function hideToast(){
 }
 if(tClose){ tClose.addEventListener('click', hideToast); } // no-op kalau ga ada
 
-// ===== Preload icons (JS, biar cache kepanasan dulu) =====
+// ===== Preload icons (panasin cache, non-blocking) =====
 async function preloadIcons(){
   const urls = [...new Set(symbols.map(s=>s.icon))];
   await Promise.all(urls.map(src => new Promise(res=>{
     const im = new Image();
     im.decoding = 'sync';
     im.loading = 'eager';
+    im.crossOrigin = 'anonymous';
     im.referrerPolicy = 'no-referrer';
     im.src = src;
     im.onload = im.onerror = res;
   })));
+}
+
+// ===== Helper tunggu gambar tapi maksimal X ms (biar gak keblok) =====
+function waitImagesOrTimeout(root, ms=1200){
+  const imgs = [...root.querySelectorAll('img')].filter(im=>!im.complete);
+  if(!imgs.length) return Promise.resolve();
+  return Promise.race([
+    Promise.all(imgs.map(im=>new Promise(r=>{ im.onload=r; im.onerror=r; }))),
+    new Promise(r=>setTimeout(r, ms))
+  ]);
 }
 
 // ===== State & Config =====
@@ -464,7 +506,7 @@ addEventListener('pointermove', (e)=>{
   document.body.style.setProperty('--my', Math.round(y*100)+'%');
 });
 
-// ===== Prize Board =====
+// ===== Prize Board (render langsung saat boot) =====
 function renderPrizeBoard(){
   boardEl.innerHTML='';
   symbols.forEach((s,i)=>{
@@ -475,6 +517,7 @@ function renderPrizeBoard(){
     const img=document.createElement('img');
     img.src=s.icon; img.alt=s.name;
     img.loading='eager'; img.decoding='sync'; img.setAttribute('fetchpriority','high');
+    img.width=110; img.height=110; // stabilin layout
 
     const name=document.createElement('div');
     name.className='name';
@@ -521,6 +564,7 @@ async function populate(){
     const img = document.createElement('img');
     img.src=s.icon; img.alt=s.name;
     img.loading='eager'; img.decoding='sync'; img.setAttribute('fetchpriority','high');
+    img.width=110; img.height=110;
     img.addEventListener('error',()=>{
       d.innerHTML = `<div style="width:110px;height:110px;border-radius:999px;display:grid;place-items:center;background:linear-gradient(135deg,#38bdf8,#a855f7);color:#0b0f1a;font-weight:900;">${(s.name.split('(')[1]?.replace(')','')||'??')}</div>`;
     });
@@ -528,7 +572,10 @@ async function populate(){
     const label = document.createElement('span'); label.textContent = s.name; d.appendChild(label);
     reel.appendChild(d);
   }
-  await Promise.all([...reel.querySelectorAll('img')].map(img=> img.complete ? null : new Promise(res=>{ img.onload=res; img.onerror=res; })));
+
+  // Jangan blok UI: tunggu gambar maksimal 1.2s saja
+  await waitImagesOrTimeout(reel, 1200);
+
   measureCell();
   baseIndex=symbols.length*Math.floor(LOOPS/2);
   reel.style.transition='none';
@@ -553,6 +600,7 @@ function renderDisplay(sym){
   im.src = sym.icon;
   im.alt = sym.name;
   im.loading='eager'; im.decoding='sync'; im.setAttribute('fetchpriority','high');
+  im.width=180; im.height=180;
   display.appendChild(im);
 }
 function buildColumn(order){
@@ -566,6 +614,7 @@ function buildColumn(order){
     im.className='logo';
     im.src=s.icon; im.alt=s.name;
     im.loading='eager'; im.decoding='sync'; im.setAttribute('fetchpriority','high');
+    im.width=140; im.height=140;
     el.appendChild(im);
     col.appendChild(el);
   });
@@ -617,34 +666,43 @@ function startSpin(){
 
 function finishSpin(sym, idx){
   spinning=false; btn.disabled=true; btn.textContent='SELESAI';
-  renderDisplay(sym); markWin(idx); flashPicker();
-  mTitle.textContent='TRADE SUCCESS!';
-  mMsg.textContent=`Profit ${formatIDR(sym.prize)} dari ${sym.name}`;
-  showToast('TRADE SUCCESS!', `Profit ${formatIDR(sym.prize)} dari ${sym.name}`);
-
-  // --- Integrasi pencatatan hadiah ke Google Sheet ---
-  try {
-    const s = JSON.parse(localStorage.getItem('tm_session')||'null');
-    if (!s?.userId || !s?.kupon) {
-      showToast('ERROR', 'Session tidak valid. Silakan login ulang.');
-      return;
-    }
-    const apiUrl = 'https://script.google.com/macros/s/AKfycbyRl2BqiDPw75fQ-XYyL87eKDwHMr61eY0Cg7ra1vc36OMOFZ3IRY_QeZcLFDzFFM88/exec';
-    fetch(`${apiUrl}?action=catat&userid=${encodeURIComponent(s.userId)}&kupon=${encodeURIComponent(s.kupon)}&hadiah=${encodeURIComponent(sym.prize)}`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          showToast('SUKSES', `Hadiah ${formatIDR(sym.prize)} sudah dicatat!`);
-        } else {
-          showToast('ERROR', data.msg || 'Gagal mencatat hadiah!');
-        }
-      })
-      .catch(() => {
-        showToast('ERROR', 'Gagal menghubungi server. Coba lagi.');
-      });
-  } catch {
-    showToast('ERROR', 'Session error.');
+  // --- Integrasi pencatatan hadiah ke Google Sheet (ambil dari sheet, anti double claim) ---
+  if (!s?.userId || !s?.kupon) {
+    showToast('ERROR', 'Session tidak valid. Silakan login ulang.');
+    return;
   }
+  if (isClaimed(s.kupon)) {
+    showToast('INFO', 'Kupon sudah pernah dipakai!');
+    disableGame();
+    return;
+  }
+  const apiUrl = 'https://script.google.com/macros/s/AKfycbyRl2BqiDPw75fQ-XYyL87eKDwHMr61eY0Cg7ra1vc36OMOFZ3IRY_QeZcLFDzFFM88/exec';
+  const url = `${apiUrl}?action=catat&userid=${encodeURIComponent(s.userId)}&kupon=${encodeURIComponent(s.kupon)}&site=BELEGENDBET`;
+  fetch(url)
+    .then(async res => {
+      let data;
+      try { data = await res.json(); } catch(e) { data = {success:false, msg:'Response bukan JSON'}; }
+      if (data.success) {
+        // Cari symbol yang nominalnya sama dengan hadiah dari server
+        let hadiahNum = Number(data.hadiah);
+        let idxServer = symbols.findIndex(sy => Number(sy.prize) === hadiahNum);
+        if(idxServer === -1) idxServer = idx; // fallback ke idx spin jika tidak ketemu
+        renderDisplay(symbols[idxServer]);
+        markWin(idxServer); flashPicker();
+        mTitle.textContent = 'TRADE SUCCESS!';
+        mMsg.textContent = `Profit ${formatIDR(hadiahNum)} dari ${symbols[idxServer].name}`;
+        showToast('SUKSES', `Hadiah ${formatIDR(hadiahNum)} (${symbols[idxServer].name}) sudah dicatat!`);
+        setClaimed(s.kupon);
+        disableGame();
+      } else {
+        showToast('ERROR', data.msg || 'Gagal mencatat hadiah!');
+        disableGame();
+      }
+    })
+    .catch(() => {
+      showToast('ERROR', 'Gagal menghubungi server. Coba lagi.');
+      disableGame();
+    });
 }
 
 // ===== Stars BG =====
@@ -678,7 +736,6 @@ function finishSpin(sym, idx){
   const maInp = document.getElementById('mcMA');
   const emaInp = document.getElementById('mcEMA');
 
-  // === Build symbol dropdown (9 jenis) ===
   function tickerFromName(name){
     const m = name.match(/\(([^)]+)\)/);
     return (m? m[1].toUpperCase(): name.split(' ')[0].toUpperCase()) + 'USDT';
@@ -693,10 +750,8 @@ function finishSpin(sym, idx){
   let winSec = 1800; // 30m default window (1s ticks)
   let maP = 20, emaP = 50;
 
-  // choose baseline by symbol
   const bases = { BTCUSDT:68000, ETHUSDT:3600, DOGEUSDT:0.12, ADAUSDT:0.6, SOLUSDT:150, LTCUSDT:80, XRPUSDT:0.55, BNBUSDT:420, DOTUSDT:7.5 };
 
-  // --- seed BEFORE any draw/resize ---
   function seed(n=240){
     candles.length=0;
     let p = last = base;
@@ -713,18 +768,16 @@ function finishSpin(sym, idx){
     }
   }
   function setSymbol(sym){ base = bases[sym] || 1000; last = base; seed(3600); draw(); window.__chartSym = sym; }
-  // initial
   setSymbol(sel.value || tickers[0].value); sel.value = sel.value || tickers[0].value;
 
   let dpr = 1;
   function resize(){ dpr = devicePixelRatio||1; cv.width = cv.clientWidth*dpr; cv.height = cv.clientHeight*dpr; ctx.setTransform(dpr,0,0,dpr,0,0); draw(); }
   addEventListener('resize', resize); resize();
 
-  // 1s tick → new candle
   function tick(){
     const vol = Math.max(0.0005*base, base*0.002);
     const o = last;
-    const drift = (Math.random()-0.5)*vol*1.6; // random walk
+    const drift = (Math.random()-0.5)*vol*1.6;
     const c = Math.max(0.0000001, o + drift);
     const h = Math.max(o,c) + Math.random()*vol*0.6;
     const l = Math.min(o,c) - Math.random()*vol*0.6;
@@ -757,12 +810,11 @@ function finishSpin(sym, idx){
 
   function draw(){
     if(!cv || !cv.clientWidth){ return; }
-    const view = candles.slice(-winSec); // last seconds
+    const view = candles.slice(-winSec);
     const w = cv.clientWidth, h = cv.clientHeight;
     ctx.clearRect(0,0,w,h);
     if(view.length<2){ window.__chartReady=true; return; }
 
-    // scale
     const highs = view.map(c=>c.h), lows = view.map(c=>c.l);
     const ymax = Math.max(...highs); const ymin = Math.min(...lows);
     const pad = (ymax - ymin)*0.08 + 1e-9;
@@ -776,7 +828,6 @@ function finishSpin(sym, idx){
 
     function xy(i,v){ const x=i/(n-1)*w; const y=h - (v-min)/(max-min)*h; return [x,y]; }
 
-    // candles
     for(let i=0;i<n;i++){
       const c = view[i];
       const [xOpen,yOpen] = xy(i,c.o);
@@ -786,14 +837,11 @@ function finishSpin(sym, idx){
       const x = xOpen; const up = c.c>=c.o;
       ctx.strokeStyle = up? 'rgba(34,197,94,0.95)':'rgba(239,68,68,0.95)';
       ctx.fillStyle   = up? 'rgba(34,197,94,0.35)':'rgba(239,68,68,0.35)';
-      // wick
       ctx.beginPath(); ctx.moveTo(x,yHigh); ctx.lineTo(x,yLow); ctx.stroke();
-      // body
       const bx = x - cw/2; const by = Math.min(yOpen,yClose); const bh = Math.max(1, Math.abs(yClose - yOpen));
       ctx.fillRect(bx, by, cw, bh); ctx.strokeRect(bx, by, cw, bh);
     }
 
-    // overlays using close
     const closes = view.map(c=>c.c);
     const sma = SMA(closes, maP);
     const ema = EMA(closes, emaP);
@@ -809,7 +857,6 @@ function finishSpin(sym, idx){
     line(sma, 'rgba(167,139,250,1)');
     line(ema, 'rgba(96,165,250,1)');
 
-    // right price tag
     const lastPx = closes[closes.length-1];
     const [xr, yr] = xy(n-1,lastPx);
     const tag = formatPrice(lastPx);
@@ -820,7 +867,6 @@ function finishSpin(sym, idx){
     ctx.fillStyle='#e5edff'; ctx.font='12px Roboto Mono';
     ctx.fillText(tag, w - textW - 6 - 8, yr+4);
 
-    // bottom labels
     ctx.fillStyle='rgba(148,163,184,.9)'; ctx.font='11px Roboto Mono';
     for(let i=0;i<=6;i++){
       const idx=Math.floor(i/6*(n-1));
@@ -831,11 +877,10 @@ function finishSpin(sym, idx){
     window.__chartReady = true;
   }
 
-  // UI wiring
   tfWrap.querySelectorAll('.chip').forEach(b=>{
     b.addEventListener('click',()=>{
       tfWrap.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
-      b.addEventListener; b.classList.add('active'); // harmless no-op, keep weight same
+      b.addEventListener; b.classList.add('active');
       const win = Number(b.dataset.win)||1800; winSec = win; draw();
     });
   });
@@ -844,11 +889,11 @@ function finishSpin(sym, idx){
   sel.addEventListener('change',()=>{ setSymbol(sel.value); });
 })();
 
-// ===== Boot =====
-(async ()=>{
-  await preloadIcons();       // panasin cache ikon
-  await populate();
-  renderPrizeBoard();
+// ===== Boot (FAST): render board dulu, sisanya di belakang =====
+(()=>{
+  renderPrizeBoard(); // langsung tampil
+  populate();         // rakit reel (non-blocking)
+  preloadIcons();     // panasin ikon (non-blocking)
 })();
 </script>
 </body>
