@@ -77,7 +77,7 @@
     /* ===== Panel pelangi full (skin-panel) saat terbuka ===== */
     .inside{ position:absolute; inset:26px 18px 30px 18px; border-radius:10px; background:#0a0d25; display:grid; place-items:center; overflow:hidden; z-index:1; }
     .inside.portal.skin-panel::before,
-    .inside.portal.skin-panel::after{ display:none; }  /* matikan swirl lama */
+    .inside.portal.skin-panel::after{ display:none; }
     .inside.portal.skin-panel .panel-bg{
       position:absolute; inset:0; border-radius:10px; overflow:hidden;
       background: linear-gradient(135deg,#ff2ea6 0%,#ffb347 30%,#fff06a 48%,#3cff8f 68%,#23d9ff 100%);
@@ -175,8 +175,6 @@
         #ff2ea6 0deg, #ffa33b 60deg, #fff06a 110deg, #32ff62 160deg, #15e8ff 220deg, #2a52ff 280deg, #ff2ea6 360deg);
       animation: scanDiag 12s linear infinite;
     }
-    /* sinar mantul (gloss) menyapu diagonal */
-    
     @keyframes scanDiag{ 0%{ --gx:-2%; --gy:-2%; } 50%{ --gx:102%; --gy:102%; } 100%{ --gx:-2%; --gy:-2%; } }
   </style>
 </head>
@@ -247,7 +245,7 @@
   <div class="container">
     <header>
       <div class="brand" aria-label="Brand"><span>BELEGENDBET</span></div>
-      <<nav><a href="index.html" class="nav-btn">Beranda</a></nav>
+      <nav><a href="index.html" class="nav-btn">Beranda</a></nav>
     </header>
 
     <section class="hero">
@@ -324,7 +322,7 @@
   /* ==== State ==== */
   let selectEnabled = false, spinActive = false, gameLocked = false;
 
-  /* ==== Prize data ==== */
+  /* ==== Prize data (untuk daftar modal dan door lain) ==== */
   const prizes = [
     { amount: "Rp 5.000.000" },
     { amount: "Rp 1.000.000" },
@@ -336,7 +334,7 @@
     { amount: "Rp 3.000"    },
     { amount: "Rp 2.000"    }
   ];
-  const ALLOWED_AMOUNTS = ['Rp 5.000','Rp 3.000','Rp 2.000'];
+  const ALLOWED_AMOUNTS = ['Rp 10.000','Rp 8.000','Rp 5.000','Rp 3.000','Rp 2.000'];
   const allowedSet = new Set(ALLOWED_AMOUNTS);
   const portalThemes = ['blue','magenta','lime','blue','magenta','lime'];
 
@@ -358,8 +356,29 @@
   }
   function showToast(msg){ toast.textContent = msg; toast.classList.add('show'); clearTimeout(showToast.t); showToast.t = setTimeout(() => toast.classList.remove('show'), 1500); }
 
+  /* ==== One-time Spin Lock (per userId+kupon) ==== */
+  const SPIN_KEY = (()=>{ 
+    try{ 
+      const s = JSON.parse(localStorage.getItem('tm_session')||'null'); 
+      const uid = s?.userId || 'anon'; 
+      const kpn = s?.kupon || 'global'; 
+      return `tm_spinlock:${uid}:${kpn}`; 
+    }catch(_){ 
+      return 'tm_spinlock:global'; 
+    } 
+  })();
+  function hasPlayed(){ try{ return localStorage.getItem(SPIN_KEY)==='1'; }catch(_){ return false; } }
+  function markPlayed(){ try{ localStorage.setItem(SPIN_KEY,'1'); }catch(_){ } }
+
   /* ==== Start/reset game ==== */
   function startGame(){
+    if (hasPlayed()){
+      lockGame();
+      if (modal){ modal.classList.remove('show'); modal.setAttribute('aria-hidden','true'); }
+      showToast('Kupon sudah digunakan.');
+      return;
+    }
+
     gameLocked = false; selectEnabled = false; spinActive = false;
     assignPrizesToDoors();
     doors.forEach(d=>{
@@ -390,55 +409,44 @@
   /* ==== SPIN fisik: muter cepat & acak pindah posisi ==== */
   async function startSpinShuffle(){
     if(spinActive || gameLocked) return;
+    markPlayed(); // kunci sekali saat SPIN
     spinActive = true; selectEnabled = false;
     ctaSpin.setAttribute('aria-disabled','true');
 
-    const cycles = 12; // jumlah “putaran”
+    const cycles = 12;
     for (let c = 0; c < cycles; c++){
-      const t = c / (cycles - 1);               // 0..1 (progress)
-      const dur = Math.round(70 + t*150);       // melambat: 70ms -> 220ms
+      const t = c / (cycles - 1);
+      const dur = Math.round(70 + t*150);
       await flipOnce(dur, t);
-      await wait(10 + t*40);                    // jeda makin panjang
+      await wait(10 + t*40);
     }
 
     spinActive = false; selectEnabled = true;
-    ctaSpin.setAttribute('aria-disabled','false');
+    ctaSpin.style.display='none';
+    ctaSpin.setAttribute('aria-disabled','true');
     showToast('Pilih 1 pintu');
   }
 
   async function flipOnce(duration, t){
-    // posisi awal
     const first = new Map(); doors.forEach(d=> first.set(d, d.getBoundingClientRect()));
-
-    // acak urutan DOM → pindah grid beneran
     const order = [...doors]; for(let i=order.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [order[i],order[j]]=[order[j],order[i]]; }
     order.forEach(d=> doorsContainer.appendChild(d));
-
-    // posisi akhir
     const last = new Map(); doors.forEach(d=> last.set(d, d.getBoundingClientRect()));
-
-    // FLIP + rotasi beberapa putaran (lebih banyak di awal)
     doors.forEach(d=>{
       const a = first.get(d), b = last.get(d);
       const dx = a.left - b.left; const dy = a.top - b.top;
-
-      const baseTurns = 3 - 2*t; // 3 → 1
-      const turns = Math.max(1, Math.round(baseTurns + Math.random()*0.6)); // 1..3
+      const baseTurns = 3 - 2*t;
+      const turns = Math.max(1, Math.round(baseTurns + Math.random()*0.6));
       const dir = Math.random()<.5 ? -1 : 1;
-      const tilt = (Math.random()*10 - 5).toFixed(2); // sedikit miring
-
+      const tilt = (Math.random()*10 - 5).toFixed(2);
       d.classList.add('fly');
       d.style.willChange='transform';
       d.style.transition = `transform ${duration}ms cubic-bezier(.2,.85,.25,1)`;
       d.style.transform = `translate(${dx}px, ${dy}px) rotate(${tilt}deg) scale(.96)`;
-
-      // force reflow
       void doorsContainer.offsetWidth;
-
-      const endRotate = dir * turns * 360; // 1-3 putaran
+      const endRotate = dir * turns * 360;
       d.style.transform = `translate(0,0) rotate(${endRotate}deg) scale(1)`;
     });
-
     await wait(duration + 30);
     doors.forEach(d=>{
       d.classList.remove('fly');
@@ -446,85 +454,127 @@
     });
   }
 
-  /* ==== Klik pintu: buka semua + reveal hadiah ==== */
-  function handleDoorEl(selectedDoor){
-    if(gameLocked) return;
-    gameLocked = true; selectEnabled = false;
-    ctaSpin.style.display='none';
+  /* ==== Ambil hadiah dari server ==== */
+  async function fetchServerPrize(){
+    const s = JSON.parse(localStorage.getItem('tm_session')||'null');
+    if (!s?.userId || !s?.kupon) {
+      return { ok:false, msg:'Session tidak valid. Silakan login ulang.' };
+    }
+    function setClaimed(kupon) { if (!kupon) return; localStorage.setItem('tm_claimed_'+kupon, '1'); }
+    function isClaimed(kupon) { if (!kupon) return false; return localStorage.getItem('tm_claimed_'+kupon) === '1'; }
+    if (isClaimed(s.kupon)) {
+      return { ok:false, msg:'Kupon sudah pernah dipakai!' };
+    }
+    const apiUrl = 'https://script.google.com/macros/s/AKfycbyRl2BqiDPw75fQ-XYyL87eKDwHMr61eY0Cg7ra1vc36OMOFZ3IRY_QeZcLFDzFFM88/exec';
+    try{
+      const res = await fetch(`${apiUrl}?action=catat&userid=${encodeURIComponent(s.userId)}&kupon=${encodeURIComponent(s.kupon)}&site=BELEGENDBET`);
+      const data = await res.json().catch(()=>({success:false, msg:'Response bukan JSON'}));
+      if (data.success){
+        const hadiahNum = Number(data.hadiah);
+        const hadiahStr = hadiahNum ? `Rp ${hadiahNum.toLocaleString('id-ID')}` : '-';
+        setClaimed(s.kupon);
+        return { ok:true, hadiahNum, hadiahStr };
+      }
+      return { ok:false, msg:data.msg || 'Gagal mencatat hadiah!' };
+    }catch{
+      return { ok:false, msg:'Gagal menghubungi server. Coba lagi.' };
+    }
+  }
 
-    playWhoosh(() => {
-      doors.forEach((d,i)=>{
-        d.classList.add('open'); d.style.pointerEvents='none';
-        const inside = d.querySelector('.inside');
-        let chosen = doorPrize.get(d);
-        if(d===selectedDoor){ chosen = coerceAllowed(chosen); doorPrize.set(d, chosen); }
-        const amount = chosen?.amount || 'Rp 0';
-        const type = (amount.includes('1.000.000') || amount.includes('5.000.000')) ? 'diamond'
-                  : amount.includes('2.000') ? 'coin' : 'star';
-
-        inside.classList.add('portal','skin-panel');
-        inside.setAttribute('data-theme', portalThemes[i % portalThemes.length]);
-        inside.setAttribute('data-state', d===selectedDoor ? 'selected' : 'showcase');
-        inside.innerHTML = `
-          <div class="panel-bg"></div>
-          <div class="prize-card">
-            ${getPrizeSVG(type)}
-            <div class="prize-label">${amount}</div>
-          </div>
-        `;
-        if(d===selectedDoor) d.classList.add('is-picked'); else d.classList.remove('is-picked');
-      });
-
-      setTimeout(()=>{ playChaChing(); revealWin(doorPrize.get(selectedDoor)); }, 1100);
+  /* ==== Render semua pintu sesuai hadiah server ==== */
+  function renderOpenDoors(selectedDoor, hadiahNum, hadiahStr){
+    doors.forEach((d,i)=>{
+      d.classList.add('open'); d.style.pointerEvents='none';
+      const inside = d.querySelector('.inside');
+      let amountStr, type;
+      if (d===selectedDoor){
+        amountStr = hadiahStr;
+        type = hadiahNum >= 1000000 ? 'diamond' : (hadiahNum <= 3000 ? 'coin' : 'star');
+      } else {
+        const chosen = doorPrize.get(d);
+        amountStr = chosen?.amount || 'Rp 0';
+        if (amountStr.includes('1.000.000') || amountStr.includes('5.000.000')) type='diamond';
+        else if (amountStr.includes('2.000')) type='coin';
+        else type='star';
+      }
+      inside.classList.add('portal','skin-panel');
+      inside.setAttribute('data-theme', portalThemes[i % portalThemes.length]);
+      inside.setAttribute('data-state', d===selectedDoor ? 'selected' : 'showcase');
+      inside.innerHTML = `
+        <div class="panel-bg"></div>
+        <div class="prize-card">
+          ${getPrizeSVG(type)}
+          <div class="prize-label">${amountStr}</div>
+        </div>
+      `;
+      if(d===selectedDoor) d.classList.add('is-picked'); else d.classList.remove('is-picked');
     });
   }
 
-  function revealWin(winPrize){
-    const winning = winPrize && typeof winPrize.amount==='string' ? winPrize.amount : null;
-    if(!winning){ showToast('Data hadiah belum siap. Mengulang…'); return startGame(); }
+  /* ==== Klik pintu (versi sinkron dengan sheet) ==== */
+  async function handleDoorEl(selectedDoor){
+    if(gameLocked) return;
+    gameLocked = true; selectEnabled = false;
+    ctaSpin.style.display='none';
+    window._lastSelectedDoor = selectedDoor;
 
-    modalTitle.textContent = "Anda Mendapat Hadiah";
-    winMessageEl.textContent = `Selamat berakah! Kamu mendapatkan ${winning}`;
+    // efek suara kecil
+    try{ playWhoosh(()=>{}); }catch(_){}
 
-    const rows = prizes.map((p,i)=>{
-      const cls = (p.amount===winning) ? ' style="background:#a6ffff;color:#0a0d25;font-weight:900;"' : '';
-      return `<tr${cls}><td style="padding:10px 16px;border-bottom:1px solid #23194a;">${i+1}</td><td style="padding:10px 16px;border-bottom:1px solid #23194a;">${p.amount}</td></tr>`;
-    }).join('');
-    prizeListTableBody.innerHTML = rows;
-
-    // --- Integrasi pencatatan hadiah ke Google Sheet ---
-    try {
-      const s = JSON.parse(localStorage.getItem('tm_session')||'null');
-      if (!s?.userId || !s?.kupon) {
-        showToast('Session tidak valid. Silakan login ulang.');
-        lockGame();
-        modal.classList.add('show'); modal.setAttribute('aria-hidden','false');
-        return;
-      }
-      // Ambil angka dari string hadiah (misal: 'Rp 5.000' -> 5000)
-      const nominal = Number((winning||'').replace(/[^\d]/g, ''));
-      const apiUrl = 'https://script.google.com/macros/s/AKfycbyRl2BqiDPw75fQ-XYyL87eKDwHMr61eY0Cg7ra1vc36OMOFZ3IRY_QeZcLFDzFFM88/exec';
-      fetch(`${apiUrl}?action=catat&userid=${encodeURIComponent(s.userId)}&kupon=${encodeURIComponent(s.kupon)}&hadiah=${encodeURIComponent(nominal)}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            showToast('SUKSES', `Hadiah ${winning} sudah dicatat!`);
-          } else {
-            showToast('ERROR', data.msg || 'Gagal mencatat hadiah!');
-          }
-          lockGame();
-        })
-        .catch(() => {
-          showToast('ERROR', 'Gagal menghubungi server. Coba lagi.');
-          lockGame();
-        });
-    } catch {
-      showToast('ERROR', 'Session error.');
+    const result = await fetchServerPrize();
+    if (!result.ok){
+      showToast(result.msg || 'Gagal mengambil hadiah.');
       lockGame();
+      modal.classList.add('show'); modal.setAttribute('aria-hidden','false');
+      return;
     }
 
-    modal.classList.add('show'); modal.setAttribute('aria-hidden','false');
+    const {hadiahNum, hadiahStr} = result;
+    renderOpenDoors(selectedDoor, hadiahNum, hadiahStr);
+
+    setTimeout(()=>{
+      try{ playChaChing(); }catch(_){}
+      // isi modal + highlight
+      modalTitle.textContent = "Anda Mendapat Hadiah";
+      winMessageEl.textContent = `Selamat berakah! Kamu mendapatkan ${hadiahStr}`;
+      const rows = prizes.map((p,i)=>{
+        const pNum = Number((p.amount||'').replace(/[^\d]/g, ''));
+        const cls = (pNum===hadiahNum) ? ' style="background:#a6ffff;color:#0a0d25;font-weight:900;"' : '';
+        return `<tr${cls}><td style="padding:10px 16px;border-bottom:1px solid #23194a;">${i+1}</td><td style="padding:10px 16px;border-bottom:1px solid #23194a;">${p.amount}</td></tr>`;
+      }).join('');
+      prizeListTableBody.innerHTML = rows;
+      showToast('Hadiah sudah dicatat!');
+      lockGame();
+      modal.classList.add('show'); modal.setAttribute('aria-hidden','false');
+    }, 400);
   }
+
+  // Saat halaman dibuka, cek status kupon ke API
+  (function(){
+    const s = JSON.parse(localStorage.getItem('tm_session')||'null');
+    function setClaimed(kupon) { if (!kupon) return; localStorage.setItem('tm_claimed_'+kupon, '1'); }
+    function isClaimed(kupon) { if (!kupon) return false; return localStorage.getItem('tm_claimed_'+kupon) === '1'; }
+    function lockGame() {
+      doors.forEach(d=>d.style.pointerEvents='none');
+      if (ctaSpin) { ctaSpin.setAttribute('aria-disabled','true'); ctaSpin.style.display='none'; }
+      if (playAgainBtn) playAgainBtn.style.display='none';
+    }
+    if (isClaimed(s?.kupon)) {
+      lockGame();
+      showToast('Kupon sudah pernah dipakai!');
+    } else if (s?.userId && s?.kupon) {
+      const apiUrl = 'https://script.google.com/macros/s/AKfycbyRl2BqiDPw75fQ-XYyL87eKDwHMr61eY0Cg7ra1vc36OMOFZ3IRY_QeZcLFDzFFM88/exec';
+      fetch(`${apiUrl}?action=claim&userid=${encodeURIComponent(s.userId)}&kupon=${encodeURIComponent(s.kupon)}&site=BELEGENDBET`)
+        .then(res=>res.json())
+        .then(data=>{
+          if (data.msg && data.msg.toLowerCase().includes('terpakai')) {
+            lockGame();
+            showToast('Kupon sudah pernah dipakai!');
+            setClaimed(s.kupon);
+          }
+        });
+    }
+  })();
 
   // Disable semua pintu dan tombol spin setelah hadiah dicatat
   function lockGame() {
@@ -541,11 +591,11 @@
     }
   }
 
-  /* ==== Modal actions ==== */
-  claimBtn.addEventListener('click', ()=>{ modal.classList.remove('show'); setTimeout(startGame, 300); }, {signal: __CTRL.signal});
-  joinTgBtn.addEventListener('click', ()=>{ modal.classList.remove('show'); setTimeout(startGame, 300); }, {signal: __CTRL.signal});
-  playAgainBtn.addEventListener('click', ()=>{ modal.classList.remove('show'); startGame(); }, {signal: __CTRL.signal});
-  modal.addEventListener('click', (e)=>{ if(e.target===modal){ modal.classList.remove('show'); startGame(); } }, {signal: __CTRL.signal});
+  /* ==== Modal actions (tanpa restart game) ==== */
+  claimBtn.addEventListener('click', ()=>{ modal.classList.remove('show'); }, {signal: __CTRL.signal});
+  joinTgBtn.addEventListener('click', ()=>{ modal.classList.remove('show'); }, {signal: __CTRL.signal});
+  playAgainBtn.addEventListener('click', ()=>{ modal.classList.remove('show'); }, {signal: __CTRL.signal});
+  modal.addEventListener('click', (e)=>{ if(e.target===modal){ modal.classList.remove('show'); } }, {signal: __CTRL.signal});
 
   /* ==== Audio ringan ==== */
   let audioCtx;
