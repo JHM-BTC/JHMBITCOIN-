@@ -13,10 +13,10 @@
       --lime:#39ff7f; --cyan:#00e7ff; --text:#e9f0ff; --muted:#a9b0c0;
       --glass: rgba(255,255,255,.06); --glass-stroke: rgba(255,255,255,.14);
 
-      /* ==== jarak & responsif grid pintu (NEW) ==== */
-      --door-gap: clamp(12px, 3.8vw, 28px);         /* jarak antar pintu (ubah kalau mau lebih renggang) */
-      --door-min: clamp(120px, 42vw, 360px);        /* lebar minimum kolom agar muat di HP kecil */
-      --doors-max-width: min(96vw, 980px);          /* lebar maksimum area grid agar tidak megar di desktop */
+      /* ==== ukuran & responsif grid pintu (dipaksa 3 kolom) ==== */
+      --door-gap: clamp(6px, 1.8vw, 20px);
+      --door-min: clamp(86px, 27.5vw, 240px);
+      --doors-max-width: min(98vw, 1120px);
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -54,18 +54,17 @@
     .cta .pulse{ position:absolute; inset:0; border-radius:inherit; box-shadow:0 0 0 0 rgba(39,176,255,.55); animation:pulse 2.6s ease-out infinite; }
     @keyframes pulse{ 0%{box-shadow:0 0 0 0 rgba(39,176,255,.55)} 70%{box-shadow:0 0 0 22px rgba(39,176,255,0)} 100%{box-shadow:0 0 0 0 rgba(39,176,255,0)} }
 
-    /* ===== Doors grid (SELALU 2 kolom x 3 baris) ===== */
+    /* ===== Doors grid (SELALU 3 kolom × 2 baris) ===== */
     .doors{
       display:grid;
-      grid-template-columns: repeat(2, minmax(var(--door-min), 1fr));
+      grid-template-columns: repeat(3, minmax(var(--door-min), 1fr));
       gap: var(--door-gap);
       margin-top:36px;
       width: var(--doors-max-width);
       margin-inline:auto;
-      padding-inline: clamp(8px, 3vw, 20px); /* biar tidak nempel tepi */
+      padding-inline: clamp(6px, 2.5vw, 20px);
+      align-items:start;
     }
-    /* Hilangkan aturan lama (3 kolom/1 kolom) agar konsisten 2 kolom di semua device */
-    /* @media queries lama dihapus */
 
     .door{ position:relative; aspect-ratio:3/4; border-radius:20px; padding:0; background:transparent; border:none; overflow:visible; cursor:pointer; transform:translateZ(0); perspective:1200px; isolation:isolate; transition: transform .16s ease, box-shadow .16s ease, filter .16s ease; will-change: transform, filter; contain: layout paint; width:100%; }
     .door:focus-visible{ outline:2px solid var(--electric); outline-offset:2px }
@@ -257,9 +256,9 @@
     </header>
 
     <section class="hero">
-      <div class="eyebrow">Event Promosi Eksklusif</div>
+      <div class="eyebrow">🔥 Event Promosi Eksklusif 🔥</div>
       <h1 class="title"><span class="neon-1">GEDOR</span> <span class="neon-2">PINTU HOKI</span></h1>
-      <p class="subtitle">Pilih pintumu. Rebut hadiahnya. Mode neon futuristik.</p>
+      <p class="subtitle">🎯Pilih pintumu Rebut hadiahnya.📌 </p>
     </section>
 
     <section class="doors" id="pintu" aria-label="Galeri Pintu">
@@ -278,7 +277,7 @@
     </div>
   </div>
 
-  <footer class="legal-bottom">© 2024 BELEGENDBET. Hak Cipta Dilindungi Undang-Undang.</footer>
+  <footer class="legal-bottom">© 2025 BELEGENDBET. Hak Cipta Dilindungi Undang-Undang.</footer>
 
   <!-- Modal -->
   <div id="winModal" class="modal" aria-hidden="true" role="dialog" aria-label="Hadiah">
