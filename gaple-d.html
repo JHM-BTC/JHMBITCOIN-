@@ -234,7 +234,7 @@ padding-top:58px; padding-bottom:36px
 </div>
 
 <footer class="site-footer">
-<p>© 2024 BELEGENDBET. Hak Cipta Dilindungi Undang-Undang.</p>
+<p>© 2025 BELEGENDBET. Hak Cipta Dilindungi Undang-Undang.</p>
 </footer>
 
 <script>
@@ -658,7 +658,7 @@ refreshPipSize();
   function isClaimed(kupon) { if (!kupon) return false; return localStorage.getItem('tm_claimed_'+kupon) === '1'; }
   if (isClaimed(s?.kupon)) {
     lockIfPlayed();
-    resultMsg.innerHTML = 'Kupon sudah pernah dipakai!';
+    resultMsg.innerHTML = 'Kupon sudah pernah dipakai⛔';
     resultBox.classList.add('show');
   } else if (s?.userId && s?.kupon) {
     const apiUrl = 'https://script.google.com/macros/s/AKfycbyRl2BqiDPw75fQ-XYyL87eKDwHMr61eY0Cg7ra1vc36OMOFZ3IRY_QeZcLFDzFFM88/exec';
