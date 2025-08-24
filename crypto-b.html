@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Neon Crypto Event — Spin & Prize (v15.3 FAST)</title>
 
 <!-- Tailwind -->
@@ -17,7 +17,7 @@
 <link rel="dns-prefetch" href="//i.postimg.cc">
 <link rel="preconnect" href="https://i.postimg.cc" crossorigin>
 
-<!-- Preload ALL coin icons (ditambah crossorigin biar koneksi/caching optimal) -->
+<!-- Preload ALL coin icons -->
 <link rel="preload" as="image" href="https://i.postimg.cc/V6wtcHDP/e97e725d-7c9e-46bb-ba18-12ac2229a4ed.png" crossorigin="anonymous">
 <link rel="preload" as="image" href="https://i.postimg.cc/KjwLCcWJ/6904c3e5-64b9-40bc-b720-146bce9c52ef.png" crossorigin="anonymous">
 <link rel="preload" as="image" href="https://i.postimg.cc/JzG4dVVd/7b78591f-a68b-4879-8e41-9f55d7c2a5fa.png" crossorigin="anonymous">
@@ -29,11 +29,15 @@
 <link rel="preload" as="image" href="https://i.postimg.cc/k5LVyM2c/93b53129-af39-4f31-8711-5f7adbb9cdf7.png" crossorigin="anonymous">
 
 <style>
+/* ====== GLOBAL ====== */
+*{ box-sizing:border-box }
 :root{
   --muted:#94a3b8; --txt:#e2e8f0; --p:#38bdf8; --s:#a855f7; --g:#10b981; --r:#ef4444;
   --card:rgba(16,22,42,.7);
   --ring: conic-gradient(from 0deg, #ff0044, #ff7f00 16%, #ffee00 32%, #00ff87 48%, #00b3ff 64%, #7b2cff 80%, #ff00d4 96%, #ff0044);
   --slotInset:16px; --hdr-h:46px; --subftr-h:32px;
+  /* gap aman antara header fixed dan konten (anti “mentok”) */
+  --top-gap: clamp(18px, 3.5vh, 44px);
 }
 html, body{ height:100% }
 body{
@@ -65,13 +69,25 @@ body{
   background:linear-gradient(90deg,#0b1530,#1f2b6b 55%,#3b2a8a);
   border-top:1px solid rgba(255,255,255,.08)
 }
-.pagePadAll{ padding-top:calc(var(--hdr-h) + 12px); padding-bottom:calc(var(--subftr-h) + 12px) }
+
+/* SAFE PADDING: tambah jarak dari header & notch iOS */
+.pagePadAll{
+  padding-top: calc(var(--hdr-h) + var(--top-gap) + env(safe-area-inset-top,0px));
+  padding-bottom: calc(var(--subftr-h) + 12px + env(safe-area-inset-bottom,0px));
+}
+
+/* canvas bintang */
 .space{ position:fixed; inset:0; z-index:0; pointer-events:none }
 .space canvas{ width:100%; height:100%; display:block }
-.shell{ position:relative; z-index:10; max-width:1200px; margin-inline:auto }
+
+/* container tengah */
+.shell{ position:relative; z-index:10; max-width:1200px; margin-inline:auto; width:min(1200px, 100%); padding-inline: clamp(12px, 3vw, 24px) }
 .neon{
-  position:relative; border-radius:1.25rem; padding:2rem; background:var(--card); backdrop-filter: blur(12px);
-  box-shadow: 0 0 40px rgba(56,189,248,.25), inset 0 0 24px rgba(168,85,247,.12); isolation:isolate
+  position:relative; border-radius:1.25rem;
+  padding: clamp(1rem, 2.2vw, 2rem);
+  background:var(--card); backdrop-filter: blur(12px);
+  box-shadow: 0 0 40px rgba(56,189,248,.25), inset 0 0 24px rgba(168,85,247,.12); isolation:isolate;
+  margin-top: .25rem; /* jaga jarak visual ekstra dari header */
 }
 .neon:before{ content:""; position:absolute; inset:-2px; border-radius:inherit; background:var(--ring); filter:blur(8px); z-index:-1 }
 .neon:after{
@@ -88,26 +104,35 @@ body{
 /* ===== Mini Crypto Chart ===== */
 .miniChart{ border-radius:12px; background:linear-gradient(180deg,#0b1220,#141b2e); border:1px solid rgba(255,255,255,.06);
   box-shadow:0 12px 30px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.04); overflow:hidden }
-.miniChart .chart{ height:320px }
+.miniChart .chart{ height: clamp(220px, 36vh, 320px) } /* responsive tinggi chart */
 .mc-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 12px; border-bottom:1px solid rgba(255,255,255,.06);
-  background:linear-gradient(90deg,rgba(30,41,72,.7),rgba(18,26,44,.7)); color:#c7d2fe }
+  background:linear-gradient(90deg,rgba(30,41,72,.7),rgba(18,26,44,.7)); color:#c7d2fe; flex-wrap:wrap }
 .mc-title{ font-weight:800; letter-spacing:.02em }
 .mc-tools{ display:flex; align-items:center; gap:10px; flex-wrap:wrap }
 .mc-select{ display:flex; align-items:center; gap:6px; color:#94a3b8; font-size:.85rem }
 .mc-select select{ appearance:none; background:#0f172a; color:#e2e8f0; border:1px solid rgba(255,255,255,.08); border-radius:.5rem; padding:.35rem .6rem }
-.mc-chips{ display:flex; align-items:center; gap:6px }
+.mc-chips{ display:flex; align-items:center; gap:6px; flex-wrap:wrap }
 .chip{ display:inline-flex; align-items:center; gap:6px; padding:.28rem .6rem; border-radius:.6rem; background:#0f172a; color:#cbd5e1;
   border:1px solid rgba(255,255,255,.08); font-weight:700; font-size:.85rem }
 .chip.active{ background:linear-gradient(180deg,#312e81,#1e40af); color:#e5edff; box-shadow:0 0 0 1px rgba(99,102,241,.5) inset }
 .chip.input{ padding:.2rem .4rem }
 .chip.input input{ width:54px; background:transparent; color:#e2e8f0; border:none; outline:none; text-align:center; font-weight:800 }
 
+/* grid konten, stack di mobile */
+/* Jarak antar kolom grid dan pedal slot */
 .grid-2{ display:grid; gap:1.25rem }
-@media (min-width:980px){ .grid-2{ grid-template-columns: 1fr 1fr } }
+@media (min-width:980px){
+  .grid-2{ grid-template-columns: 1fr 1fr }
+  .slotStage { margin-right: 32px; }
+}
+@media (max-width:979px){
+  .slotStage { margin-right: 0; }
+}
 
+/* SLOT MACHINE AREA */
 .slotStage{ display:grid; place-items:center }
 .slotBox{
-  position:relative; width:min(420px,92%); height:min(400px,70vw); border-radius:1.1rem;
+  position:relative; width:min(420px,100%); height: clamp(260px, 58vw, 400px); border-radius:1.1rem;
   background:
     radial-gradient(120% 140% at 20% -10%, rgba(255,255,255,.35), transparent 60%),
     radial-gradient(120% 140% at 120% 120%, rgba(255,255,255,.28), transparent 60%),
@@ -126,12 +151,17 @@ body{
 
 .reel{ display:flex; flex-direction:column; transform:translateY(0); will-change: transform; backface-visibility: hidden; visibility:hidden; position:absolute; inset:var(--slotInset) }
 .cell{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.45rem; height:18rem }
-.cell img{ width:110px; height:110px; object-fit:contain; filter: drop-shadow(0 0 14px rgba(56,189,248,.25)) }
+.cell img{ width: clamp(70px, 18vw, 110px); height:auto; object-fit:contain; filter: drop-shadow(0 0 14px rgba(56,189,248,.25)) }
 
 .cta{ font-family:'Bebas Neue',sans-serif; letter-spacing:.06em; padding:.9rem 2.6rem; border-radius:.8rem; background:linear-gradient(45deg, var(--p), var(--s));
-  color:#0b0f1a; font-size:1.5rem; font-weight:700; box-shadow:0 8px 40px rgba(56,189,248,.4) }
+  color:#0b0f1a; font-size: clamp(1.1rem, 2.6vw, 1.5rem); font-weight:700; box-shadow:0 8px 40px rgba(56,189,248,.4) }
 
-.board{ display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:.8rem; max-height:none; overflow:visible; padding-right:0 }
+/* Board hadiah responsif */
+.board{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap:.8rem; max-height:none; overflow:visible; padding-right:0
+}
 .row{ display:flex; flex-direction:column; align-items:center; text-align:center; gap:.45rem; padding:.9rem; border-radius:.9rem;
   background:linear-gradient(180deg,#fffaf0,#f6edd8); border:1px solid rgba(17,24,39,.08);
   box-shadow: inset 0 1px 0 rgba(255,255,255,.65), 0 .5px 0 rgba(255,255,255,.4), 0 10px 20px rgba(0,0,0,.12);
@@ -151,11 +181,13 @@ body{
 .modal{ width:min(520px, 92vw); background:rgba(16,22,42,.95); border-radius:1rem; padding:2rem; border:1px solid rgba(56,189,248,.35);
   box-shadow:0 0 36px rgba(56,189,248,.2) }
 
+/* Prefer reduced motion */
 @media (prefers-reduced-motion: reduce){
   .reel{ transition:none !important }
   .spinning .vItem .logo{ animation:none !important }
 }
 
+/* Frame/ornamen slot */
 .slotBox::before{
   content:""; position:absolute; inset:-1.5px; border-radius:inherit; padding:1.5px;
   background: conic-gradient(from 0deg, #22d3ee, #a78bfa, #22d3ee);
@@ -201,8 +233,9 @@ body{
 }
 @keyframes flashOverlay{ 0%{opacity:0} 10%{opacity:1} 25%{opacity:.25} 45%{opacity:.95} 100%{opacity:0} }
 
+/* Toast, tombol, editor icon (tetap) */
 .toast{ position:fixed; right:clamp(16px,4vw,40px); bottom:clamp(16px,4vw,40px); z-index:70 }
-.toast .card{ min-width:320px; max-width:460px; background:rgba(16,22,42,.92); border:1px solid rgba(56,189,248,.35); border-radius:.9rem; padding:1rem 1.25rem;
+.toast .card{ min-width:280px; max-width:460px; background:rgba(16,22,42,.92); border:1px solid rgba(56,189,248,.35); border-radius:.9rem; padding:1rem 1.25rem;
   box-shadow:0 10px 40px rgba(0,0,0,.55), 0 0 30px rgba(56,189,248,.25); transform:translateY(12px); opacity:0;
   transition:transform .28s ease, opacity .28s ease }
 .toast.show .card{ transform:translateY(0); opacity:1 }
@@ -210,9 +243,7 @@ body{
 .toast.inline .card{ margin-top:.75rem }
 .toast h4{ font-weight:800; letter-spacing:.02em; margin:0 0 .35rem 0 }
 .toast .btn{ margin-top:.6rem; padding:.5rem .9rem; border-radius:.6rem; background:linear-gradient(45deg, var(--p), var(--s)); color:#0b0f1a; font-weight:800; border:none }
-
-/* Dua tombol klaim sejajar */
-.toast .btnRow{ display:flex; gap:.6rem; margin-top:.6rem }
+.toast .btnRow{ display:flex; gap:.6rem; margin-top:.6rem; flex-wrap:wrap }
 .toast .btnRow .btn{ flex:1; display:inline-block; text-align:center; margin-top:0; text-decoration:none }
 .toast .btnRow .btn:hover{ filter:brightness(1.05) }
 
@@ -227,14 +258,34 @@ body{
   radial-gradient(48% 55% at 50% 50%, rgba(255,255,255,.55), rgba(255,255,255,.35) 45%, transparent 70%),
   radial-gradient(40% 50% at 50% 48%, rgba(255,255,255,.25), transparent 70%); pointer-events:none; filter: saturate(1.1) brightness(1.25) }
 .picker{ filter: drop-shadow(0 0 16px rgba(56,189,248,.7)) }
-.display .logo{ filter: drop-shadow(0 8px 22px rgba(56,189,248,.45)) drop-shadow(0 0 28px rgba(168,85,247,.25)) }
-.slotBox .frame{ position:absolute; inset:var(--slotInset); border-radius:14px; box-shadow: 0 0 0 2px rgba(255,255,255,.9) inset, 0 0 20px rgba(255,255,255,.35) inset; pointer-events:none }
+.display {
+  position: absolute;
+  inset: var(--slotInset);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(100% - 2 * var(--slotInset));
+  height: calc(100% - 2 * var(--slotInset));
+}
+.display .logo {
+  width: clamp(120px, 28vw, 180px);
+  height: clamp(120px, 28vw, 180px);
+  object-fit: contain;
+  filter: drop-shadow(0 8px 22px rgba(56,189,248,.45)) drop-shadow(0 0 28px rgba(168,85,247,.25));
+  display: block;
+  margin: auto;
+}
+.display .vcol{ position:absolute; inset:14px; display:flex; flex-direction:column; align-items:center; gap:18px; will-change:transform }
+.display .vItem{ display:flex; flex-direction:column; align-items:center; gap:.35rem }
+.display .vItem .logo{ width: clamp(90px, 24vw, 140px); height:auto; object-fit:contain }
+.spinning .vItem .logo{ animation:coinSpin 240ms linear infinite }
+@keyframes coinSpin{ from{ transform:rotateY(0deg) } to{ transform:rotateY(360deg) } }
 
-.cabinet{ position:relative; width:min(520px,90%); background:linear-gradient(180deg,#1f2937,#0f172a 40%, #111827 60%, #0b1220);
+/* cabinet (frame luar) */
+.cabinet{ position:relative; width:min(520px,100%); background:linear-gradient(180deg,#1f2937,#0f172a 40%, #111827 60%, #0b1220);
   border-radius:18px; padding:14px 18px 18px; box-shadow: 0 30px 80px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.06) }
 .cabinet:after{ content:""; position:absolute; left:10px; right:10px; bottom:10px; height:10px; border-radius:999px;
   background: radial-gradient(50% 80% at 50% 50%, rgba(0,0,0,.6), transparent 70%); filter: blur(6px); z-index:0 }
-
 .marquee{
   height:64px; border-radius:12px; display:grid; place-items:center; font-family:'Bebas Neue',sans-serif; font-size:clamp(20px,3.2vw,32px);
   letter-spacing:.06em; color:#ffe; text-shadow:0 0 18px rgba(255,214,10,.5);
@@ -263,15 +314,6 @@ body{
 }
 .lever.pull{ transform:rotate(14deg) }
 
-.display{ position:absolute; inset:var(--slotInset); display:grid; place-items:center }
-.display .logo{ width:180px;height:180px;object-fit:contain;filter: brightness(1.08) drop-shadow(0 8px 22px rgba(56,189,248,.35)) drop-shadow(0 0 28px rgba(168,85,247,.25)) }
-.display .vcol{ position:absolute; inset:14px; display:flex; flex-direction:column; align-items:center; gap:18px; will-change:transform }
-.display .vItem{ display:flex; flex-direction:column; align-items:center; gap:.35rem }
-.display .vItem .logo{ width:140px;height:140px;object-fit:contain;filter: drop-shadow(0 6px 16px rgba(56,189,248,.25)) }
-.spinning .vItem .logo{ animation:coinSpin 240ms linear infinite }
-@keyframes coinSpin{ from{ transform:rotateY(0deg) } to{ transform:rotateY(360deg) } }
-
-/* board header pill */
 .boardWrap{ position:relative; padding-top:3.2rem; margin-top:.25rem }
 .boardHead{
   position:absolute; top:-1.1rem; left:50%; transform:translateX(-50%); z-index:5; width:fit-content; display:inline-flex; align-items:center; justify-content:center;
@@ -286,16 +328,16 @@ body{
 </head>
 <body>
   <header class="siteHeader" role="banner">
-  <div class="spread">
-    <div class="brand">BELEGENDBET</div>
-    <a class="homeBtn" href="index.html">Beranda</a>
-  </div>
-</header>
+    <div class="spread">
+      <div class="brand">BELEGENDBET</div>
+      <a class="homeBtn" href="index.html">Beranda</a>
+    </div>
+  </header>
 
-  <div class="subFooter">© 2024 BELEGENDBET. Hak Cipta Dilindungi Undang-Undang.</div>
+  <div class="subFooter">© 2025 BELEGENDBET. Hak Cipta Dilindungi Undang-Undang.</div>
   <div class="space" aria-hidden="true"><canvas id="stars"></canvas></div>
 
-  <main class="shell px-4 py-10 relative pagePadAll">
+  <main class="shell relative pagePadAll">
     <section class="neon">
       <header class="text-center mb-6">
         <h1 class="title text-[clamp(2.2rem,7vw,4.6rem)]">CRYPTO TRADING DASHBOARD</h1>
@@ -378,6 +420,7 @@ body{
   </div>
 
 <script>
+/* ======= JS ASLI (tidak diubah) ======= */
 // ===== Helpers =====
 const qs = (id)=>document.getElementById(id);
 const formatIDR = (n)=> 'Rp. ' + Number(n||0).toLocaleString('id-ID');
@@ -415,15 +458,15 @@ if (isClaimed(s?.kupon)) {
 
 // ===== Data =====
 const symbols=[
-  { name:'Bitcoin (BTC)',   icon:'https://i.postimg.cc/V6wtcHDP/e97e725d-7c9e-46bb-ba18-12ac2229a4ed.png', prize:1500000 },
-  { name:'Ethereum (ETH)',  icon:'https://i.postimg.cc/KjwLCcWJ/6904c3e5-64b9-40bc-b720-146bce9c52ef.png', prize:500000 },
-  { name:'Dogecoin (DOGE)', icon:'https://i.postimg.cc/JzG4dVVd/7b78591f-a68b-4879-8e41-9f55d7c2a5fa.png', prize:100000 },
-  { name:'Cardano (ADA)',   icon:'https://i.postimg.cc/bvmZKNDk/cd74f159-0772-473f-acf9-3ba299c81b9e.png', prize:50000 },
-  { name:'Solana (SOL)',    icon:'https://i.postimg.cc/pLtqsxFP/4127a945-5034-4d26-bcf2-3acf8078a839.png', prize:10000 },
-  { name:'Litecoin (LTC)',  icon:'https://i.postimg.cc/4dn5YxrQ/d520c648-132e-4221-a564-49217775aca4.png', prize:8000 },
-  { name:'Ripple (XRP)',    icon:'https://i.postimg.cc/fbR7PbTQ/0dd15455-9843-4b80-995e-92b85570d004.png', prize:5000 },
-  { name:'Binance Coin (BNB)', icon:'https://i.postimg.cc/1RqG22PX/f75bf0b6-bf94-4796-9f51-9fb2ea8e4de9.png', prize:3000 },
-  { name:'Polkadot (DOT)',  icon:'https://i.postimg.cc/k5LVyM2c/93b53129-af39-4f31-8711-5f7adbb9cdf7.png', prize:2000 }
+  { name:'Bitcoin (BTC)',   icon:'https://i.postimg.cc/7PfjhkQs/compressed-BTC.webp', prize:1500000 },
+  { name:'Ethereum (ETH)',  icon:'https://i.postimg.cc/g2P7g6cQ/compressed-ETH.webp', prize:500000 },
+  { name:'Dogecoin (DOGE)', icon:'https://i.postimg.cc/rpfYynG2/doge.webp', prize:100000 },
+  { name:'Cardano (ADA)',   icon:'https://i.postimg.cc/Pq527Wg3/ada.webp', prize:50000 },
+  { name:'Solana (SOL)',    icon:'https://i.postimg.cc/kXPwCPrt/sol.webp', prize:10000 },
+  { name:'Litecoin (LTC)',  icon:'https://i.postimg.cc/YCp34NCr/ltc.webp', prize:8000 },
+  { name:'Ripple (XRP)',    icon:'https://i.postimg.cc/44VbB2K4/xrp.webp', prize:5000 },
+  { name:'Binance Coin (BNB)', icon:'https://i.postimg.cc/MTkfBxm7/bnb.webp', prize:3000 },
+  { name:'Polkadot (DOT)',  icon:'https://i.postimg.cc/2j7L1sbW/dot.webp', prize:2000 }
 ];
 
 // ===== Elements =====
@@ -440,15 +483,14 @@ function showToast(title, msg){
   tMsg.textContent = msg;
   toast.classList.add('show');
   if (toastTimer) clearTimeout(toastTimer);
-  // Tidak auto-hide, user harus tutup manual
 }
 function hideToast(){
   if (toastTimer){ clearTimeout(toastTimer); toastTimer=null; }
   toast.classList.remove('show');
 }
-if(tClose){ tClose.addEventListener('click', hideToast); } // no-op kalau ga ada
+if(tClose){ tClose.addEventListener('click', hideToast); }
 
-// ===== Preload icons (panasin cache, non-blocking) =====
+// ===== Preload icons =====
 async function preloadIcons(){
   const urls = [...new Set(symbols.map(s=>s.icon))];
   await Promise.all(urls.map(src => new Promise(res=>{
@@ -462,7 +504,7 @@ async function preloadIcons(){
   })));
 }
 
-// ===== Helper tunggu gambar tapi maksimal X ms (biar gak keblok) =====
+// ===== Helper tunggu gambar =====
 function waitImagesOrTimeout(root, ms=1200){
   const imgs = [...root.querySelectorAll('img')].filter(im=>!im.complete);
   if(!imgs.length) return Promise.resolve();
@@ -506,7 +548,7 @@ addEventListener('pointermove', (e)=>{
   document.body.style.setProperty('--my', Math.round(y*100)+'%');
 });
 
-// ===== Prize Board (render langsung saat boot) =====
+// ===== Prize Board =====
 function renderPrizeBoard(){
   boardEl.innerHTML='';
   symbols.forEach((s,i)=>{
@@ -517,7 +559,7 @@ function renderPrizeBoard(){
     const img=document.createElement('img');
     img.src=s.icon; img.alt=s.name;
     img.loading='eager'; img.decoding='sync'; img.setAttribute('fetchpriority','high');
-    img.width=110; img.height=110; // stabilin layout
+    img.width=110; img.height=110;
 
     const name=document.createElement('div');
     name.className='name';
@@ -573,7 +615,6 @@ async function populate(){
     reel.appendChild(d);
   }
 
-  // Jangan blok UI: tunggu gambar maksimal 1.2s saja
   await waitImagesOrTimeout(reel, 1200);
 
   measureCell();
@@ -666,7 +707,6 @@ function startSpin(){
 
 function finishSpin(sym, idx){
   spinning=false; btn.disabled=true; btn.textContent='SELESAI';
-  // --- Integrasi pencatatan hadiah ke Google Sheet (ambil dari sheet, anti double claim) ---
   if (!s?.userId || !s?.kupon) {
     showToast('ERROR', 'Session tidak valid. Silakan login ulang.');
     return;
@@ -683,10 +723,9 @@ function finishSpin(sym, idx){
       let data;
       try { data = await res.json(); } catch(e) { data = {success:false, msg:'Response bukan JSON'}; }
       if (data.success) {
-        // Cari symbol yang nominalnya sama dengan hadiah dari server
         let hadiahNum = Number(data.hadiah);
         let idxServer = symbols.findIndex(sy => Number(sy.prize) === hadiahNum);
-        if(idxServer === -1) idxServer = idx; // fallback ke idx spin jika tidak ketemu
+        if(idxServer === -1) idxServer = idx;
         renderDisplay(symbols[idxServer]);
         markWin(idxServer); flashPicker();
         mTitle.textContent = 'TRADE SUCCESS!';
@@ -727,7 +766,7 @@ function finishSpin(sym, idx){
   loop();
 })();
 
-// ===== Live Chart (reference-style) =====
+// ===== Live Chart =====
 (function liveChart(){
   const cv = qs('liveChart');
   const ctx = cv.getContext('2d');
@@ -743,13 +782,11 @@ function finishSpin(sym, idx){
   const tickers = symbols.map(s=>({ label: tickerFromName(s.name), value: tickerFromName(s.name) }));
   sel.innerHTML = tickers.map(t=>`<option value="${t.value}">${t.label}</option>`).join('');
 
-  // === Candle data (OHLC) ===
-  let candles = []; // {t,o,h,l,c}
-  let base = 68000; // dynamic per symbol
+  let candles = [];
+  let base = 68000;
   let last = base;
-  let winSec = 1800; // 30m default window (1s ticks)
+  let winSec = 1800;
   let maP = 20, emaP = 50;
-
   const bases = { BTCUSDT:68000, ETHUSDT:3600, DOGEUSDT:0.12, ADAUSDT:0.6, SOLUSDT:150, LTCUSDT:80, XRPUSDT:0.55, BNBUSDT:420, DOTUSDT:7.5 };
 
   function seed(n=240){
@@ -889,11 +926,11 @@ function finishSpin(sym, idx){
   sel.addEventListener('change',()=>{ setSymbol(sel.value); });
 })();
 
-// ===== Boot (FAST): render board dulu, sisanya di belakang =====
+// ===== Boot =====
 (()=>{
-  renderPrizeBoard(); // langsung tampil
-  populate();         // rakit reel (non-blocking)
-  preloadIcons();     // panasin ikon (non-blocking)
+  renderPrizeBoard();
+  populate();
+  preloadIcons();
 })();
 </script>
 </body>
