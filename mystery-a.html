@@ -33,6 +33,11 @@
     .highlight{ background-image:linear-gradient(90deg,#ff00ff,#00ffff); color:#fff; font-weight:700 }
     .picked{ outline:4px solid #22d3ee; box-shadow:0 0 30px #22d3ee77 inset }
     .disabled{ pointer-events:none; opacity:.6 }
+    #btnSpin.disabled{ 
+      background:linear-gradient(to right, #6b7280, #9ca3af) !important;
+      cursor:not-allowed !important;
+      transform:none !important;
+    }
     .twirl{ transform:rotateY(180deg) scale(.96) }
     .header-full{left:0;right:0;top:0;width:100% !important;}
   </style>
@@ -53,7 +58,7 @@
 
   <div class="mystery-root">
     <main class="w-full flex flex-col items-center pt-8 pb-28">
-      <h1 class="text-4xl md:text-6xl font-extrabold rainbow-neon tracking-widest uppercase drop-shadow-lg mb-6 text-center">MYSTERY BOX</h1>
+      <h1 class="text-4xl md:text-6xl font-extrabold rainbow-neon tracking-widest uppercase drop-shadow-lg mb-6 text-center"> MYSTERY BOX </h1>
 
       <div id="gridBoxes" class="grid grid-cols-3 gap-6 mb-8">
         <button class="box-glow w-20 h-20 md:w-28 md:h-28 flex items-center justify-center"><span class="text-4xl md:text-5xl">🎁</span></button>
@@ -186,7 +191,7 @@
 
     // Shuffle grid
     const grid = document.getElementById('gridBoxes');
-    let spinning=false, chosen=false;
+    let spinning=false, chosen=false, hasSpun=false;
 
     // Saat load, semua box harus disabled
     function setBoxesDisabled(disabled=true) {
@@ -231,17 +236,28 @@
 
     const btnSpin=document.getElementById('btnSpin');
     function startSpinBoxes(){
-      if(spinning) return;
-      spinning=true; chosen=false;
+      if(spinning || hasSpun) return; // Cegah spin jika sudah pernah spin
+      spinning=true; chosen=false; hasSpun=true; // Set flag hasSpun ke true
+      
+      // MULAI SUARA TRAKTOR UNTUK SPIN
+      startTractorSound();
+      
       Array.from(grid.children).forEach(b=>{
         b.classList.remove('picked','disabled');
         b.style.pointerEvents='none';
         b.querySelector('span').textContent='🎁';
       });
       setBoxesDisabled(true);
+      
+      // Disable tombol spin dan ubah tampilannya
+      btnSpin.disabled = true;
+      btnSpin.classList.add('disabled');
+      
       const endAt=Date.now()+3000;
       (function step(){
         if(Date.now()>endAt){
+          // STOP SUARA TRAKTOR SETELAH SELESAI SPIN
+          stopTractorSound();
           btnSpin.textContent='🎯 PILIH KOTAK!';
           setBoxesDisabled(false);
           spinning=false; return;
@@ -256,6 +272,9 @@
 
     const tbody=document.getElementById('tableBody');
   function openModalWithPrize(prize){
+      // PLAY CHA-CHING SOUND UNTUK HADIAH
+      playChaChing();
+      
       tbody.innerHTML='';
       hadiahDisplay.forEach((h,i)=>{
         const tr=document.createElement('tr');
@@ -282,8 +301,10 @@
     // Disable semua tombol dan grid setelah hadiah dicatat
     function disableGame() {
       setBoxesDisabled(true);
+      hasSpun = true; // Set flag hasSpun untuk mencegah spin ulang
       btnSpin.disabled = true;
       btnSpin.classList.add('disabled');
+      btnSpin.textContent = '🚫 SUDAH DIGUNAKAN';
     }
     function closeModal(){
       const m=document.getElementById('modalPrize');
@@ -297,6 +318,10 @@
     grid.addEventListener('click', e=>{
       const el=e.target.closest('button');
       if(!el || spinning || chosen) return;
+      
+      // PLAY WHOOSH SOUND UNTUK PILIH BOX
+      playWhoosh();
+      
       chosen=true; el.classList.add('picked'); setTimeout(()=>el.classList.remove('picked'),900);
       Array.from(grid.children).forEach(b=> b.classList.add('disabled'));
       // Ambil hadiah dari API, bukan random di client
@@ -322,7 +347,7 @@
           console.log('Response API:', data);
           if (data.success) {
             openModalWithPrize(Number(data.hadiah));
-            resultText.textContent = `Selamat ${s.userId}! Kamu mendapatkan ${formatRupiah(Number(data.hadiah))}. Hadiah sudah dicatat.`;
+            resultText.textContent = `Selamat ${s.userId}🎉 Bosku mendapatkan ${formatRupiah(Number(data.hadiah))}. Claim segera.`;
             disableGame();
             setClaimed(s.kupon);
           } else {
@@ -336,6 +361,286 @@
           disableGame();
         });
       if(btnSpin) btnSpin.textContent='🎲 SPIN BOX';
+    });
+    
+    /* ==== SISTEM AUDIO - 3 SUARA ==== */
+    let audioCtx;
+    let tractorSound = null;
+    let isTractorPlaying = false;
+    
+    function getCtx(){ 
+      if(!audioCtx){ 
+        try {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)(); 
+          console.log('Audio context created, state:', audioCtx.state);
+        } catch (e) {
+          console.error('Failed to create audio context:', e);
+          return null;
+        }
+      } 
+      if(audioCtx.state === 'suspended') {
+        audioCtx.resume().then(() => {
+          console.log('Audio context resumed, state:', audioCtx.state);
+        }).catch(e => {
+          console.error('Failed to resume audio context:', e);
+        });
+      }
+      return audioCtx; 
+    }
+    
+    // Initialize audio context on first user interaction
+    let audioInitialized = false;
+    function initAudioOnInteraction() {
+      if (audioInitialized) return;
+      audioInitialized = true;
+      try { 
+        getCtx(); 
+        console.log('Audio initialized on user interaction');
+      } catch(e) {
+        console.error('Audio initialization failed:', e);
+      }
+    }
+    
+    window.addEventListener('pointerdown', initAudioOnInteraction, {once:true, passive:true});
+    window.addEventListener('click', initAudioOnInteraction, {once:true, passive:true});
+    window.addEventListener('touchstart', initAudioOnInteraction, {once:true, passive:true});
+    
+    // 1. SUARA TRAKTOR untuk SPIN BOX (seperti di gedorpintu)
+    function createTractorNoise() {
+      try {
+        const ctx = getCtx();
+        if (!ctx) return null;
+        
+        // Buat oscillator untuk suara traktor
+        const osc1 = ctx.createOscillator();
+        const osc2 = ctx.createOscillator();
+        
+        osc1.type = 'sawtooth';
+        osc1.frequency.value = 60; // Bass frequency untuk traktor
+        
+        osc2.type = 'square';
+        osc2.frequency.value = 120; // Harmonic frequency
+        
+        // Gain untuk masing-masing oscillator
+        const gain1 = ctx.createGain();
+        const gain2 = ctx.createGain();
+        const masterGain = ctx.createGain();
+        
+        gain1.gain.value = 0.4;
+        gain2.gain.value = 0.3;
+        masterGain.gain.value = 0;
+        
+        // Low-pass filter untuk suara traktor yang kasar
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 300;
+        filter.Q.value = 5;
+        
+        // Connection
+        osc1.connect(gain1);
+        osc2.connect(gain2);
+        gain1.connect(filter);
+        gain2.connect(filter);
+        filter.connect(masterGain);
+        masterGain.connect(ctx.destination);
+        
+        return { 
+          osc1: osc1, 
+          osc2: osc2, 
+          gain: masterGain, 
+          filter: filter,
+          gain1: gain1,
+          gain2: gain2
+        };
+      } catch (e) {
+        console.error('Error creating tractor noise:', e);
+        return null;
+      }
+    }
+    
+    function startTractorSound() {
+      if (isTractorPlaying) return;
+      
+      try {
+        const ctx = getCtx();
+        console.log('Starting tractor sound for spin...');
+        
+        if (ctx.state === 'suspended') {
+          ctx.resume();
+        }
+        
+        isTractorPlaying = true;
+        tractorSound = createTractorNoise();
+        
+        if (tractorSound) {
+          // Start oscillators
+          tractorSound.osc1.start();
+          tractorSound.osc2.start();
+          
+          // Fade in
+          const currentTime = ctx.currentTime;
+          tractorSound.gain.gain.setValueAtTime(0, currentTime);
+          tractorSound.gain.gain.linearRampToValueAtTime(0.8, currentTime + 0.1);
+          
+          // Variasi frequency untuk efek mesin traktor
+          let modulationInterval;
+          const modulateEngine = () => {
+            if (!isTractorPlaying || !tractorSound) {
+              if (modulationInterval) clearInterval(modulationInterval);
+              return;
+            }
+            
+            try {
+              const baseFreq1 = 50 + Math.random() * 30; // 50-80 Hz
+              const baseFreq2 = 100 + Math.random() * 50; // 100-150 Hz
+              const filterFreq = 250 + Math.random() * 100; // 250-350 Hz
+              const volume = 0.6 + Math.random() * 0.3; // 0.6-0.9
+              
+              tractorSound.osc1.frequency.setValueAtTime(baseFreq1, ctx.currentTime);
+              tractorSound.osc2.frequency.setValueAtTime(baseFreq2, ctx.currentTime);
+              tractorSound.filter.frequency.setValueAtTime(filterFreq, ctx.currentTime);
+              tractorSound.gain.gain.setValueAtTime(volume, ctx.currentTime);
+            } catch (e) {
+              console.warn('Error in engine modulation:', e);
+            }
+          };
+          
+          modulateEngine();
+          modulationInterval = setInterval(modulateEngine, 150);
+          tractorSound.modulationInterval = modulationInterval;
+        }
+      } catch (e) {
+        console.error('Error starting tractor sound:', e);
+        isTractorPlaying = false;
+      }
+    }
+    
+    function stopTractorSound() {
+      if (!isTractorPlaying || !tractorSound) return;
+      
+      try {
+        console.log('Stopping tractor sound...');
+        const ctx = getCtx();
+        
+        if (tractorSound.modulationInterval) {
+          clearInterval(tractorSound.modulationInterval);
+        }
+        
+        tractorSound.gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.3);
+        
+        setTimeout(() => {
+          if (tractorSound) {
+            try {
+              tractorSound.osc1.stop();
+              tractorSound.osc2.stop();
+            } catch (e) {
+              console.warn('Audio oscillators already stopped:', e);
+            }
+            tractorSound = null;
+          }
+          isTractorPlaying = false;
+        }, 350);
+      } catch (e) {
+        console.error('Error stopping tractor sound:', e);
+        isTractorPlaying = false;
+        tractorSound = null;
+      }
+    }
+    
+    // 2. SUARA WHOOSH untuk PILIH BOX (seperti di gedorpintu)
+    function playWhoosh(){
+      try {
+        const ctx = getCtx(); 
+        const dur = 0.45;
+        const bufferSize = ctx.sampleRate * dur;
+        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        
+        for(let i=0;i<bufferSize;i++) data[i] = Math.random()*2-1;
+        
+        const src = ctx.createBufferSource(); 
+        src.buffer = buffer;
+        
+        const filter = ctx.createBiquadFilter(); 
+        filter.type='lowpass'; 
+        filter.frequency.setValueAtTime(400, ctx.currentTime); 
+        filter.frequency.exponentialRampToValueAtTime(8000, ctx.currentTime + dur);
+        
+        const gain = ctx.createGain(); 
+        gain.gain.setValueAtTime(0.0001, ctx.currentTime); 
+        gain.gain.exponentialRampToValueAtTime(.6, ctx.currentTime+0.05); 
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+dur);
+        
+        src.connect(filter).connect(gain).connect(ctx.destination); 
+        src.start();
+        
+        console.log('Playing whoosh sound for box pick');
+      } catch (e) {
+        console.warn('Error playing whoosh sound:', e);
+      }
+    }
+    
+    // 3. SUARA CHA-CHING untuk HADIAH (seperti di gedorpintu)
+    function playChaChing(){
+      try {
+        const ctx = getCtx(); 
+        const t0 = ctx.currentTime + 0.02;
+        
+        const o1 = ctx.createOscillator(); 
+        o1.type='triangle'; 
+        const g1 = ctx.createGain(); 
+        g1.gain.setValueAtTime(0.0001, t0); 
+        g1.gain.exponentialRampToValueAtTime(0.7, t0+0.02); 
+        g1.gain.exponentialRampToValueAtTime(0.0001, t0+0.7); 
+        o1.frequency.setValueAtTime(1100, t0); 
+        o1.frequency.exponentialRampToValueAtTime(1600, t0+0.08);
+        
+        const o2 = ctx.createOscillator(); 
+        o2.type='square';   
+        const g2 = ctx.createGain(); 
+        g2.gain.setValueAtTime(0.0001, t0); 
+        g2.gain.exponentialRampToValueAtTime(0.35, t0+0.02); 
+        g2.gain.exponentialRampToValueAtTime(0.0001, t0+0.55); 
+        o2.frequency.setValueAtTime(660, t0);  
+        o2.frequency.exponentialRampToValueAtTime(990, t0+0.06);
+        
+        const nDur=0.09; 
+        const b = ctx.createBuffer(1, ctx.sampleRate*nDur, ctx.sampleRate); 
+        const d=b.getChannelData(0); 
+        for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1;
+        
+        const n = ctx.createBufferSource(); 
+        n.buffer=b; 
+        const ng=ctx.createGain(); 
+        ng.gain.setValueAtTime(0.4, t0); 
+        ng.gain.exponentialRampToValueAtTime(0.0001, t0+nDur);
+        
+        o1.connect(g1).connect(ctx.destination); 
+        o2.connect(g2).connect(ctx.destination); 
+        n.connect(ng).connect(ctx.destination);
+        
+        o1.start(t0); 
+        o2.start(t0+0.02); 
+        n.start(t0); 
+        o1.stop(t0+0.7); 
+        o2.stop(t0+0.55); 
+        n.stop(t0+nDur);
+        
+        console.log('Playing cha-ching sound for prize');
+      } catch (e) {
+        console.warn('Error playing cha-ching sound:', e);
+      }
+    }
+    
+    // Cleanup suara saat halaman ditutup atau kehilangan focus
+    window.addEventListener('beforeunload', () => {
+      stopTractorSound();
+    });
+    
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        stopTractorSound();
+      }
     });
   })();
   </script>
