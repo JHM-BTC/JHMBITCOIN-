@@ -258,7 +258,7 @@
     <section class="hero">
       <div class="eyebrow">🔥 Event Promosi Eksklusif 🔥</div>
       <h1 class="title"><span class="neon-1">GEDOR</span> <span class="neon-2">PINTU HOKI</span></h1>
-      <p class="subtitle">🎯Pilih pintumu Rebut hadiahnya.📌📌📌 </p>
+      <p class="subtitle">🕊️ Pilih pintumu Rebut hadiahnya.🚀🚀 </p>
     </section>
 
     <section class="doors" id="pintu" aria-label="Galeri Pintu">
@@ -386,6 +386,9 @@
       return;
     }
 
+    // Stop suara traktor jika masih berjalan
+    stopTractorSound();
+
     gameLocked = false; selectEnabled = false; spinActive = false;
     assignPrizesToDoors();
     doors.forEach(d=>{
@@ -416,9 +419,19 @@
   /* ==== SPIN fisik: muter cepat & acak pindah posisi ==== */
   async function startSpinShuffle(){
     if(spinActive || gameLocked) return;
+    
+    console.log('Starting spin shuffle...');
+    
+    // Pastikan audio context siap
+    initAudioOnInteraction();
+    
     markPlayed(); // kunci sekali saat SPIN
     spinActive = true; selectEnabled = false;
     ctaSpin.setAttribute('aria-disabled','true');
+
+    // Mulai suara mesin traktor berisik
+    console.log('About to start tractor sound...');
+    startTractorSound();
 
     const cycles = 12;
     for (let c = 0; c < cycles; c++){
@@ -427,6 +440,10 @@
       await flipOnce(dur, t);
       await wait(10 + t*40);
     }
+
+    // Stop suara traktor setelah spin selesai
+    console.log('Spin finished, stopping tractor sound...');
+    stopTractorSound();
 
     spinActive = false; selectEnabled = true;
     ctaSpin.style.display='none';
@@ -541,7 +558,7 @@
     setTimeout(()=>{
       try{ playChaChing(); }catch(_){}
       modalTitle.textContent = "Anda Mendapat Hadiah";
-      winMessageEl.textContent = `Selamat berakah! Kamu mendapatkan ${hadiahStr}`;
+      winMessageEl.textContent = `🎉Selamat Bosku mendapatkan ${hadiahStr}`;
       const rows = prizes.map((p,i)=>{
         const pNum = Number((p.amount||'').replace(/[^\d]/g, ''));
         const cls = (pNum===hadiahNum) ? ' style="background:#a6ffff;color:#0a0d25;font-weight:900;"' : '';
@@ -585,6 +602,9 @@
     doors.forEach(d=>d.style.pointerEvents='none');
     if (ctaSpin) { ctaSpin.setAttribute('aria-disabled','true'); ctaSpin.style.display='none'; }
     if (playAgainBtn) playAgainBtn.style.display='none';
+    
+    // Stop suara traktor jika game dikunci
+    stopTractorSound();
   }
 
   function getPrizeSVG(type){
@@ -603,8 +623,201 @@
 
   /* ==== Audio ringan ==== */
   let audioCtx;
-  function getCtx(){ if(!audioCtx){ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } if(audioCtx.state === 'suspended') audioCtx.resume(); return audioCtx; }
-  window.addEventListener('pointerdown', ()=>{ try{ getCtx(); }catch(e){} }, {once:true, passive:true, signal: __CTRL.signal});
+  let tractorSound = null;
+  let isTractorPlaying = false;
+  
+  function getCtx(){ 
+    if(!audioCtx){ 
+      try {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)(); 
+        console.log('Audio context created, state:', audioCtx.state);
+      } catch (e) {
+        console.error('Failed to create audio context:', e);
+        return null;
+      }
+    } 
+    if(audioCtx.state === 'suspended') {
+      audioCtx.resume().then(() => {
+        console.log('Audio context resumed, state:', audioCtx.state);
+      }).catch(e => {
+        console.error('Failed to resume audio context:', e);
+      });
+    }
+    return audioCtx; 
+  }
+  
+  // Initialize audio context on first user interaction
+  let audioInitialized = false;
+  function initAudioOnInteraction() {
+    if (audioInitialized) return;
+    audioInitialized = true;
+    try { 
+      getCtx(); 
+      console.log('Audio initialized on user interaction');
+    } catch(e) {
+      console.error('Audio initialization failed:', e);
+    }
+  }
+  
+  window.addEventListener('pointerdown', initAudioOnInteraction, {once:true, passive:true, signal: __CTRL.signal});
+  window.addEventListener('click', initAudioOnInteraction, {once:true, passive:true, signal: __CTRL.signal});
+  window.addEventListener('touchstart', initAudioOnInteraction, {once:true, passive:true, signal: __CTRL.signal});
+  
+  function createTractorNoise() {
+    try {
+      const ctx = getCtx();
+      if (!ctx) return null;
+      
+      // Buat oscillator untuk suara traktor yang lebih sederhana
+      const osc1 = ctx.createOscillator();
+      const osc2 = ctx.createOscillator();
+      
+      osc1.type = 'sawtooth';
+      osc1.frequency.value = 60; // Bass frequency untuk traktor
+      
+      osc2.type = 'square';
+      osc2.frequency.value = 120; // Harmonic frequency
+      
+      // Gain untuk masing-masing oscillator
+      const gain1 = ctx.createGain();
+      const gain2 = ctx.createGain();
+      const masterGain = ctx.createGain();
+      
+      gain1.gain.value = 0.4;
+      gain2.gain.value = 0.3;
+      masterGain.gain.value = 0;
+      
+      // Low-pass filter untuk suara traktor yang kasar
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.value = 300;
+      filter.Q.value = 5;
+      
+      // Connection
+      osc1.connect(gain1);
+      osc2.connect(gain2);
+      gain1.connect(filter);
+      gain2.connect(filter);
+      filter.connect(masterGain);
+      masterGain.connect(ctx.destination);
+      
+      return { 
+        osc1: osc1, 
+        osc2: osc2, 
+        gain: masterGain, 
+        filter: filter,
+        gain1: gain1,
+        gain2: gain2
+      };
+    } catch (e) {
+      console.error('Error creating tractor noise:', e);
+      return null;
+    }
+  }
+  
+  function startTractorSound() {
+    if (isTractorPlaying) return;
+    
+    try {
+      const ctx = getCtx();
+      console.log('Starting tractor sound, audio context state:', ctx.state);
+      
+      if (ctx.state === 'suspended') {
+        ctx.resume();
+      }
+      
+      isTractorPlaying = true;
+      tractorSound = createTractorNoise();
+      
+      if (tractorSound) {
+        console.log('Tractor sound created, starting audio...');
+        
+        // Start oscillators
+        tractorSound.osc1.start();
+        tractorSound.osc2.start();
+        
+        // Fade in untuk start yang halus
+        const currentTime = ctx.currentTime;
+        tractorSound.gain.gain.setValueAtTime(0, currentTime);
+        tractorSound.gain.gain.linearRampToValueAtTime(0.8, currentTime + 0.1);
+        
+        // Variasi frequency untuk efek mesin traktor yang berubah-ubah
+        let modulationInterval;
+        const modulateEngine = () => {
+          if (!isTractorPlaying || !tractorSound) {
+            if (modulationInterval) clearInterval(modulationInterval);
+            return;
+          }
+          
+          try {
+            const baseFreq1 = 50 + Math.random() * 30; // 50-80 Hz
+            const baseFreq2 = 100 + Math.random() * 50; // 100-150 Hz
+            const filterFreq = 250 + Math.random() * 100; // 250-350 Hz
+            const volume = 0.6 + Math.random() * 0.3; // 0.6-0.9
+            
+            tractorSound.osc1.frequency.setValueAtTime(baseFreq1, ctx.currentTime);
+            tractorSound.osc2.frequency.setValueAtTime(baseFreq2, ctx.currentTime);
+            tractorSound.filter.frequency.setValueAtTime(filterFreq, ctx.currentTime);
+            tractorSound.gain.gain.setValueAtTime(volume, ctx.currentTime);
+            
+            console.log(`Tractor modulation - Freq1: ${baseFreq1.toFixed(1)}, Freq2: ${baseFreq2.toFixed(1)}, Volume: ${volume.toFixed(2)}`);
+          } catch (e) {
+            console.warn('Error in engine modulation:', e);
+          }
+        };
+        
+        // Start modulation immediately and repeat
+        modulateEngine();
+        modulationInterval = setInterval(modulateEngine, 150);
+        
+        // Store interval for cleanup
+        tractorSound.modulationInterval = modulationInterval;
+        
+      } else {
+        console.error('Failed to create tractor sound');
+        isTractorPlaying = false;
+      }
+    } catch (e) {
+      console.error('Error starting tractor sound:', e);
+      isTractorPlaying = false;
+    }
+  }
+  
+  function stopTractorSound() {
+    if (!isTractorPlaying || !tractorSound) return;
+    
+    try {
+      console.log('Stopping tractor sound...');
+      const ctx = getCtx();
+      
+      // Clear modulation interval
+      if (tractorSound.modulationInterval) {
+        clearInterval(tractorSound.modulationInterval);
+      }
+      
+      // Fade out untuk stop yang halus
+      tractorSound.gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.3);
+      
+      setTimeout(() => {
+        if (tractorSound) {
+          try {
+            tractorSound.osc1.stop();
+            tractorSound.osc2.stop();
+          } catch (e) {
+            // Ignore error jika sudah stop
+            console.warn('Audio oscillators already stopped:', e);
+          }
+          tractorSound = null;
+        }
+        isTractorPlaying = false;
+        console.log('Tractor sound stopped');
+      }, 350);
+    } catch (e) {
+      console.error('Error stopping tractor sound:', e);
+      isTractorPlaying = false;
+      tractorSound = null;
+    }
+  }
 
   function playWhoosh(done){
     const ctx = getCtx(); const dur = 0.45;
@@ -624,6 +837,17 @@
     o1.connect(g1).connect(ctx.destination); o2.connect(g2).connect(ctx.destination); n.connect(ng).connect(ctx.destination);
     o1.start(t0); o2.start(t0+0.02); n.start(t0); o1.stop(t0+0.7); o2.stop(t0+0.55); n.stop(t0+nDur);
   }
+  
+  // Cleanup suara saat halaman ditutup atau kehilangan focus
+  window.addEventListener('beforeunload', () => {
+    stopTractorSound();
+  }, {signal: __CTRL.signal});
+  
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      stopTractorSound();
+    }
+  }, {signal: __CTRL.signal});
   </script>
 </body>
 </html>
