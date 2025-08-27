@@ -2,9 +2,16 @@
 <html lang="id">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover" />
 <meta name="theme-color" content="#100525" />
 <meta name="color-scheme" content="dark light" />
+<!-- OPTIMASI PERFORMA ANDROID -->
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="format-detection" content="telephone=no">
+<meta name="msapplication-tap-highlight" content="no">
 <title>DOOR PRIZE GO GAPLE — Super Glossy HD (Lite)</title>
 <!-- Preconnect untuk Google Fonts (kurangi blocking) -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -21,7 +28,53 @@
   /* === NEON HIJAU VARIABEL === */
   --neon:#39ff14; --neon2:#00ff88; --glow-neon: 0 0 14px rgba(57,255,20,.95), 0 0 26px rgba(57,255,20,.7), 0 0 48px rgba(57,255,20,.45), 0 0 72px rgba(57,255,20,.28);
 }
-*{box-sizing:border-box}
+
+/* OPTIMASI PERFORMA ANDROID - HARDWARE ACCELERATION */
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+  -webkit-touch-callout:none;
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none;
+}
+
+html,body{
+  height:100%;
+  -webkit-text-size-adjust:100%;
+  -ms-text-size-adjust:100%;
+  text-size-adjust:100%;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  font-display:swap;
+  overscroll-behavior:none;
+}
+
+/* HARDWARE ACCELERATION UNTUK SEMUA ELEMEN ANIMASI */
+.domino, .domino .inner, .face, .back, .gaple-board .spinlight, .gaple-board .spinlight-ccw, .chip {
+  transform:translateZ(0);
+  -webkit-transform:translateZ(0);
+  will-change:transform;
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
+}
+
+/* OPTIMASI TOUCH EVENTS */
+button, .domino, .btn, .home-btn {
+  touch-action:manipulation;
+  -webkit-user-select:none;
+  user-select:none;
+  cursor:pointer;
+}
+
+/* DISABLE HOVER EFFECTS ON TOUCH DEVICES */
+@media (hover: none) and (pointer: coarse) {
+  .domino:hover, .btn:hover, .home-btn:hover {
+    transform:none !important;
+    filter:none !important;
+  }
+}
 html,body{height:100%}
 body{
   margin:0;
@@ -263,6 +316,50 @@ html.lite .chip{ animation:shuffle-x .7s ease-in-out infinite, shuffle-pop .12s 
 </footer>
 
 <script>
+/* ==== OPTIMASI PERFORMA ANDROID SUPER NGEBUT ==== */
+// Disable console di production untuk speed
+if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+  console.log = console.warn = console.error = () => {};
+}
+
+// Optimize event listeners dengan passive
+const addEventOptimized = (el, type, fn) => {
+  if (el && el.addEventListener) {
+    el.addEventListener(type, fn, { passive: true, capture: false });
+  }
+};
+
+// Debounce untuk resize events
+const debounce = (fn, delay) => {
+  let timeoutId;
+  return (...args) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn.apply(null, args), delay);
+  };
+};
+
+// Optimize DOM queries dengan cache
+const domCache = new Map();
+const $ = (selector) => {
+  if (!domCache.has(selector)) {
+    domCache.set(selector, document.querySelector(selector));
+  }
+  return domCache.get(selector);
+};
+
+// Faster RAF dengan fallback
+const fastRAF = window.requestAnimationFrame || 
+              window.webkitRequestAnimationFrame || 
+              ((fn) => setTimeout(fn, 16));
+
+// Memory management - cleanup DOM cache setiap 30 detik
+setInterval(() => {
+  if (domCache.size > 50) {
+    domCache.clear();
+  }
+}, 30000);
+
+/* ==== ORIGINAL SCRIPT START ==== */
 /* ==================== OPTIMASI RUNTIME TANPA UBAH STRUKTUR/LOGIKA ==================== */
 (function enableLiteMode(){
   const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
