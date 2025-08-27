@@ -2,11 +2,63 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <!-- OPTIMASI PERFORMA ANDROID -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-tap-highlight" content="no">
   <title>Treasure Map — Mystery Box (Pulau A)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+    
+    /* OPTIMASI PERFORMA ANDROID */
+    *{
+      -webkit-tap-highlight-color:transparent;
+      -webkit-touch-callout:none;
+      -webkit-user-select:none;
+      -moz-user-select:none;
+      -ms-user-select:none;
+      user-select:none;
+      box-sizing:border-box;
+    }
+    
+    html,body{
+      -webkit-text-size-adjust:100%;
+      -ms-text-size-adjust:100%;
+      text-size-adjust:100%;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      font-display:swap;
+      overscroll-behavior:none;
+    }
+    
+    /* HARDWARE ACCELERATION */
+    .mystery-box, .box-glow, button {
+      transform:translateZ(0);
+      -webkit-transform:translateZ(0);
+      will-change:transform;
+      -webkit-backface-visibility:hidden;
+      backface-visibility:hidden;
+    }
+    
+    /* OPTIMASI TOUCH */
+    button, .mystery-box {
+      touch-action:manipulation;
+      cursor:pointer;
+    }
+    
+    /* DISABLE HOVER ON TOUCH */
+    @media (hover: none) and (pointer: coarse) {
+      button:hover, .mystery-box:hover {
+        transform:none !important;
+        filter:none !important;
+      }
+    }
+    
     body{ font-family:'Inter',sans-serif; background:#121212; color:#fff }
     .mystery-root{
       position:relative; min-height:calc(100vh - 66px - 64px); padding-bottom:24px;
@@ -114,6 +166,42 @@
   </footer>
 
   <script>
+    /* ==== OPTIMASI PERFORMA ANDROID SUPER NGEBUT ==== */
+    // Disable console di production untuk speed
+    if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+      console.log = console.warn = console.error = () => {};
+    }
+
+    // Fast event delegation untuk touch events
+    const addTouchOptimized = (element, handler) => {
+      if (element) {
+        element.addEventListener('touchstart', handler, { passive: true });
+        element.addEventListener('click', handler, { passive: true });
+      }
+    };
+
+    // Memory-efficient animation queue
+    const animQueue = [];
+    let animRunning = false;
+    const runAnimations = () => {
+      if (animQueue.length === 0) {
+        animRunning = false;
+        return;
+      }
+      animRunning = true;
+      requestAnimationFrame(() => {
+        const batch = animQueue.splice(0, 5); // Process 5 at a time
+        batch.forEach(fn => fn());
+        runAnimations();
+      });
+    };
+    
+    const queueAnimation = (fn) => {
+      animQueue.push(fn);
+      if (!animRunning) runAnimations();
+    };
+
+    /* ==== ORIGINAL SCRIPT START ==== */
   (function(){
     // Data session dipakai cuma di teks hasil (modal)
     function loadSession(){ try{ return JSON.parse(localStorage.getItem('tm_session')||'null'); }catch{ return null } }
@@ -239,8 +327,8 @@
       if(spinning || hasSpun) return; // Cegah spin jika sudah pernah spin
       spinning=true; chosen=false; hasSpun=true; // Set flag hasSpun ke true
       
-      // MULAI SUARA TRAKTOR UNTUK SPIN
-      startTractorSound();
+      // MULAI SUARA JACKPOT REEL UNTUK SPIN
+      startJackpotReelSound();
       
       Array.from(grid.children).forEach(b=>{
         b.classList.remove('picked','disabled');
@@ -256,8 +344,8 @@
       const endAt=Date.now()+3000;
       (function step(){
         if(Date.now()>endAt){
-          // STOP SUARA TRAKTOR SETELAH SELESAI SPIN
-          stopTractorSound();
+          // STOP SUARA JACKPOT REEL SETELAH SELESAI SPIN
+          stopJackpotReelSound();
           btnSpin.textContent='🎯 PILIH KOTAK!';
           setBoxesDisabled(false);
           spinning=false; return;
@@ -405,143 +493,246 @@
     window.addEventListener('click', initAudioOnInteraction, {once:true, passive:true});
     window.addEventListener('touchstart', initAudioOnInteraction, {once:true, passive:true});
     
-    // 1. SUARA TRAKTOR untuk SPIN BOX (seperti di gedorpintu)
-    function createTractorNoise() {
+    // 1. SUARA JACKPOT REEL SPINNING KEREN untuk SPIN BOX
+    function createJackpotReelSound() {
       try {
         const ctx = getCtx();
         if (!ctx) return null;
         
-        // Buat oscillator untuk suara traktor
-        const osc1 = ctx.createOscillator();
-        const osc2 = ctx.createOscillator();
+        // Buat oscillator untuk suara jackpot reel spinning yang mendebarkan
+        const osc1 = ctx.createOscillator(); // Main reel spinning
+        const osc2 = ctx.createOscillator(); // Mechanical whirring
+        const osc3 = ctx.createOscillator(); // Metallic resonance
+        const osc4 = ctx.createOscillator(); // High frequency sparkle
         
+        // Frekuensi untuk suara jackpot reel yang realistis
         osc1.type = 'sawtooth';
-        osc1.frequency.value = 60; // Bass frequency untuk traktor
+        osc1.frequency.value = 120; // Bass spinning utama
         
         osc2.type = 'square';
-        osc2.frequency.value = 120; // Harmonic frequency
+        osc2.frequency.value = 80; // Mechanical whirring
         
-        // Gain untuk masing-masing oscillator
+        osc3.type = 'triangle';
+        osc3.frequency.value = 240; // Metallic resonance
+        
+        osc4.type = 'sine';
+        osc4.frequency.value = 1200; // High sparkle untuk excitement
+        
+        // Gain untuk masing-masing komponen reel
         const gain1 = ctx.createGain();
         const gain2 = ctx.createGain();
+        const gain3 = ctx.createGain();
+        const gain4 = ctx.createGain();
         const masterGain = ctx.createGain();
         
-        gain1.gain.value = 0.4;
-        gain2.gain.value = 0.3;
+        gain1.gain.value = 0.6; // Main reel
+        gain2.gain.value = 0.4; // Mechanical
+        gain3.gain.value = 0.3; // Metallic
+        gain4.gain.value = 0.2; // Sparkle
         masterGain.gain.value = 0;
         
-        // Low-pass filter untuk suara traktor yang kasar
+        // Low-pass filter untuk suara reel yang smooth tapi powerful
         const filter = ctx.createBiquadFilter();
         filter.type = 'lowpass';
-        filter.frequency.value = 300;
-        filter.Q.value = 5;
+        filter.frequency.value = 800; // Sweet spot untuk reel sound
+        filter.Q.value = 3; // Resonance sedang untuk warmth
         
-        // Connection
+        // Modulation untuk efek reel berputar
+        const lfo = ctx.createOscillator();
+        lfo.type = 'sine';
+        lfo.frequency.value = 6; // 6 Hz modulation untuk reel effect
+        
+        const lfoGain = ctx.createGain();
+        lfoGain.gain.value = 50; // Modulation depth
+        
+        // Reverb untuk efek ruang casino
+        const delay = ctx.createDelay();
+        delay.delayTime.value = 0.12;
+        const delayGain = ctx.createGain();
+        delayGain.gain.value = 0.2;
+        
+        // Connection dengan LFO modulation
+        lfo.connect(lfoGain);
+        lfoGain.connect(osc1.frequency); // Modulate main reel
+        lfoGain.connect(osc2.frequency); // Modulate mechanical
+        
         osc1.connect(gain1);
         osc2.connect(gain2);
+        osc3.connect(gain3);
+        osc4.connect(gain4);
+        
         gain1.connect(filter);
         gain2.connect(filter);
+        gain3.connect(filter);
+        gain4.connect(filter);
+        
         filter.connect(masterGain);
+        filter.connect(delay);
+        delay.connect(delayGain);
+        delayGain.connect(masterGain);
+        
         masterGain.connect(ctx.destination);
         
         return { 
           osc1: osc1, 
           osc2: osc2, 
+          osc3: osc3,
+          osc4: osc4,
+          lfo: lfo,
           gain: masterGain, 
           filter: filter,
           gain1: gain1,
-          gain2: gain2
+          gain2: gain2,
+          gain3: gain3,
+          gain4: gain4,
+          lfoGain: lfoGain,
+          delay: delay,
+          delayGain: delayGain
         };
       } catch (e) {
-        console.error('Error creating tractor noise:', e);
+        console.error('Error creating jackpot reel sound:', e);
         return null;
       }
     }
     
-    function startTractorSound() {
+    function startJackpotReelSound() {
       if (isTractorPlaying) return;
       
       try {
         const ctx = getCtx();
-        console.log('Starting tractor sound for spin...');
+        console.log('Starting JACKPOT REEL SPINNING sound for mystery box...');
         
         if (ctx.state === 'suspended') {
           ctx.resume();
         }
         
         isTractorPlaying = true;
-        tractorSound = createTractorNoise();
+        tractorSound = createJackpotReelSound();
         
         if (tractorSound) {
-          // Start oscillators
+          // Start semua oscillators dan LFO
           tractorSound.osc1.start();
           tractorSound.osc2.start();
+          tractorSound.osc3.start();
+          tractorSound.osc4.start();
+          tractorSound.lfo.start(); // Start LFO untuk modulation
           
-          // Fade in
           const currentTime = ctx.currentTime;
-          tractorSound.gain.gain.setValueAtTime(0, currentTime);
-          tractorSound.gain.gain.linearRampToValueAtTime(0.8, currentTime + 0.1);
           
-          // Variasi frequency untuk efek mesin traktor
-          let modulationInterval;
-          const modulateEngine = () => {
+          // Build-up yang mendebarkan seperti jackpot reel
+          tractorSound.gain.gain.setValueAtTime(0, currentTime);
+          tractorSound.gain.gain.exponentialRampToValueAtTime(0.3, currentTime + 0.2); // Slow start
+          tractorSound.gain.gain.exponentialRampToValueAtTime(0.8, currentTime + 1.0); // Build up
+          tractorSound.gain.gain.exponentialRampToValueAtTime(1.0, currentTime + 2.0); // Peak excitement
+          
+          // Dynamic frequency modulation untuk reel spinning effect
+          let reelInterval;
+          let spinIntensity = 1.0;
+          
+          const modulateReelSpin = () => {
             if (!isTractorPlaying || !tractorSound) {
-              if (modulationInterval) clearInterval(modulationInterval);
+              if (reelInterval) clearInterval(reelInterval);
               return;
             }
             
-            try {
-              const baseFreq1 = 50 + Math.random() * 30; // 50-80 Hz
-              const baseFreq2 = 100 + Math.random() * 50; // 100-150 Hz
-              const filterFreq = 250 + Math.random() * 100; // 250-350 Hz
-              const volume = 0.6 + Math.random() * 0.3; // 0.6-0.9
-              
-              tractorSound.osc1.frequency.setValueAtTime(baseFreq1, ctx.currentTime);
-              tractorSound.osc2.frequency.setValueAtTime(baseFreq2, ctx.currentTime);
-              tractorSound.filter.frequency.setValueAtTime(filterFreq, ctx.currentTime);
-              tractorSound.gain.gain.setValueAtTime(volume, ctx.currentTime);
-            } catch (e) {
-              console.warn('Error in engine modulation:', e);
-            }
+            // Simulate accelerating reel spin
+            const time = ctx.currentTime;
+            spinIntensity = Math.min(spinIntensity + 0.05, 2.0); // Gradually increase intensity
+            
+            // Main reel frequency dengan acceleration
+            const baseFreq1 = 100 + (spinIntensity * 40); // 100-180 Hz
+            const baseFreq2 = 70 + (spinIntensity * 30);  // 70-130 Hz
+            const baseFreq3 = 200 + (spinIntensity * 80); // 200-360 Hz
+            
+            // Sparkle frequency yang naik untuk excitement
+            const sparkleFreq = 800 + (spinIntensity * 600); // 800-2000 Hz
+            
+            tractorSound.osc1.frequency.setValueAtTime(baseFreq1, time);
+            tractorSound.osc2.frequency.setValueAtTime(baseFreq2, time);
+            tractorSound.osc3.frequency.setValueAtTime(baseFreq3, time);
+            tractorSound.osc4.frequency.setValueAtTime(sparkleFreq, time);
+            
+            // Filter sweep untuk dynamic sound
+            const filterFreq = 600 + (spinIntensity * 400); // 600-1400 Hz
+            tractorSound.filter.frequency.setValueAtTime(filterFreq, time);
+            
+            // LFO speed increase untuk faster reel effect
+            const lfoSpeed = 4 + (spinIntensity * 6); // 4-16 Hz
+            tractorSound.lfo.frequency.setValueAtTime(lfoSpeed, time);
+            
+            // Volume pulsing untuk excitement
+            const baseVolume = 0.7 + (Math.sin(time * 3) * 0.2); // Subtle pulsing
+            tractorSound.gain.gain.setValueAtTime(baseVolume * spinIntensity, time);
           };
           
-          modulateEngine();
-          modulationInterval = setInterval(modulateEngine, 150);
-          tractorSound.modulationInterval = modulationInterval;
+          modulateReelSpin();
+          reelInterval = setInterval(modulateReelSpin, 100); // Update setiap 100ms
+          tractorSound.reelInterval = reelInterval;
         }
       } catch (e) {
-        console.error('Error starting tractor sound:', e);
+        console.error('Error starting jackpot reel sound:', e);
         isTractorPlaying = false;
       }
     }
     
-    function stopTractorSound() {
+    function stopJackpotReelSound() {
       if (!isTractorPlaying || !tractorSound) return;
       
       try {
-        console.log('Stopping tractor sound...');
+        console.log('Stopping JACKPOT REEL spinning with dramatic slowdown...');
         const ctx = getCtx();
         
-        if (tractorSound.modulationInterval) {
-          clearInterval(tractorSound.modulationInterval);
+        if (tractorSound.reelInterval) {
+          clearInterval(tractorSound.reelInterval);
         }
         
-        tractorSound.gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.3);
+        // Dramatic reel slowdown seperti jackpot machine berhenti
+        const currentTime = ctx.currentTime;
+        
+        // Phase 1: Quick deceleration (0.0-0.4s)
+        tractorSound.gain.gain.setValueAtTime(tractorSound.gain.gain.value, currentTime);
+        tractorSound.gain.gain.exponentialRampToValueAtTime(0.6, currentTime + 0.2);
+        
+        // Slow down reel frequencies
+        tractorSound.osc1.frequency.exponentialRampToValueAtTime(80, currentTime + 0.4);
+        tractorSound.osc2.frequency.exponentialRampToValueAtTime(50, currentTime + 0.4);
+        tractorSound.osc3.frequency.exponentialRampToValueAtTime(150, currentTime + 0.4);
+        
+        // Phase 2: Medium slowdown (0.4-0.8s)
+        tractorSound.gain.gain.exponentialRampToValueAtTime(0.4, currentTime + 0.5);
+        tractorSound.osc1.frequency.exponentialRampToValueAtTime(60, currentTime + 0.8);
+        tractorSound.osc2.frequency.exponentialRampToValueAtTime(35, currentTime + 0.8);
+        
+        // Phase 3: Final slow clicks seperti reel berhenti (0.8-1.2s)
+        tractorSound.gain.gain.exponentialRampToValueAtTime(0.2, currentTime + 0.9);
+        tractorSound.osc1.frequency.exponentialRampToValueAtTime(40, currentTime + 1.1);
+        tractorSound.osc2.frequency.exponentialRampToValueAtTime(25, currentTime + 1.1);
+        
+        // Final fade dengan sparkle yang hilang perlahan
+        tractorSound.osc4.frequency.exponentialRampToValueAtTime(600, currentTime + 1.0);
+        tractorSound.gain.gain.exponentialRampToValueAtTime(0.01, currentTime + 1.3);
+        
+        // LFO slowdown untuk realistic reel stop
+        tractorSound.lfo.frequency.exponentialRampToValueAtTime(1, currentTime + 0.8);
+        tractorSound.lfo.frequency.exponentialRampToValueAtTime(0.1, currentTime + 1.2);
         
         setTimeout(() => {
           if (tractorSound) {
             try {
               tractorSound.osc1.stop();
               tractorSound.osc2.stop();
+              tractorSound.osc3.stop();
+              tractorSound.osc4.stop();
+              tractorSound.lfo.stop();
             } catch (e) {
               console.warn('Audio oscillators already stopped:', e);
             }
             tractorSound = null;
           }
           isTractorPlaying = false;
-        }, 350);
+        }, 1350);
       } catch (e) {
-        console.error('Error stopping tractor sound:', e);
+        console.error('Error stopping jackpot reel sound:', e);
         isTractorPlaying = false;
         tractorSound = null;
       }
@@ -634,12 +825,12 @@
     
     // Cleanup suara saat halaman ditutup atau kehilangan focus
     window.addEventListener('beforeunload', () => {
-      stopTractorSound();
+      stopBikeBellSound();
     });
     
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
-        stopTractorSound();
+        stopBikeBellSound();
       }
     });
   })();
