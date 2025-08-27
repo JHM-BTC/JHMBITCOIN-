@@ -18,15 +18,15 @@
 <link rel="preconnect" href="https://i.postimg.cc" crossorigin>
 
 <!-- Preload ALL coin icons -->
-<link rel="preload" as="image" href="https://i.postimg.cc/V6wtcHDP/e97e725d-7c9e-46bb-ba18-12ac2229a4ed.png" crossorigin="anonymous">
-<link rel="preload" as="image" href="https://i.postimg.cc/KjwLCcWJ/6904c3e5-64b9-40bc-b720-146bce9c52ef.png" crossorigin="anonymous">
-<link rel="preload" as="image" href="https://i.postimg.cc/JzG4dVVd/7b78591f-a68b-4879-8e41-9f55d7c2a5fa.png" crossorigin="anonymous">
-<link rel="preload" as="image" href="https://i.postimg.cc/bvmZKNDk/cd74f159-0772-473f-acf9-3ba299c81b9e.png" crossorigin="anonymous">
-<link rel="preload" as="image" href="https://i.postimg.cc/pLtqsxFP/4127a945-5034-4d26-bcf2-3acf8078a839.png" crossorigin="anonymous">
-<link rel="preload" as="image" href="https://i.postimg.cc/4dn5YxrQ/d520c648-132e-4221-a564-49217775aca4.png" crossorigin="anonymous">
-<link rel="preload" as="image" href="https://i.postimg.cc/fbR7PbTQ/0dd15455-9843-4b80-995e-92b85570d004.png" crossorigin="anonymous">
-<link rel="preload" as="image" href="https://i.postimg.cc/1RqG22PX/f75bf0b6-bf94-4796-9f51-9fb2ea8e4de9.png" crossorigin="anonymous">
-<link rel="preload" as="image" href="https://i.postimg.cc/k5LVyM2c/93b53129-af39-4f31-8711-5f7adbb9cdf7.png" crossorigin="anonymous">
+<link rel="preload" as="image" href="https://i.postimg.cc/zB6s73np/btc.webp" crossorigin="anonymous">
+<link rel="preload" as="image" href="https://i.postimg.cc/T3d4rnzf/eth.webp" crossorigin="anonymous">
+<link rel="preload" as="image" href="https://i.postimg.cc/zXjdXVVM/doge.webp" crossorigin="anonymous">
+<link rel="preload" as="image" href="https://i.postimg.cc/4ywzZHBQ/ada.webp" crossorigin="anonymous">
+<link rel="preload" as="image" href="https://i.postimg.cc/B6BFc19f/sol.webp" crossorigin="anonymous">
+<link rel="preload" as="image" href="https://i.postimg.cc/sDvB1LXr/ltc.webp" crossorigin="anonymous">
+<link rel="preload" as="image" href="https://i.postimg.cc/N0wLJfxs/xrp.webp" crossorigin="anonymous">
+<link rel="preload" as="image" href="https://i.postimg.cc/15ntyNCR/bnb.webp" crossorigin="anonymous">
+<link rel="preload" as="image" href="https://i.postimg.cc/13D3q11L/dot.webp" crossorigin="anonymous">
 
 <style>
 /* ====== GLOBAL ====== */
@@ -383,7 +383,7 @@ body{
             <div class="lever" id="lever"></div>
           </div>
           <div class="mt-4 flex gap-3">
-            <button id="btn" class="cta" type="button">EXECUTE TRADE</button>
+            <button id="btn" class="cta" type="button">SPIN EXECUTE TRADE</button>
           </div>
         </div>
 
@@ -458,15 +458,15 @@ if (isClaimed(s?.kupon)) {
 
 // ===== Data =====
 const symbols=[
-  { name:'Bitcoin (BTC)',   icon:'https://i.postimg.cc/7PfjhkQs/compressed-BTC.webp', prize:1500000 },
-  { name:'Ethereum (ETH)',  icon:'https://i.postimg.cc/g2P7g6cQ/compressed-ETH.webp', prize:500000 },
-  { name:'Dogecoin (DOGE)', icon:'https://i.postimg.cc/rpfYynG2/doge.webp', prize:100000 },
-  { name:'Cardano (ADA)',   icon:'https://i.postimg.cc/Pq527Wg3/ada.webp', prize:50000 },
-  { name:'Solana (SOL)',    icon:'https://i.postimg.cc/kXPwCPrt/sol.webp', prize:10000 },
-  { name:'Litecoin (LTC)',  icon:'https://i.postimg.cc/YCp34NCr/ltc.webp', prize:8000 },
-  { name:'Ripple (XRP)',    icon:'https://i.postimg.cc/44VbB2K4/xrp.webp', prize:5000 },
-  { name:'Binance Coin (BNB)', icon:'https://i.postimg.cc/MTkfBxm7/bnb.webp', prize:3000 },
-  { name:'Polkadot (DOT)',  icon:'https://i.postimg.cc/2j7L1sbW/dot.webp', prize:2000 }
+  { name:'Bitcoin (BTC)',   icon:'https://i.postimg.cc/zB6s73np/btc.webp', prize:1500000 },
+  { name:'Ethereum (ETH)',  icon:'https://i.postimg.cc/T3d4rnzf/eth.webp', prize:500000 },
+  { name:'Dogecoin (DOGE)', icon:'https://i.postimg.cc/zXjdXVVM/doge.webp', prize:100000 },
+  { name:'Cardano (ADA)',   icon:'https://i.postimg.cc/4ywzZHBQ/ada.webp', prize:50000 },
+  { name:'Solana (SOL)',    icon:'https://i.postimg.cc/B6BFc19f/sol.webp', prize:10000 },
+  { name:'Litecoin (LTC)',  icon:'https://i.postimg.cc/sDvB1LXr/ltc.webp', prize:8000 },
+  { name:'Ripple (XRP)',    icon:'https://i.postimg.cc/N0wLJfxs/xrp.webp', prize:5000 },
+  { name:'Binance Coin (BNB)', icon:'https://i.postimg.cc/15ntyNCR/bnb.webp', prize:3000 },
+  { name:'Polkadot (DOT)',  icon:'https://i.postimg.cc/13D3q11L/dot.webp', prize:2000 }
 ];
 
 // ===== Elements =====
@@ -666,6 +666,10 @@ function startSpin(){
   display.classList.add('spinning');
   if(lever){ lever.classList.add('pull'); setTimeout(()=>lever.classList.remove('pull'), 400); }
   if(spinning) return;
+  
+  // MULAI SUARA BEEP BEEP UNTUK CRYPTO TRADE
+  startCryptoBeepSound();
+  
   spinning=true; btn.disabled=true; btn.textContent='EXECUTING...';
 
   const per=symbols.length, current=baseIndex;
@@ -706,6 +710,9 @@ function startSpin(){
 }
 
 function finishSpin(sym, idx){
+  // STOP SUARA BEEP SETELAH SPIN SELESAI
+  stopCryptoBeepSound();
+  
   spinning=false; btn.disabled=true; btn.textContent='SELESAI';
   if (!s?.userId || !s?.kupon) {
     showToast('ERROR', 'Session tidak valid. Silakan login ulang.');
@@ -730,7 +737,11 @@ function finishSpin(sym, idx){
         markWin(idxServer); flashPicker();
         mTitle.textContent = 'TRADE SUCCESS!';
         mMsg.textContent = `Profit ${formatIDR(hadiahNum)} dari ${symbols[idxServer].name}`;
-        showToast('SUKSES', `Hadiah ${formatIDR(hadiahNum)} (${symbols[idxServer].name}) sudah dicatat!`);
+        
+        // PLAY CHA-CHING SOUND UNTUK HADIAH CRYPTO
+        playCryptoCaching();
+        
+        showToast('SUKSES', `Hadiah ${formatIDR(hadiahNum)} (${symbols[idxServer].name}) Selamat Bosku🎉`);
         setClaimed(s.kupon);
         disableGame();
       } else {
@@ -932,6 +943,246 @@ function finishSpin(sym, idx){
   populate();
   preloadIcons();
 })();
+
+/* ==== SISTEM AUDIO - 2 SUARA CRYPTO ==== */
+let audioCtx;
+let beepSound = null;
+let isBeepPlaying = false;
+
+function getCtx(){ 
+  if(!audioCtx){ 
+    try {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)(); 
+      console.log('Audio context created, state:', audioCtx.state);
+    } catch (e) {
+      console.error('Failed to create audio context:', e);
+      return null;
+    }
+  } 
+  if(audioCtx.state === 'suspended') {
+    audioCtx.resume().then(() => {
+      console.log('Audio context resumed, state:', audioCtx.state);
+    }).catch(e => {
+      console.error('Failed to resume audio context:', e);
+    });
+  }
+  return audioCtx; 
+}
+
+// Initialize audio context on first user interaction
+let audioInitialized = false;
+function initAudioOnInteraction() {
+  if (audioInitialized) return;
+  audioInitialized = true;
+  try { 
+    getCtx(); 
+    console.log('Audio initialized on user interaction');
+  } catch(e) {
+    console.error('Audio initialization failed:', e);
+  }
+}
+
+window.addEventListener('pointerdown', initAudioOnInteraction, {once:true, passive:true});
+window.addEventListener('click', initAudioOnInteraction, {once:true, passive:true});
+window.addEventListener('touchstart', initAudioOnInteraction, {once:true, passive:true});
+
+// 1. SUARA BEEP BEEP untuk SPIN EXECUTE TRADE
+function createBeepSound() {
+  try {
+    const ctx = getCtx();
+    if (!ctx) return null;
+    
+    // Buat oscillator untuk suara beep crypto
+    const osc1 = ctx.createOscillator();
+    const osc2 = ctx.createOscillator();
+    
+    osc1.type = 'square';
+    osc1.frequency.value = 900; // Higher frequency for crypto feel
+    
+    osc2.type = 'sine';
+    osc2.frequency.value = 650; // Lower harmonic
+    
+    // Gain untuk masing-masing oscillator
+    const gain1 = ctx.createGain();
+    const gain2 = ctx.createGain();
+    const masterGain = ctx.createGain();
+    
+    gain1.gain.value = 0.35;
+    gain2.gain.value = 0.25;
+    masterGain.gain.value = 0;
+    
+    // Band-pass filter untuk suara beep yang digital
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.value = 800;
+    filter.Q.value = 3;
+    
+    // Connection
+    osc1.connect(gain1);
+    osc2.connect(gain2);
+    gain1.connect(filter);
+    gain2.connect(filter);
+    filter.connect(masterGain);
+    masterGain.connect(ctx.destination);
+    
+    return { 
+      osc1: osc1, 
+      osc2: osc2, 
+      gain: masterGain, 
+      filter: filter,
+      gain1: gain1,
+      gain2: gain2
+    };
+  } catch (e) {
+    console.error('Error creating crypto beep sound:', e);
+    return null;
+  }
+}
+
+function startCryptoBeepSound() {
+  if (isBeepPlaying) return;
+  
+  try {
+    const ctx = getCtx();
+    console.log('Starting beep beep sound for crypto trade...');
+    
+    if (ctx.state === 'suspended') {
+      ctx.resume();
+    }
+    
+    isBeepPlaying = true;
+    
+    // Buat pattern beep-beep berulang untuk crypto
+    let beepCount = 0;
+    const maxBeeps = 12; // Lebih banyak beep untuk crypto trade
+    
+    const createSingleBeep = () => {
+      if (!isBeepPlaying || beepCount >= maxBeeps) {
+        isBeepPlaying = false;
+        return;
+      }
+      
+      beepSound = createBeepSound();
+      if (beepSound) {
+        const currentTime = ctx.currentTime;
+        
+        // Start oscillators
+        beepSound.osc1.start(currentTime);
+        beepSound.osc2.start(currentTime);
+        
+        // Faster beep pattern untuk crypto: on 0.08s, off 0.08s
+        beepSound.gain.gain.setValueAtTime(0, currentTime);
+        beepSound.gain.gain.linearRampToValueAtTime(0.7, currentTime + 0.01);
+        beepSound.gain.gain.linearRampToValueAtTime(0.7, currentTime + 0.06);
+        beepSound.gain.gain.linearRampToValueAtTime(0, currentTime + 0.08);
+        
+        // Stop after beep duration
+        setTimeout(() => {
+          try {
+            if (beepSound) {
+              beepSound.osc1.stop();
+              beepSound.osc2.stop();
+            }
+          } catch (e) {
+            console.warn('Crypto beep oscillators already stopped:', e);
+          }
+        }, 100);
+        
+        beepCount++;
+        
+        // Schedule next beep dengan interval yang lebih cepat
+        setTimeout(createSingleBeep, 160);
+      }
+    };
+    
+    createSingleBeep();
+  } catch (e) {
+    console.error('Error starting crypto beep sound:', e);
+    isBeepPlaying = false;
+  }
+}
+
+function stopCryptoBeepSound() {
+  isBeepPlaying = false;
+  console.log('Stopping crypto beep sound...');
+}
+
+// 2. SUARA CHA-CHING untuk HADIAH CRYPTO
+function playCryptoCaching(){
+  try {
+    const ctx = getCtx(); 
+    const t0 = ctx.currentTime + 0.02;
+    
+    // Enhanced cha-ching untuk crypto dengan frequency lebih tinggi
+    const o1 = ctx.createOscillator(); 
+    o1.type='triangle'; 
+    const g1 = ctx.createGain(); 
+    g1.gain.setValueAtTime(0.0001, t0); 
+    g1.gain.exponentialRampToValueAtTime(0.8, t0+0.02); 
+    g1.gain.exponentialRampToValueAtTime(0.0001, t0+0.8); 
+    o1.frequency.setValueAtTime(1300, t0); // Higher frequency for crypto
+    o1.frequency.exponentialRampToValueAtTime(1800, t0+0.08);
+    
+    const o2 = ctx.createOscillator(); 
+    o2.type='square';   
+    const g2 = ctx.createGain(); 
+    g2.gain.setValueAtTime(0.0001, t0); 
+    g2.gain.exponentialRampToValueAtTime(0.4, t0+0.02); 
+    g2.gain.exponentialRampToValueAtTime(0.0001, t0+0.6); 
+    o2.frequency.setValueAtTime(780, t0);  
+    o2.frequency.exponentialRampToValueAtTime(1100, t0+0.06);
+    
+    // Extra sparkle oscillator untuk crypto
+    const o3 = ctx.createOscillator();
+    o3.type = 'sine';
+    const g3 = ctx.createGain();
+    g3.gain.setValueAtTime(0.0001, t0);
+    g3.gain.exponentialRampToValueAtTime(0.3, t0+0.01);
+    g3.gain.exponentialRampToValueAtTime(0.0001, t0+0.4);
+    o3.frequency.setValueAtTime(2200, t0);
+    o3.frequency.exponentialRampToValueAtTime(2800, t0+0.05);
+    
+    const nDur=0.1; 
+    const b = ctx.createBuffer(1, ctx.sampleRate*nDur, ctx.sampleRate); 
+    const d=b.getChannelData(0); 
+    for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1;
+    
+    const n = ctx.createBufferSource(); 
+    n.buffer=b; 
+    const ng=ctx.createGain(); 
+    ng.gain.setValueAtTime(0.5, t0); 
+    ng.gain.exponentialRampToValueAtTime(0.0001, t0+nDur);
+    
+    o1.connect(g1).connect(ctx.destination); 
+    o2.connect(g2).connect(ctx.destination);
+    o3.connect(g3).connect(ctx.destination);
+    n.connect(ng).connect(ctx.destination);
+    
+    o1.start(t0); 
+    o2.start(t0+0.02); 
+    o3.start(t0+0.01);
+    n.start(t0); 
+    o1.stop(t0+0.8); 
+    o2.stop(t0+0.6); 
+    o3.stop(t0+0.4);
+    n.stop(t0+nDur);
+    
+    console.log('Playing crypto cha-ching sound for prize');
+  } catch (e) {
+    console.warn('Error playing crypto cha-ching sound:', e);
+  }
+}
+
+// Cleanup suara saat halaman ditutup atau kehilangan focus
+window.addEventListener('beforeunload', () => {
+  stopCryptoBeepSound();
+});
+
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    stopCryptoBeepSound();
+  }
+});
 </script>
 </body>
 </html>
