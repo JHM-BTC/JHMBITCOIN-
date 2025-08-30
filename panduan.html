@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tentang Kami — Video Cara Bermain & 4 Gambar (Lite)</title>
+  <meta name="description" content="Halaman Tentang Kami dengan video cara bermain yang bisa diganti link/upload, plus 4 gambar penjelasan." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="panduan-style.css">
+</head>
+<body class="flex flex-col min-h-screen overflow-x-hidden" style="overflow-y:auto;">
+  
+  <!-- HEADER SAMA SEPERTI INDEX -->
+  <header class="header-full fixed z-50 p-0 m-0">
+    <nav class="w-full bg-gradient-to-r from-slate-900 via-indigo-900 to-purple-900 shadow-md">
+      <div class="w-full flex items-center justify-between gap-3 px-3 sm:px-6 py-2">
+        <a href="#" class="text-lg sm:text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">BELEGENDBET</a>
+        <button id="btnHome" onclick="window.location.href='index.html'" class="hover:text-white px-4 py-1.5 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg font-semibold shadow-lg transition text-sm">Beranda</button>
+      </div>
+    </nav>
+  </header>
+  <div class="h-12"></div>
+
+  <!-- HEADER LAMA (DIHAPUS) -->
+  <div style="display: none;">
+    <header class="site">
+      <div class="site-inner">
+        <div class="logo" aria-hidden="true"></div>
+        <div class="brand">
+          <h1>Belegend — Tentang Kami</h1>
+          <small>Ringan, rapi, siap ganti konten kapan saja.</small>
+        </div>
+      </div>
+    </header>
+  </div>
+
+  <main class="wrap flex-grow">
+    <!-- HERO -->
+    <section class="hero">
+      <h2>TREASURE MAP ONEPIECE 😎🚩</h2>
+      <p>BELEGENDBET fokus memberikan event hadiah terbaik, REBUT HARTANYA 🏴‍☠️ Petualangan Tanpa Modal Dimulai Di Sini,Tanpa Drama ⚔️ Treasure Map OnePiece Siap jadi Raja Petualangan Baru 🚀 bikin kamu bisa main dengan lancar dan paham dalam 1 menit! Di bawah ini ada panduan lengkapnya 🎯 </p>
+    </section>
+
+    <!-- VIDEO + STEPS: di desktop video kiri, langkah kanan; di HP jadi stack -->
+    <section class="video-steps">
+      <div class="card video-card">
+        <div id="playerWrap" class="video-wrap">
+          <!-- Video bergantian otomatis dengan suara -->
+          <video id="player" class="player" controls autoplay muted playsinline preload="metadata" poster="" aria-label="Video cara bermain">
+            <source id="playerSource" src="treasure map onepiece.mp4" type="video/mp4" />
+            Browser Anda tidak mendukung video HTML5.
+          </video>
+        </div>
+        <!-- Tombol untuk unmute dan start di bawah video -->
+        <div id="playButton" style="margin-top: 12px; text-align: center; background: rgba(57,255,136,0.9); color: #000; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: bold; display: none; transition: all 0.3s ease;">
+          🔊 Klik untuk Suara & Autoplay
+        </div>
+      </div>
+
+      <aside class="card steps">
+        <h3>Cepat Paham: 4 Langkah</h3>
+        <div class="step-list">
+          <div class="step">
+            <div class="num">1</div>
+            <div>
+              <strong>Buka login & Masukan kupon</strong>
+              <p>Masuk pakai ID kamu. Masukan token kupon yang di berikan Admin.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="num">2</div>
+            <div>
+              <strong>Putar kartu pulau</strong>
+              <p>Aturan ringkas spin putar pulau dan pilih 1 kartu pulau untuk mendapatkan hadiah  dari pulau tersebut.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="num">3</div>
+            <div>
+              <strong>Mode hadiah pulau</strong>
+              <p>Spin setiap pulau yang di dapat dan pilih 1 hadiah yang di inginkan, tunggu beberapa detik sampai muncul daftar hadiah yang didapat lalu sreenshotkan dan klik tombol claim wa dan claim telegram.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="num">4</div>
+            <div>
+              <strong>Nikmati 24jam Treasure Map Onepiece</strong>
+              <p>event 2x harian bisa tanpa deposit sekali dan dengan deposit minim Rp.25000 QRIS biar peluang hadiah makin besar.</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- GRID 4 GAMBAR PENJELASAN -->
+    <section aria-labelledby="galeriJudul">
+      <div class="gallery-toggle" id="galleryToggle">
+        <span>📸 Gambar Penjelasan</span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="gallery" id="galleryGrid" role="list">
+        <!-- Ganti src masing-masing gambar sesuai kebutuhan -->
+        <figure class="tile" role="listitem">
+          <span class="badge">Pulau Emerald Bay</span>
+          <img loading="lazy" decoding="async" src="https://i.postimg.cc/pV70wxKw/PULAU-EMERALD-BAY.webp" alt="Contoh langkah 1" />
+          <figcaption>Spin execute trade,tunggu hadiah putaran koin dan claim wa/claim telegram.</figcaption>
+        </figure>
+        <figure class="tile" role="listitem">
+          <span class="badge">Pulau Celestial Atoll</span>
+          <img loading="lazy" decoding="async" src="https://i.postimg.cc/NjRRPvxk/PULAU-CELESTIAL-ATOLL.webp" alt="Contoh langkah 2" />
+          <figcaption>Spin box, tunggu putaran box dan pilih 1 hadiah box lalu claim wa/claim telegram.</figcaption>
+        </figure>
+        <figure class="tile" role="listitem">
+          <span class="badge">pulau azure Lagoon</span>
+          <img loading="lazy" decoding="async" src="https://i.postimg.cc/NfjHkryY/PULAU-AZURE-LAGOON.webp" alt="Contoh langkah 3" />
+          <figcaption>Putar go gaple, tunggu putaran gaple dan pilih 1 hadiah gaple lalu claim wa/claim telegram.</figcaption>
+        </figure>
+        <figure class="tile" role="listitem">
+          <span class="badge">Pulau Skull Cove</span>
+          <img loading="lazy" decoding="async" src="https://i.postimg.cc/LsbCmMrg/PULAU-SKULL-COVE.webp" alt="Contoh langkah 4" />
+          <figcaption>Spin door prize, tunggu putaran pintu dan pilih 1 hadiah pintu lalu claim wa/claim telegram.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- INFO TAMBAHAN: FAQ/Tips -->
+    <section class="accordion" aria-label="Informasi tambahan">
+      <details>
+        <summary>FAQ — Pertanyaan umum</summary>
+        <p>Game nggak jalan? pastikan tidak reload setiap halaman. masukan kupon tanpa spasi, pastikan selalu menunggu setiap langkahnya tidak memberikan dabel klik dan pastikan selalu claim dengan SREENSHOT.</p>
+      </details>
+      <details>
+        <summary>Tips performa</summary>
+        <p>Gunakan selalu mode situs DESKTOP-ANDROID agar performa stabil</p>
+      </details>
+      <details>
+        <summary>Terdiri 4 pulau harta karun</summary>
+        <p>Gedorpintu hoki, Crypto trading, Mystery box, Go gaple.</p>
+      </details>
+      <details>
+        <summary>Kontak</summary>
+        <p>Butuh bantuan hubungi kami ? WA OFFICIAL BELEGENDBET LINK WA, https://klikblg.com/wa-blb </p>
+      </details>
+    </section>
+
+  </main>
+
+  <!-- FOOTER FULL WIDTH -->
+  <footer class="mt-auto py-3 text-center text-gray-400 text-sm border-t border-slate-700 bg-slate-900 z-50 relative w-full">
+    <p>&copy; <span id="y"></span> BELEGENDBET. Hak Cipta Dilindungi Undang-Undang.</p>
+  </footer>
+
+  <script src="panduan-script.js"></script>
+</body>
+</html>
