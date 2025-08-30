@@ -1,0 +1,254 @@
+/* ===== PALET WARNA: SUPER GLOSSY HD ANDROID OPTIMIZED ===== */
+:root{
+  --bg:#100525; --panel:#2a1a5e; --panel-2:#1c1044; --ink:#ffffff; --muted:#c0c8ff;
+  --a:#ffd700; --b:#00c6ff; --c:#00ff7f; --success:#28a745;
+  --glow-a:0 0 8px rgba(255,215,0,.6), 0 0 16px rgba(255,215,0,.3);
+  --glow-b:0 0 8px rgba(0,198,255,.5), 0 0 16px rgba(0,198,255,.25);
+  --radius:16px;
+  /* === NEON HIJAU VARIABEL - REDUCED FOR ANDROID === */
+  --neon:#39ff14; --neon2:#00ff88; 
+  --glow-neon: 0 0 10px rgba(57,255,20,.8), 0 0 20px rgba(57,255,20,.5);
+}
+
+/* OPTIMASI PERFORMA ANDROID - HARDWARE ACCELERATION ENHANCED */
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+  -webkit-touch-callout:none;
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none;
+}
+
+html,body{
+  height:100%;
+  -webkit-text-size-adjust:100%;
+  -ms-text-size-adjust:100%;
+  text-size-adjust:100%;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  font-display:swap;
+  overscroll-behavior:none;
+  -webkit-overflow-scrolling:touch;
+}
+
+/* HARDWARE ACCELERATION UNTUK SEMUA ELEMEN ANIMASI - ENHANCED */
+.domino, .domino .inner, .face, .back, .gaple-board .spinlight, .gaple-board .spinlight-ccw, .chip, .main-container, .panel, .left-panel {
+  transform:translateZ(0);
+  -webkit-transform:translateZ(0);
+  will-change:transform;
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
+  contain:layout style paint;
+}
+
+/* OPTIMASI TOUCH EVENTS ENHANCED */
+button, .domino, .btn, .home-btn {
+  touch-action:manipulation;
+  -webkit-user-select:none;
+  user-select:none;
+  cursor:pointer;
+  -webkit-tap-highlight-color:rgba(0,0,0,0);
+}
+
+/* DISABLE HOVER EFFECTS ON TOUCH DEVICES - ENHANCED */
+@media (hover: none) and (pointer: coarse) {
+  .domino:hover, .btn:hover, .home-btn:hover, .domino.ready .back {
+    transform:none !important;
+    filter:none !important;
+    box-shadow:none !important;
+    outline:none !important;
+  }
+}
+
+/* REDUCE MOTION FOR LOW-END ANDROID */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+html,body{height:100%}
+body{
+  margin:0;
+  background:radial-gradient(1200px 1200px at 10% 0%, #3a2a7b 0%, var(--bg) 42%, #08031a 100%);
+  color:var(--ink);
+  font-family:Roboto, system-ui, -apple-system, Segoe UI, Inter, Arial, sans-serif;
+  letter-spacing:.2px;
+  overflow-x:hidden;
+  padding-top:58px; padding-bottom:36px
+}
+
+/* ===== HEADER ===== */
+.site-header{position:fixed; inset:0 0 auto 0; height:48px; display:flex; align-items:center; justify-content:space-between; padding:0 14px 0 12px; z-index:20; background:linear-gradient(90deg, #4a3a8a 0%, #6a4ecf 45%, #8a5fff 100%); box-shadow:0 2px 10px rgba(0,0,0,.45); border-bottom:1px solid rgba(255,255,255,.12)}
+.site-header .brand{font-family:Orbitron, sans-serif; font-weight:900; letter-spacing:1px; font-size:14px; background:linear-gradient(90deg, #fff2ac, #ffd700); -webkit-background-clip:text; background-clip:text; color:transparent; text-shadow:0 0 6px rgba(255,215,0,.45);}
+.home-btn{--pad:8px 14px; position:relative; display:inline-flex; align-items:center; gap:8px; padding:var(--pad); border-radius:12px; border:1px solid rgba(255,255,255,.28); background:linear-gradient(180deg,#ffea70,#ffd700); color:#3d2500; font-weight:800; font-family:Orbitron; letter-spacing:.5px; text-decoration:none; box-shadow:0 6px 16px rgba(0,0,0,.4), inset 0 1px 1px rgba(255,255,255,.45), inset 0 0 8px rgba(255,248,220,.28)}
+.home-btn:hover{filter:brightness(1.08)}
+
+/* ===== FOOTER ===== */
+.site-footer{position:fixed; left:0; right:0; bottom:0; height:32px; z-index:18; display:flex; align-items:center; justify-content:center; padding:0 12px; background:linear-gradient(90deg,#1c1044 0%, #2a1a5e 50%, #3c2a8a 100%); border-top:1px solid rgba(255,255,255,.1); color:#e0e6ff; font-size:12px}
+.site-footer p{margin:0; opacity:.9; letter-spacing:.2px}
+
+.main-container{max-width:1200px; margin:8px auto 32px; padding:24px; position:relative; border-radius:var(--radius); background:linear-gradient(180deg, rgba(42,26,94,.9), rgba(28,16,68,.92)); box-shadow:0 8px 30px rgba(0,0,0,.5), inset 0 0 0 1px rgba(255,255,255,.1), var(--glow-gold); isolation:isolate; backdrop-filter: blur(4px); contain: content; content-visibility:auto;}
+.main-container::before{content:""; position:absolute; inset:-2px; z-index:-1; border-radius:calc(var(--radius) + 2px); background:conic-gradient(from 0deg at 10% 10%, var(--b), var(--a), var(--c), var(--b)); filter:blur(10px) saturate(150%); opacity:.8; -webkit-mask:linear-gradient(#000 0 0) exclude, linear-gradient(#000 0 0) content-box; mask:linear-gradient(#000 0 0) exclude, linear-gradient(#000 0 0) content-box; padding:2px}
+
+.title{margin:6px 6px 18px; text-align:center; font-family:Orbitron, Roboto, sans-serif; font-weight:900; font-size:clamp(24px, 5vw, 48px); letter-spacing:1px; background:linear-gradient(90deg, var(--a), #ffffff 50%, var(--b)); -webkit-background-clip:text; background-clip:text; color:transparent; text-shadow:0 0 18px rgba(255,215,0,.55), 0 0 28px rgba(0,198,255,.5)}
+
+/* ===== LAYOUT ===== */
+.main-content{display:grid; grid-template-columns:1.7fr 1fr; gap:18px; align-items:start}
+@media (max-width: 1024px){ .main-content{grid-template-columns:1fr} }
+
+.panel, .left-panel{background:linear-gradient(160deg, var(--panel), var(--panel-2)); border-radius:16px; padding:16px; box-shadow:inset 0 1px 1px rgba(255,255,255,.12), 0 10px 20px rgba(0,0,0,.5); content-visibility:auto; contain:paint;}
+.panel h3{margin:0 0 10px; font-family:Orbitron; font-size:1rem; letter-spacing:.8px; color:#f0f8ff; text-shadow:0 0 4px rgba(255,255,255,.18)}
+
+/* ring hijau - ANDROID OPTIMIZED */
+.panel, .left-panel{ position:relative; isolation:isolate; }
+.panel{ box-shadow:inset 0 1px 1px rgba(255,255,255,.12), 0 8px 16px rgba(0,0,0,.4), var(--glow-neon); }
+.left-panel{ box-shadow:inset 0 1px 1px rgba(255,255,255,.12), 0 8px 16px rgba(0,0,0,.4), var(--glow-neon); }
+.panel::after, .left-panel::after{
+  content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none; padding:1.5px; 
+  background:linear-gradient(180deg, var(--neon), var(--neon2) 60%, var(--neon)); 
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); 
+  -webkit-mask-composite: xor; 
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude; 
+  filter: drop-shadow(0 0 8px rgba(57,255,20,.7)); 
+  opacity:.9; 
+  animation: neonPulse 3.5s ease-in-out infinite;
+}
+@keyframes neonPulse{ 0%,100%{ opacity:.85 } 50%{ opacity:.95 } }
+@media (prefers-reduced-motion: reduce){ .panel::after, .left-panel::after{ animation:none } }
+
+/* ===== MESIN PAPAN GAPLE ===== */
+.board-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:10px}
+.board-title{font-weight:800; letter-spacing:.7px; text-transform:uppercase; font-size:.95rem; color:#fff5e6}
+
+.gaple-board{position:relative; overflow:hidden; border-radius:16px; height: clamp(340px, 60vw, 520px); margin:8px 0 14px; background: radial-gradient(120% 80% at 50% 0%, rgba(255,215,0,.08), transparent 50%), repeating-linear-gradient(0deg, #1a103f 0 6px, #150c35 6px 12px); box-shadow:inset 0 0 0 1px rgba(255,255,255,.1), inset 0 0 50px rgba(0,0,0,.6); contain:paint; content-visibility:auto; contain-intrinsic-size: 480px;}
+.gaple-board::after{content:""; position:absolute; inset:8px; border-radius:12px; z-index:0; background: radial-gradient(50% 50% at 50% 50%, rgba(255,255,255,.6) 0%, rgba(255,255,255,0) 35%), conic-gradient(from 0deg at 50% 50%, #ff0000 0%, #ff7f00 12%, #ffff00 25%, #00ff00 37%, #00ffff 50%, #0066ff 62%, #8a00ff 75%, #ff00ff 87%, #ff0000 100%); filter: brightness(1.02) saturate(1.4) blur(4px); opacity:.8;}
+.gaple-board .spinlight, .gaple-board .spinlight-ccw{position:absolute; inset:8px; border-radius:12px; z-index:0; pointer-events:none; mix-blend-mode: screen; filter: blur(8px) brightness(1.1) saturate(1.05);}
+.gaple-board .spinlight{background: radial-gradient(30% 30% at 50% 50%, rgba(255,255,255,.4) 0%, rgba(255,255,255,0) 55%), conic-gradient(from 0deg at 50% 50%, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 46%, rgba(255,255,255,.7) 50%, rgba(255,255,255,0) 54%, rgba(255,255,255,0) 100%); animation: light-spin 15s linear infinite;}
+.gaple-board .spinlight-ccw{background: radial-gradient(25% 25% at 50% 50%, rgba(255,255,255,.35) 0%, rgba(255,255,255,0) 50%), conic-gradient(from 20deg at 50% 50%, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 48%, rgba(255,255,255,.6) 50%, rgba(255,255,255,0) 52%, rgba(255,255,255,0) 100%); animation: light-spin-ccw 20s linear infinite;}
+@keyframes light-spin{ to{ transform: rotate(360deg); } }
+@keyframes light-spin-ccw { to { transform: rotate(-360deg); } }
+@media (prefers-reduced-motion: reduce){ .gaple-board .spinlight, .gaple-board .spinlight-ccw{ animation:none } }
+.gaple-board .rim{position:absolute; inset:6px; border-radius:10px; pointer-events:none; box-shadow:inset 0 0 0 1px rgba(255,255,255,.08), inset 0 0 0 4px rgba(255,215,0,.1)}
+.gaple-board .rim, .gaple-board .scan{ z-index:2; }
+@keyframes scan { from{transform:translateX(-100%)} to{transform:translateX(100%)} }
+
+.domino-grid{position:relative; z-index:3; display:grid; height:100%; padding:16px; gap:12px; grid-template-columns:repeat(7, 1fr); grid-template-rows:repeat(4, 1fr)}
+
+/* === DOMINO OPTIMIZED FOR ANDROID === */
+.domino{position:relative; width:100%; height:100%; perspective:600px; border-radius:10px; cursor:pointer}
+.domino .inner{position:absolute; inset:0; transition:transform .45s cubic-bezier(.2,.8,.2,1); transform-style:preserve-3d; backface-visibility:hidden}
+.domino.flipped .inner{transform:rotateY(180deg)}
+.face, .back{position:absolute; inset:0; border-radius:10px; box-shadow:inset 0 0 0 1px rgba(0,0,0,.12), 0 6px 12px rgba(0,0,0,.35); backface-visibility:hidden}
+
+.back{border:3px solid transparent; background: linear-gradient(180deg,#2a1f55,#1c1044) padding-box, linear-gradient(135deg,#fff6cc 0%, #ffe680 20%, #ffd700 45%, #ffb700 65%, #a86d00 82%, #fff2ac 100%) border-box; display:grid; place-items:center; box-shadow:0 0 12px rgba(255,215,0,.3), inset 0 0 0 1px rgba(255,255,255,.08)}
+.back::before{content:""; position:absolute; inset:2px; border-radius:8px; background: linear-gradient(120deg, rgba(255,255,255,.35) 0%, rgba(255,255,255,0) 40%), radial-gradient(100px 50px at 16% 12%, rgba(255,248,220,.18), rgba(255,248,220,0)); mix-blend-mode:screen; pointer-events:none}
+.back::after{content:""; position:absolute; left:12px; right:12px; top:10px; bottom:10px; border-radius:8px; background: radial-gradient(60% 50% at 50% 30%, rgba(255,255,255,.8) 0%, rgba(255,255,255,0) 50%), linear-gradient(180deg, #fff6cc 0%, #ffe680 18%, #ffd233 42%, #ffb700 66%, #d08a00 100%); box-shadow: inset 0 6px 12px rgba(255,255,255,.5), inset 0 -8px 14px rgba(168,109,0,.45), 0 0 12px rgba(255,208,0,.3);}
+.face{background:linear-gradient(180deg,#ffffff,#f0f0e0); transform:rotateY(180deg); border:1px solid rgba(0,0,0,.12)}
+.face::before{content:""; position:absolute; inset:0; border-radius:10px; background:linear-gradient(60deg, rgba(255,255,255,.9), rgba(255,255,255,0) 35%); opacity:.45; transform: translateY(-4px) rotate(6deg); pointer-events:none}
+.divider{position:absolute; left:50%; top:4px; bottom:4px; width:1.5px; background:linear-gradient(#c8c8b4,#a1a18d); border-radius:1px}
+
+/* === AREA PIP === */
+.half{position:absolute; left:6px; right:6px; height:calc(50% - 8px); display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(3,1fr); gap:4px; padding:6px; place-items:center;}
+.half.top{top:6px} .half.bot{bottom:6px}
+
+/* ★ Pip responsif */
+.pip{width: var(--pip, 10px); height: var(--pip, 10px); aspect-ratio: 1 / 1; border-radius:50%; box-shadow:0 1px 1px rgba(0,0,0,.3), inset 0 1px 1px rgba(255,255,255,.3); background:radial-gradient(circle at 30% 30%, #ff4747 0%, #e50000 55%, #a00000 100%);}
+
+.domino.ready .back{ outline:1px solid rgba(255,215,0,.65); box-shadow:0 0 20px rgba(255,215,0,.85), 0 0 38px rgba(255,190,0,.55), 0 0 56px rgba(255,190,0,.35) }
+.domino:hover{transform:translateY(-1px)}
+
+/* Shuffle dummy chips */
+.shuffle-layer{position:absolute; inset:0; pointer-events:none; z-index:1}
+.chip{position:absolute; width:46px; height:22px; border-radius:6px; background:linear-gradient(180deg,#2a1a5e,#1c1044); box-shadow:inset 0 0 0 1px rgba(255,255,255,.12), 0 3px 8px rgba(0,0,0,.6); opacity:0; animation:shuffle-x .9s ease-in-out infinite, shuffle-pop .2s ease forwards; will-change:transform,opacity}
+.chip::after{content:""; position:absolute; inset:0; border-radius:6px; background:linear-gradient(90deg, rgba(255,255,255,.25), rgba(255,255,255,.04)); mix-blend-mode:overlay}
+@keyframes shuffle-x{0%{transform:translateX(-40px) rotate(-6deg)}50%{transform:translateX(40px) rotate(6deg)}100%{transform:translateX(-40px) rotate(-6deg)}}
+@keyframes shuffle-pop{to{opacity:.85}}
+
+/* Tombol robotik */
+.controls{display:flex; gap:12px; justify-content:center}
+.btn{--pad:12px 20px; position:relative; display:inline-flex; align-items:center; justify-content:center; padding:var(--pad); border-radius:14px; border:1px solid rgba(255,255,255,.2); cursor:pointer; user-select:none; font-family:Orbitron, Roboto, sans-serif; font-weight:800; letter-spacing:.7px; text-transform:uppercase; background:linear-gradient(135deg,#2f1a66,#1a0d49); color:#ffffff; text-shadow:0 1px 1px rgba(0,0,0,.5); box-shadow:inset 0 1px 1px rgba(255,255,255,.15), 0 12px 24px rgba(0,0,0,.48), 0 0 22px rgba(0,198,255,.22); transition:transform .12s ease, box-shadow .2s ease; filter:saturate(1.05)}
+.btn.primary{background:linear-gradient(135deg, var(--a), var(--b)); border-color:rgba(255,255,255,.4); color:#000; text-shadow:0 1px 1px rgba(255,255,255,.3)}
+.btn::before{content:""; position:absolute; inset:0; border-radius:14px; box-shadow:inset 0 0 0 2px rgba(255,215,0,.28); mix-blend-mode:overlay; opacity:.95; pointer-events:none}
+.btn:hover{transform:translateY(-1px); box-shadow:var(--glow-a)}
+.btn.primary:hover{box-shadow:var(--glow-a), var(--glow-b)}
+#btnStart.disabled, #btnStart:disabled{ 
+  background:linear-gradient(to right, #6b7280, #9ca3af) !important;
+  cursor:not-allowed !important;
+  transform:none !important;
+  pointer-events:none !important;
+}
+
+/* Kanan: daftar hadiah & result */
+.prize-section{padding:10px; border-radius:12px; background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03)); box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+.prize-item{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px; border-radius:10px; background:linear-gradient(160deg,#2a1a5e,#1c1044); box-shadow:inset 0 1px 0 rgba(255,255,255,.08), 0 2px 5px rgba(0,0,0,.28)}
+.badge{font-size:.72rem; padding:4px 8px; border-radius:20px; letter-spacing:.5px; font-weight:700; font-family:Orbitron; box-shadow: inset 0 1px 1px rgba(255,255,255,.28)}
+.badge.utama{background:linear-gradient(180deg, #ffd700, #f0c000); color:#4d2c00; border:1px solid #ffde59}
+.badge.biasa{background:linear-gradient(180deg, #5bc0de, #46b8da); color:#003366; border:1px solid #7acde6}
+.prize-item.highlight{box-shadow:var(--glow-a), var(--glow-b); animation:neon 1.2s ease-in-out infinite}
+@keyframes neon{0%,100%{box-shadow:0 0 14px rgba(255,215,0,.7), 0 0 24px rgba(0,198,255,.5)} 50%{box-shadow:0 0 26px rgba(255,215,0,1), 0 0 38px rgba(0,198,255,.75)}}
+
+.prize-result{display:none; margin-top:16px; padding:16px; border-radius:12px; background:linear-gradient(180deg,#2a1a5e,#1c1044); box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+.prize-result.show{display:block; animation:up .28s ease}
+@keyframes up{from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:translateY(0)}}
+.result-actions{display:flex; gap:10px; flex-wrap:wrap}
+.btn.claim-wa{border-color:rgba(34,139,34,.6); background:linear-gradient(180deg,#2e8b57,#1e6a3f); color:white}
+.btn.claim-wa:hover{box-shadow:0 0 12px #32cd32, 0 0 20px #2e8b57}
+.btn.claim-tg{border-color:rgba(30,144,255,.6); background:linear-gradient(180deg,#1e90ff,#104e8b); color:white}
+.btn.claim-tg:hover{box-shadow:0 0 12px #1e90ff, 0 0 20px #00bfff}
+
+.tiny{font-size:.8rem; color:#d1d9ff}
+
+@media (max-width: 520px){
+  .gaple-board{height: clamp(340px, 78vw, 520px)}
+  .domino-grid{gap:10px; padding:12px}
+  .half{gap:3px; padding:5px}
+}
+@media (prefers-reduced-motion: reduce){ .gaple-board .scan, .domino.ready{animation:none} }
+
+/* Naikkan posisi panel Hadiah Utama agar lebih dekat ke board */
+.hadiah-utama{ margin-top:-75px; }
+@media (max-width:1024px){ .hadiah-utama{ margin-top:0; } }
+
+/* ===== ANGKOR WAT EPIC BACKGROUND ===== */
+.angkor-bg{position:fixed; inset:0; z-index:-2; overflow:hidden; background:radial-gradient(1200px 900px at 50% 15%, #4b0082 0%, #191970 45%, #050210 100%); contain:paint}
+.angkor-bg .sky{position:absolute; inset:-15%; background:linear-gradient(180deg,#ff8c00 0%, #ff4500 35%, #4b0082 65%, #191970 100%); filter:saturate(1.25) brightness(1.08); animation:skyPulse 20s ease-in-out infinite;}
+@keyframes skyPulse{0%,100%{filter:saturate(1.15) brightness(1.05)}50%{filter:saturate(1.35) brightness(1.12)}}
+.angkor-bg .stars{position:absolute; inset:-10% 0 0 0; background-image:radial-gradient(#fff 1px, transparent 1.2px); background-size:2px 2px; opacity:.2; animation:twinkle 6s ease-in-out infinite}
+@keyframes twinkle{0%,100%{opacity:.15}50%{opacity:.25}}
+.angkor-bg .sun{position:absolute; top:8vh; left:-20vw; width:min(36vw,520px); height:min(36vw,520px); border-radius:50%; background:radial-gradient(circle at 50% 50%, #ffffff 0%, #fffacd 40%, #ffea00 60%, rgba(255,234,0,0) 70%); filter:blur(7px); opacity:.8; animation:sunGlide 60s linear infinite;}
+@keyframes sunGlide{0%{transform:translate(0,0)}50%{transform:translate(60vw,5vh)}100%{transform:translate(120vw,0)}}
+.angkor-bg .cloud{position:absolute; left:-40%; width:180%; height:52%; bottom:34%; filter:blur(22px); opacity:.3; mix-blend-mode:screen}
+.angkor-bg .cloud.cloud-1{background: radial-gradient(ellipse at 30% 60%, rgba(255,228,181,.23), rgba(255,255,255,0) 60%), radial-gradient(ellipse at 60% 55%, rgba(255,228,181,.2), rgba(255,255,255,0) 60%); animation:fogMove 80s linear infinite}
+.angkor-bg .cloud.cloud-2{bottom:28%; opacity:.25; background: radial-gradient(ellipse at 40% 60%, rgba(240,248,255,.23), transparent 60%), radial-gradient(ellipse at 65% 55%, rgba(255,255,255,.18), transparent 60%); animation:fogMove2 110s linear infinite}
+@keyframes fogMove{from{transform:translateX(0)}to{transform:translateX(40%)}}
+@keyframes fogMove2{from{transform:translateX(-10%)}to{transform:translateX(55%)}}
+.angkor-bg svg.temples{position:absolute; left:0; right:0; bottom:-2px; height:58%; width:100%; pointer-events:none}
+.angkor-bg .layer.far{fill:#191970; opacity:.7; animation:parFar 60s linear infinite}
+.angkor-bg .layer.mid{fill:#100828; opacity:.88; animation:parMid 45s linear infinite}
+.angkor-bg .layer.near{fill:#050210; opacity:1; filter:drop-shadow(0 0 22px rgba(0,0,0,.45)); animation:parNear 35s linear infinite}
+@keyframes parFar{to{transform:translateX(-2%)}}
+@keyframes parMid{to{transform:translateX(-4%)}}
+@keyframes parNear{to{transform:translateX(-6%)}}
+
+/* Fireworks canvas & gold edge */
+#fxFireworks{position:fixed; inset:0; z-index:5; pointer-events:none; mix-blend-mode:lighter}
+:root{ --gold:#ffd700; --gold2:#fff7cc; --gold3:#ffb700; --glow-gold: 0 0 18px rgba(255,215,0,.9), 0 0 36px rgba(255,215,0,.6), 0 0 64px rgba(255,200,0,.4); }
+.main-container::after{content:""; position:absolute; inset:0; border-radius:var(--radius); pointer-events:none; padding:2px; background: radial-gradient(220px 160px at 92% 8%, rgba(255,255,255,.9), rgba(255,255,255,0) 60%), linear-gradient(135deg, var(--gold2) 0%, var(--gold) 35%, var(--gold3) 70%, #a86d00 100%); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude; filter: drop-shadow(0 0 18px rgba(255,215,0,.95)) drop-shadow(0 0 36px rgba(255,215,0,.65)) drop-shadow(0 0 64px rgba(255,200,0,.42)); opacity:.98; animation: goldBreath 2.6s ease-in-out infinite;}
+@keyframes goldBreath{ 0%,100%{ opacity:.92 } 50%{ opacity:1 } }
+
+/* ======== LITE MODE (otomatis untuk HP lemah/hemat data) ======== */
+html.lite .angkor-bg{ display:none !important; }
+html.lite #fxFireworks{ display:none !important; }
+html.lite .panel::after, html.lite .left-panel::after{ display:none !important; }
+html.lite .main-container{ backdrop-filter:none; }
+html.lite .gaple-board::after{ filter:brightness(1.02) saturate(1.3) blur(3px); opacity:.8; }
+html.lite .gaple-board .spinlight, html.lite .gaple-board .spinlight-ccw{ display:none !important; }
+html.lite .domino.ready .back{ box-shadow:0 0 12px rgba(255,215,0,.55), 0 0 24px rgba(255,190,0,.35), 0 0 36px rgba(255,190,0,.25); }
+html.lite *{ animation-duration: calc(1.25 * var(--anim, 1s)); }
+html.lite .prize-item.highlight{ animation:none; }
+html.lite .chip{ animation:shuffle-x .7s ease-in-out infinite, shuffle-pop .12s ease forwards; }
