@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+
+/* OPTIMASI PERFORMA ANDROID */
+*{
+  -webkit-tap-highlight-color:transparent;
+  -webkit-touch-callout:none;
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none;
+  box-sizing:border-box;
+}
+
+html,body{
+  -webkit-text-size-adjust:100%;
+  -ms-text-size-adjust:100%;
+  text-size-adjust:100%;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  font-display:swap;
+  overscroll-behavior:none;
+}
+
+/* HARDWARE ACCELERATION */
+.mystery-box, .box-glow, button {
+  transform:translateZ(0);
+  -webkit-transform:translateZ(0);
+  will-change:transform;
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
+}
+
+/* OPTIMASI TOUCH */
+button, .mystery-box {
+  touch-action:manipulation;
+  cursor:pointer;
+}
+
+/* DISABLE HOVER ON TOUCH */
+@media (hover: none) and (pointer: coarse) {
+  button:hover, .mystery-box:hover {
+    transform:none !important;
+    filter:none !important;
+  }
+}
+
+body{ font-family:'Inter',sans-serif; background:#121212; color:#fff }
+.mystery-root{
+  position:relative; min-height:calc(100vh - 66px - 64px); padding-bottom:24px;
+  background:#121212;
+  background-image:conic-gradient(from 0deg at 50% 50%, #ff00ff 0%, #ff00ff 10%, #ff9900 20%, #ffff00 30%, #00ff00 40%, #00ffff 50%, #0000ff 60%, #9900ff 70%, #ff00ff 80%, #ff00ff 100%);
+  background-size:200% 200%; animation:rainbow-bg-shift 20s linear infinite; overflow-x:hidden;
+}
+@keyframes rainbow-bg-shift{ 0%{background-position:0% 0%} 50%{background-position:100% 100%} 100%{background-position:0% 0%} }
+
+.box-glow{ --angle:0deg; background:conic-gradient(from var(--angle) at 50% 50%, #ff00ff,#ff9900,#ffff00,#00ff00,#00ffff,#0000ff,#9900ff,#ff00ff);
+  animation:rotate-gradient 3s linear infinite; position:relative; border-radius:1rem;
+  box-shadow:0 0 24px rgba(255,0,255,.4),0 6px 22px rgba(255,255,255,.2); transition:box-shadow .2s, transform .12s; will-change:transform;
+}
+.box-glow::before{ content:""; position:absolute; inset:0; border-radius:1rem; background:rgba(18,18,18,.7); border:2px solid #1a1a1a; z-index:1; }
+.box-glow > span{ position:relative; z-index:2 }
+.box-glow:hover{ transform:scale(1.06) rotate(-2deg); box-shadow:0 0 44px 12px rgba(255,0,255,.8),0 0 20px rgba(255,153,0,.8),0 0 0 2px #fff inset; }
+@keyframes rotate-gradient{ to{ --angle:360deg } }
+.rainbow-neon{ text-shadow:0 0 8px #fff,0 0 12px #ff00ff,0 0 20px #0000ff,0 0 30px #00ffff,0 0 40px #00ff00; }
+.fade-in{ animation:fadein .35s ease }
+@keyframes fadein{ from{opacity:0; transform:translateY(14px)} to{opacity:1; transform:translateY(0)} }
+.modal-bg{ background:rgba(0,0,0,.7); backdrop-filter:blur(3px) }
+.table th{ background:#4b0082; color:#fff }
+.table td,.table th{ border-bottom:1px solid rgba(255,255,255,.1) }
+.highlight{ background-image:linear-gradient(90deg,#ff00ff,#00ffff); color:#fff; font-weight:700 }
+.picked{ outline:4px solid #22d3ee; box-shadow:0 0 30px #22d3ee77 inset }
+.disabled{ pointer-events:none; opacity:.6 }
+#btnSpin.disabled{ 
+  background:linear-gradient(to right, #6b7280, #9ca3af) !important;
+  cursor:not-allowed !important;
+  transform:none !important;
+}
+.twirl{ transform:rotateY(180deg) scale(.96) }
+.header-full{left:0;right:0;top:0;width:100% !important;}
