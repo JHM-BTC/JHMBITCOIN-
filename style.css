@@ -1,0 +1,132 @@
+/* ================= FONT & RESET ================= */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+*{box-sizing:border-box}
+html,body{height:100%;width:100%}
+body{font-family:'Inter',sans-serif;background:#14335f;min-height:100vh;overflow-x:hidden;overflow-y:auto}
+img{max-width:100%;height:auto;display:block}
+
+/* ===== Variabel jarak/kartu agar gampang diatur ===== */
+:root{
+  --gap: clamp(12px, 3.5vw, 28px);   /* jarak antar kartu */
+  --grid-max: 1200px;               /* lebar maksimal grid */
+}
+
+/* ================= BACKGROUND (tetap) ================= */
+.bg-hero{
+  background:url('https://blogger.googleusercontent.com/img/a/AVvXsEhs_ZO5OnA0Q4Ex0Epuu_-sdtSNXQCB6BGJt3oN6L9JHuwJTX_qvQSrKy0eepPl_v7KnFbxmnmXqjQu79ElLlo47XLiJ91w0hrUmaHLABnc0hM0VpYftUkwitSdzy94xovlQa3OzRVKcNzGsB5FzaleKCzkiqxeZz8heWizjq2VcHeygZAkGhJtAkdJRHA') center/cover no-repeat;
+  position:fixed; inset:0; width:100vw; height:100vh; z-index:0; overflow:hidden;
+}
+.shine-effect{position:absolute;inset:0;pointer-events:none;z-index:1;
+  background:linear-gradient(120deg,rgba(255,255,255,0) 0%,rgba(255,255,255,0.18) 40%,rgba(255,255,255,0.38) 50%,rgba(255,255,255,0.18) 60%,rgba(255,255,255,0) 100%);
+  opacity:.7;filter:blur(2px);animation:shineMove 3.5s linear infinite}
+@keyframes shineMove{0%{transform:translateX(-60vw) skewX(-18deg)}100%{transform:translateX(120vw) skewX(-18deg)}}
+
+.bg-game{
+  background:url('https://blogger.googleusercontent.com/img/a/AVvXsEgrcnQcPPcfE9A-hKDw7ESeN_N3Elivbjm1Qd21Iny4lUjt3e2enRw5Re482KPvPZQq4w9tLw9-BthklRaLGySVkZZwUO5qedf81xDawq4mR70BN-Q6WYNUvmF13sjJnkA5ze82lwXtlVt2L3q94VF2DBpW_5O3J_b3aBFQJB2wYvGQ9CHKtGOx6m9lZ5o') center/cover no-repeat;
+  position:fixed; inset:0; width:100vw; height:100vh; z-index:0;
+}
+.shine-effect-gold{position:absolute;inset:0;pointer-events:none;z-index:1;
+  background:linear-gradient(100deg,rgba(255,255,255,0) 0%,rgba(255,215,0,0.12) 30%,rgba(255,255,255,0.22) 38%,rgba(255,215,0,0.38) 50%,rgba(255,255,0,0.22) 62%,rgba(255,215,0,0.12) 70%,rgba(255,255,255,0) 100%);
+  opacity:.85;filter:blur(7px) brightness(1.3) saturate(1.4);mix-blend-mode:lighten;animation:shineGoldMove 4.5s cubic-bezier(.4,1.6,.6,1) infinite}
+@keyframes shineGoldMove{0%{transform:translateX(-80vw) skewX(-22deg) scaleY(1.1)}40%{transform:translateX(10vw) skewX(-18deg) scaleY(1.13)}60%{transform:translateX(30vw) skewX(-16deg) scaleY(1.18)}100%{transform:translateX(120vw) skewX(-22deg) scaleY(1.1)}}
+
+/* ================= HERO (WELCOME) ================= */
+.section-content{position:relative;z-index:2;width:100%}
+.hero-map-frame{display:flex;justify-content:center;align-items:center;margin:clamp(12px,5vw,48px) auto 0;width:100%;position:relative;z-index:10}
+.neon-glow-border{border-radius:2.2rem;box-shadow:0 0 0 22px #1ff1ff88,0 0 66px 14px #1afcffcc,0 0 260px 70px #0de7ff66,0 0 360px 110px #29fffccc;border:6px solid #5efcf1;background:rgba(20,40,60,.45);padding:clamp(6px,1.2vw,16px);transition:box-shadow .3s}
+.neon-glow-border:hover{box-shadow:0 0 0 30px #29fffebb,0 0 250px 100px #07d8ffcc,0 0 800px 160px #43fffccc}
+.hero-map-img{width:clamp(280px,80vw,820px);height:auto;border-radius:1.8rem;box-shadow:0 8px 48px 12px #02162daa;background:#18345d;object-fit:contain}
+.glow-hero{
+  background:linear-gradient(90deg,#fffbe7 0%,#ffe259 25%,#ffd700 50%,#fff700 75%,#fffbe7 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
+  text-shadow:0 0 36px #fffbe7,0 0 60px #ffd700,0 0 80px #fff700,0 2px 0 #fffbe7,0 0 24px #ffd700;
+  font-size:clamp(1.1rem,3.8vw,2.3rem);font-weight:900;letter-spacing:2px;margin:1.2rem 0 1.5rem;text-align:center
+}
+.hero-btn{margin-top:24px;font-size:clamp(.92rem,2.6vw,1.08rem);padding:.9rem clamp(24px,6vw,64px);border-radius:9999px;font-weight:700;
+  background:linear-gradient(90deg,#fffbe7 0%,#ffe259 25%,#ffd700 50%,#fff700 75%,#fffbe7 100%);color:#222;
+  box-shadow:0 0 0 8px #ffd700cc,0 0 32px 8px #fffbe7cc,0 0 120px 40px #ffd70088;border:3px solid #ffd700;
+  text-shadow:0 0 18px #fffbe7,0 2px 0 #ffd700;letter-spacing:2px;transition:transform .15s,box-shadow .15s}
+.hero-btn:hover{transform:scale(1.06);box-shadow:0 0 0 16px #ffd700cc,0 0 64px 16px #fffbe7cc,0 0 240px 80px #ffd70088;color:#111}
+
+/* ================== GRID PULAU SELALU 1×4 ================== */
+#island-container{
+  display:grid;
+  grid-template-columns: repeat(4, 1fr); /* 1 baris, 4 kolom di semua layar */
+  gap: var(--gap);
+  max-width: min(var(--grid-max), 96vw);
+  margin: 0 auto;
+  padding-inline: clamp(8px, 3vw, 24px); /* biar nggak nempel tepi */
+  place-items: stretch center;
+  perspective: 1800px;
+}
+
+.island-card-wrapper{width:100%;display:flex;flex-direction:column;align-items:center}
+
+.island-card{
+  width:100%;                /* isi penuh kolom grid */
+  aspect-ratio: 3/4;         /* bentuk tetap; tinggi ikut lebar */
+  background:linear-gradient(135deg,#13243a 80%,#21e3ff 100%);
+  border-radius:2.2rem;
+  box-shadow:0 0 0 8px rgba(255,215,0,.45),0 0 32px 8px rgba(255,215,0,.35),0 0 120px 40px rgba(255,215,0,.18),0 0 220px 60px rgba(255,215,0,.10);
+  border:3px solid #FFD700;
+  cursor:pointer;position:relative;overflow:hidden;
+  transform-style:preserve-3d;
+  transition:transform .6s cubic-bezier(.4,2,.2,1),box-shadow .2s;
+  will-change:transform;
+}
+.island-card.flipped{transform:rotateY(180deg) scale(1.06);
+  box-shadow:0 0 0 12px rgba(144,238,144,.5),0 0 80px 30px rgba(144,238,144,.25),0 0 200px 60px rgba(144,238,144,.12);
+  border:4px solid #90EE90}
+.island-card.shuffling-anim{animation:cardShuffle .05s linear infinite}
+@keyframes cardShuffle{
+  0%{transform:translateX(0) rotateY(0) scale(1)}
+  25%{transform:translateX(-10%) rotateY(180deg) scale(1.05)}
+  50%{transform:translateX(0) rotateY(360deg) scale(1)}
+  75%{transform:translateX(10%) rotateY(540deg) scale(1.05)}
+  100%{transform:translateX(0) rotateY(720deg) scale(1)}
+}
+
+.island-card .island-front,
+.island-card .island-back{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  border-radius:2rem;backface-visibility:hidden;transition:transform .6s;padding:6%;
+}
+.island-card .island-front{transform:rotateY(0)}
+.island-card .island-back{background:#111b2b;transform:rotateY(180deg)}
+.island-card.flipped .island-front{transform:rotateY(-180deg)}
+.island-card.flipped .island-back{transform:rotateY(0)}
+
+/* Gambar aman (nggak kepotong) */
+.card-front-logo,.island-card .island-img{
+  width:100%;height:100%;object-fit:contain;border:0;border-radius:1.2rem;background:#18345d;box-shadow:0 8px 48px 0 #3b82f6cc
+}
+
+/* Judul + tombol game responsif */
+.neon-title{
+  font-size:clamp(1.3rem,6vw,4rem);font-weight:900;letter-spacing:2px;text-transform:uppercase;
+  background:linear-gradient(90deg,#fffbe7 0%,#ffe259 25%,#ffd700 50%,#fff700 75%,#fffbe7 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
+  text-shadow:0 0 36px #fffbe7,0 0 60px #ffd700,0 0 80px #fff700,0 2px 0 #fffbe7,0 0 24px #ffd700;
+  margin-bottom:clamp(12px,3vw,40px);text-align:center
+}
+#spinButton{
+  width:min(92vw,390px);font-size:clamp(1rem,3.2vw,1.24rem);padding:1rem 0;border-radius:9999px;font-weight:900;
+  margin:clamp(12px,3.6vw,32px) auto 1rem;
+  box-shadow:0 18px 88px 0 #fbbf24cc,0 0 90px #fff700;letter-spacing:2px;
+  background:linear-gradient(90deg,#ffe259 0%,#ffa751 100%);
+  text-shadow:0 0 18px #fff,0 2px 0 #000,0 0 32px #ffd700;border:5px solid #fff700;transition:transform .15s,box-shadow .15s
+}
+#spinButton:hover:not(:disabled){transform:scale(1.04);box-shadow:0 16px 80px 0 #ffd700cc,0 0 80px #fff700}
+#spinButton:disabled{cursor:not-allowed;opacity:.6}
+
+/* ================= HEADER & MODAL (tetap) ================= */
+.header-full{left:0;right:0;top:0;width:100%}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);display:flex;justify-content:center;align-items:center;z-index:1000;opacity:0;pointer-events:none;transition:opacity .3s}
+.modal-overlay.show{opacity:1;pointer-events:auto}
+.modal-content{background:#1a2d4b;padding:1.5rem;border-radius:1.2rem;text-align:center;box-shadow:0 0 20px rgba(0,0,0,.5);transform:scale(.92);transition:transform .3s;max-width:420px;width:92%}
+.modal-overlay.show .modal-content{transform:scale(1)}
+.modal-title{font-size:1.2rem;font-weight:700;margin-bottom:.75rem;color:#fff;text-shadow:0 0 10px #fff}
+.modal-message{font-size:1rem;color:#ccc;line-height:1.5;margin-bottom:1rem}
+.modal-button{background:#3b82f6;color:#fff;padding:.7rem 1.6rem;border-radius:9999px;font-weight:600;cursor:pointer}
+.modal-button:hover{background:#2563eb}
